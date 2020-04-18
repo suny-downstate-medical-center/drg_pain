@@ -1,0 +1,231 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7734,        223]
+NotebookOptionsPosition[      6747,        200]
+NotebookOutlinePosition[      7410,        221]
+CellTagsIndexPosition[      7367,        218]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["Plot NaV 1.8 inf and tau values for -100<v<100. ", "Text",
+ CellChangeTimes->{{3.796080529095159*^9, 
+  3.796080584012723*^9}},ExpressionUUID->"d6476fbd-be88-4a5c-87a0-\
+5787ab897941"],
+
+Cell[BoxData[{
+ RowBox[{"malpha", "=", 
+  RowBox[{"2.85", "-", 
+   RowBox[{"2.839", "/", 
+    RowBox[{"(", 
+     RowBox[{"1", "+", 
+      RowBox[{"Exp", "[", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"v", "-", "1.159"}], ")"}], "/", "13.95"}], ")"}], "]"}]}], 
+     ")"}]}]}]}], "\n", 
+ RowBox[{"mbeta", "=", 
+  RowBox[{"7.6205", "/", 
+   RowBox[{"(", 
+    RowBox[{"1", "+", 
+     RowBox[{"Exp", "[", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"v", "+", "46.463"}], ")"}], "/", "8.8289"}], ")"}], "]"}]}],
+     ")"}]}]}], "\n", 
+ RowBox[{"minf", "=", 
+  RowBox[{"malpha", "/", 
+   RowBox[{"(", 
+    RowBox[{"malpha", "+", "mbeta"}], ")"}]}]}], "\n", 
+ RowBox[{"mtau", "=", 
+  RowBox[{"1", "/", 
+   RowBox[{"(", 
+    RowBox[{"malpha", "+", "mbeta"}], ")"}]}]}], "\n", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"minf", ",", 
+   RowBox[{"{", 
+    RowBox[{"v", ",", 
+     RowBox[{"-", "100"}], ",", "100"}], "}"}], ",", 
+   RowBox[{"PlotLabels", "\[Rule]", "Automatic"}]}], "]"}], "\n", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"mtau", ",", 
+   RowBox[{"{", 
+    RowBox[{"v", ",", 
+     RowBox[{"-", "100"}], ",", "100"}], "}"}], ",", 
+   RowBox[{"PlotLabels", "\[Rule]", "Automatic"}]}], "]"}], "\n", 
+ RowBox[{"hinf", "=", 
+  RowBox[{"1", "/", 
+   RowBox[{"(", 
+    RowBox[{"1", "+", 
+     RowBox[{"Exp", "[", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"v", "+", "32.2"}], ")"}], "/", "4"}], "]"}]}], 
+    ")"}]}]}], "\n", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"hinf", ",", 
+   RowBox[{"{", 
+    RowBox[{"v", ",", 
+     RowBox[{"-", "100"}], ",", "100"}], "}"}], ",", 
+   RowBox[{"PlotLabels", "\[Rule]", "Automatic"}]}], "]"}], "\n", 
+ RowBox[{"htau", "=", 
+  RowBox[{"1.218", "+", 
+   RowBox[{"42.043", "*", 
+    RowBox[{"Exp", "[", 
+     RowBox[{
+      RowBox[{"-", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"v", "+", "38.1"}], ")"}], "^", "2"}], ")"}]}], "/", 
+      RowBox[{"(", 
+       RowBox[{"2", "*", 
+        RowBox[{"15.19", "^", "2"}]}], ")"}]}], "]"}]}]}]}], "\n", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"htau", ",", 
+   RowBox[{"{", 
+    RowBox[{"v", ",", 
+     RowBox[{"-", "100"}], ",", "100"}], "}"}], ",", 
+   RowBox[{"PlotLabels", "\[Rule]", "Automatic"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.79604592400531*^9, 3.796045925635015*^9}, {
+  3.7960460004554977`*^9, 3.7960460776465816`*^9}, {3.79604618151196*^9, 
+  3.7960461822041893`*^9}, {3.7960502773670673`*^9, 3.7960503383845873`*^9}, {
+  3.7960802497083187`*^9, 3.7960802844315863`*^9}, {3.796080356843627*^9, 
+  3.796080375069354*^9}, {3.7960804290315037`*^9, 3.796080499401342*^9}, {
+  3.796080806122447*^9, 
+  3.796080806813355*^9}},ExpressionUUID->"2da7feb9-36ac-47b8-b7aa-\
+0820216d4cdb"],
+
+Cell["Plot kdr inf and tau values for -100<v<100", "Text",
+ CellChangeTimes->{{3.796080875937825*^9, 3.79608089419141*^9}, {
+  3.7960810373563833`*^9, 3.79608108577258*^9}, {3.796091566680019*^9, 
+  3.796091581644112*^9}},ExpressionUUID->"d97a0478-90e5-4474-a87f-\
+463eddada3e5"],
+
+Cell[BoxData[{
+ RowBox[{"nalpha", "=", 
+  RowBox[{"0.001265", "*", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"v", "+", "14.273"}], ")"}], "/", 
+    RowBox[{"(", 
+     RowBox[{"1", "-", 
+      RowBox[{"Exp", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"v", "+", "14.273"}], ")"}], "/", 
+        RowBox[{"-", "10"}]}], "]"}]}], ")"}]}]}]}], "\n", 
+ RowBox[{"nbeta", "=", 
+  RowBox[{"0.125", "*", 
+   RowBox[{"Exp", "[", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"v", "+", "55"}], ")"}], "/", 
+     RowBox[{"-", "2.5"}]}], "]"}]}]}], "\n", 
+ RowBox[{"ninf", "=", 
+  RowBox[{"1", "/", 
+   RowBox[{"(", 
+    RowBox[{"1", "+", 
+     RowBox[{"Exp", "[", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"v", "+", "14.62"}], ")"}], "/", 
+       RowBox[{"-", "18.38"}]}], "]"}]}], ")"}]}]}], "\n", 
+ RowBox[{"ntau", "=", 
+  RowBox[{
+   RowBox[{"1", "/", 
+    RowBox[{"(", 
+     RowBox[{"nalpha", "+", "nbeta"}], ")"}]}], "+", 
+   "1"}]}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"ninf", ",", 
+   RowBox[{"{", 
+    RowBox[{"v", ",", 
+     RowBox[{"-", "100"}], ",", "100"}], "}"}], ",", 
+   RowBox[{"PlotLabels", "\[Rule]", "Automatic"}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{"ntau", ",", 
+   RowBox[{"{", 
+    RowBox[{"v", ",", 
+     RowBox[{"-", "100"}], ",", "100"}], "}"}], ",", 
+   RowBox[{"PlotLabels", "\[Rule]", "Automatic"}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Plot", "[", 
+  RowBox[{
+   RowBox[{"nalpha", "+", "nbeta"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"v", ",", 
+     RowBox[{"-", "70"}], ",", "40"}], "}"}], ",", 
+   RowBox[{"PlotLabels", "\[Rule]", "Automatic"}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"abmin", "=", 
+  RowBox[{"FindMinimum", "[", 
+   RowBox[{
+    RowBox[{"nalpha", "+", "nbeta"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"v", ",", 
+      RowBox[{"-", "70"}]}], "}"}]}], 
+   "]"}]}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.796091599616839*^9, 3.796091664465088*^9}, {
+  3.7960919422202473`*^9, 3.796091948227948*^9}, {3.7960919839842587`*^9, 
+  3.796091995781645*^9}, {3.796092320463684*^9, 3.796092332262817*^9}, {
+  3.796093591146222*^9, 3.796093607865555*^9}, {3.796093675167356*^9, 
+  3.796093689500908*^9}, {3.796093820974855*^9, 3.796093852372579*^9}, {
+  3.796093948938973*^9, 3.796093953360838*^9}, {3.796094223076315*^9, 
+  3.796094406483981*^9}, {3.7960945945805798`*^9, 3.796094612402813*^9}, {
+  3.796094665384729*^9, 3.796094728230742*^9}, {3.796094788964181*^9, 
+  3.796094790414942*^9}, {3.796094836159533*^9, 3.7960948573031683`*^9}, {
+  3.79609639857176*^9, 3.79609641657087*^9}, {3.796097022524516*^9, 
+  3.7960970327412567`*^9}, {3.7960972109687138`*^9, 
+  3.796097211613583*^9}},ExpressionUUID->"74426eff-72d1-4a11-b2ea-\
+e2172f33e301"],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.796097739876916*^9, 
+  3.796097742290009*^9}},ExpressionUUID->"10858192-c052-43b0-81e7-\
+583ff2fd51ca"]
+},
+WindowSize->{695.25, 762.},
+WindowMargins->{{Automatic, 0}, {0, Automatic}},
+FrontEndVersion->"12.1 for Linux x86 (64-bit) (March 18, 2020)",
+StyleDefinitions->Notebook[{
+   Cell[
+    StyleData[StyleDefinitions -> "ReverseColor.nb"]]}, 
+  WindowMargins -> {{384.75, Automatic}, {Automatic, 70.5}}, Visible -> False,
+   FrontEndVersion -> "12.1 for Linux x86 (64-bit) (March 18, 2020)", 
+  StyleDefinitions -> "PrivateStylesheetFormatting.nb"],
+ExpressionUUID->"b9aff1d2-ad4d-404e-82ce-b25c4f089f56"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 190, 3, 32, "Text",ExpressionUUID->"d6476fbd-be88-4a5c-87a0-5787ab897941"],
+Cell[751, 25, 2765, 83, 216, "Input",ExpressionUUID->"2da7feb9-36ac-47b8-b7aa-0820216d4cdb"],
+Cell[3519, 110, 279, 4, 32, "Text",ExpressionUUID->"d97a0478-90e5-4474-a87f-463eddada3e5"],
+Cell[3801, 116, 2787, 77, 195, "Input",ExpressionUUID->"74426eff-72d1-4a11-b2ea-e2172f33e301"],
+Cell[6591, 195, 152, 3, 29, "Input",ExpressionUUID->"10858192-c052-43b0-81e7-583ff2fd51ca"]
+}
+]
+*)
+
