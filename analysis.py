@@ -25,11 +25,12 @@ class analysis():
         self.set_window( 0 , cfg.duration )
         self.output = output
         self.cells  = {}
-        self.cell   = '' 
-    
+        self.cell   = ''
+
     def load_json(self, filename):
         data = {}
         self.fexist = True
+        self.cell = 'cell_0'
         try:
             with open(filename, 'r') as fp:
                 jdata = json.load(fp)
@@ -50,12 +51,35 @@ class analysis():
         except:
             print("error retrieving json")
             self.fexist = False
+            self.cell = ''
         self.data = data
 
     def load_pkl(self, filename):
         data = {}
         self.fexist = True
-
+        self.cell = 'cell_0'
+        try:
+            with open(filename, 'r') as fp:
+                pdata = json.load(fp)
+                for var in pdata['simData']:
+                    try:
+                        cells = pdata['simData'][var].keys()
+                        #handle multiple cells
+                        for cell in cells:
+                            #for now get the cell id
+                            cellid = int(cell[5:])
+                            if cellid in self.cells:
+                                self.cells[cellid]["%s" %(var)] = np.array(pdata['simData'][var][cell])
+                            else:
+                                self.cells[cellid] = {"%s" %(var): np.array(pdata['simData'][var][cell])}
+                            print("succeeded load: var %s (%i points of data)" %(var, len(data[var])))
+                    except:
+                        data["%s" %(var)] = np.array(jdata['simData'][var])
+        except:
+            print("error retrieving json")
+            self.fexist = False
+            self.cell = ''
+        self.data = data
 
     def load_csv(self, filename):
     # import data from a csv (engauge with older trace data)
@@ -158,22 +182,28 @@ class analysis():
         return propts
 
     def plot_data( self, title = "title", xaxis = "xlabel", yaxis = "ylabel", labels = ['0'], xdatas = [ [0] ], ydatas = [ [0] ] ):
-        fig, ax = plt.subplots(figsize=(12,9))
+        fig, ax = plt.subplots(figsize=(12, 9))
+
+        ax.set_title(title)
         ax.set_xlabel(xaxis)
         ax.set_ylabel(yaxis)
 
-        ax.set_title(title)
+        if hasattr(xdatas[0], '__iter__'):
+            for xdata, ydata in zip(xdatas, ydatas):
+                ax.plot(xdata, ydata)
+        else:
+            for ydata in ydatas:
+                ax.plot(xdatas, ydata)
 
-        for i, label in enumerate(labels):
-            ax.plot(xdatas[i], ydatas[i], label = label)
+        if labels:
+            ax.legend(labels)
 
-        ax.legend()
         ax.minorticks_on()
         ax.grid(which='major', linestyle='-')
         ax.grid(which='minor', linestyle=':')
 
-        plt.margins(x = 0, y = 0.0125)
-        plt.savefig( self.output + title + ".png", bbox_inches = 'tight', pad_inches = 0.075)
+        plt.margins(x=0, y=0.0125)
+        plt.savefig(self.output + title + ".png", bbox_inches='tight', pad_inches=0.075)
 
         plt.cla()
         plt.clf()

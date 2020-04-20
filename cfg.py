@@ -23,7 +23,7 @@ cfg.ions  = ions
 cfg.cons  = cons
 
 #generate recordTraces for the peripheral axon, note that will be in centimeters
-"""
+
 #generate recordTraces along the fiber
 for x in range(6):
     x = x * 0.2
@@ -41,7 +41,6 @@ for label, chan in [ ['kdr','kdr'], ['ka','ka'] ]:
 #generate recordTraces of peri, soma, cntr
 for label, sec in [ ['v_peri', 'drgperi'], ['v_soma', 'drgsoma'], ['v_cntr', 'drgcntr'] ]:
     cfg.recordTraces[label] = {'sec': sec, 'loc': 0.5, 'var': 'v'}
-"""
 
 cfg.recordTraces['mtau'] = {'sec': 'drgsoma', 'loc': 0.5, 'var': 'minf_nav18'}
 cfg.recordTraces['htau'] = {'sec': 'drgsoma', 'loc': 0.5, 'var': 'hinf_nav18'}
@@ -55,7 +54,8 @@ cfg.saveDataInclude = ['simData']
 
 cfg.duration = 200
 cfg.delay    = 100
+"""
 cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'cell', 'saveData': True, 'saveFig': True,#'plots/n7_%.1f_n9_%.3f_k2_%.3f_k3_%.3f.png' %(cfg.nacndct[0], cfg.gna19, cfg.gk2, cfg.gk3),
                            'showFig': False, 'timeRange': [0, cfg.duration]}
-
+"""
 #use the saveData to plot values
