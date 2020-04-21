@@ -4,26 +4,34 @@ try:
 except:
     from cfg import cfg
 from copy import deepcopy as dcp
-
 numcells = 3
 # calculate stimulus based on index
 cs = lambda i: (i + 1.0)/numcells
 # NetParams object to store network parameters
 netParams = specs.NetParams()   # object of class NetParams to store the network parameters
 
-# shallow copies of tjargs and sargs, sargs consisting of just soma.
-tjargssh = {'secs': cfg.secs, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': cfg.cons}
-sargssh  = {'secs': {'drgsoma': cfg.secs['drgsoma']}, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': ()}
+# tjargs and sargs, sargs consisting of just soma.
+# note that these are all shallow copies...
+tjargs = {'secs': cfg.secs, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': cfg.cons}
+sargs  = {'secs': {'drgsoma': cfg.secs['drgsoma']}, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': ()}
 
-# change parameter referenced universally by tjargs and sargs through cfg.
-del cfg.mechs['nav18']
+# change parameter referenced by tjargs and sargs universally through cfg. e.g.
+# cfg.mechs['nav18']['gnabar'] = cfg.mechs['nav18']['gnabar'] * 0.5
 
-# deepcopy here, changing these values will cause individual changes.
-tjargs = dcp(tjargssh)
-sargs  = dcp(sargssh)
+# import cell parameters
+tjParams = netParams.importCellParams(label = 'foo', conds={'bar':'baz'}, fileName='genrn.py' , cellName='genrn' , cellArgs=tjargs)
+sParams  = netParams.importCellParams(label = 'foo', conds={'bar':'baz'}, fileName='genrn.py' , cellName='genrn' , cellArgs=sargs )
+# strip condition parameters
+del tjParams['conds']
+del sParams['conds']
+# change local parameters to tjParams, sParams
 
-# set up voltage clamps
-
+# set up voltage clamp
+vc = 'vccnrn'
+netParams.popParams[vc] = {'numCells': 1, 'cellModel': vc}
+vcLblParams = {'conds':{'cellModel': vc}, **sParams}
+netParams.cellParams[vc] = vcLblParams
+brk = 1
 # set up current clamps
 for i in range(numcells):
 
@@ -34,18 +42,19 @@ for i in range(numcells):
 
 # tags:
 # cellType of cnrn<x>, cellModel either is tjunction<x>, or only soma<x>.
-    netParams.popParams[tjlbl] = {'numCells': 1, 'cellType': cstr, 'cellModel': tjlbl }
-    netParams.popParams[slbl]  = {'numCells': 1, 'cellType': cstr, 'cellModel': slbl  }
+    netParams.popParams[tjlbl] = {'numCells': 1, 'cellModel': tjlbl }
+    netParams.popParams[slbl]  = {'numCells': 1, 'cellModel': slbl  }
 
-# import cell parameters
-    tjParams = netParams.importCellParams(label=tjlbl , conds={'cellModel': tjlbl }, fileName='genrn.py' , cellName='genrn' , cellArgs=tjargs)
-    sParams  = netParams.importCellParams(label=slbl  , conds={'cellModel': slbl  }, fileName='genrn.py' , cellName='genrn' , cellArgs=sargs )
-
+# assign conds for cell parameters
+    tjLblParams = {'conds':{'cellModel': tjlbl}, **tjParams}
+    sLblParams  = {'conds':{'cellModel':  slbl}, **sParams }
 # assign cell parameters
-    netParams.cellParams[tjlbl] = tjParams
-    netParams.cellParams[slbl]  = sParams
+    netParams.cellParams[tjlbl] = tjLblParams
+    netParams.cellParams[slbl]  = sLblParams
 
-    stimstr = 'stim%d' %(i)
+    tjParams['secs']['drgsoma']['geom']['L'] = 100000
+
+    stimstr = 'iclamp%d' %(i)
 
 # current clamp -- around 0.5 nA
     netParams.stimSourceParams[stimstr] = {'type': 'IClamp', 'delay': cfg.delay, 'dur': 2.5, 'amp': cs(i)}

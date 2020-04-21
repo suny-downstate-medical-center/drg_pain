@@ -43,4 +43,26 @@ betam   = 5.79/{1 + exp[(υ + 130.4)/22.9]}
 
 alphah  = 0.06435/{1 + exp[(υ + 73.26415)/3.71928]}
 betah   = 0.13496/{1 + exp[(υ + 10.27853)/(−9.09334)]}
-*
+* Notes on cell parameterization on netpyne
+Note that due to storage of cell parameters in dictionaries
+copy.deepcopy() does not work with cell parameters (recursion limit reached)
+Pushed onto genrn git as commit to revisit this issue later ...
+** Post on Slack
+2:00 PM
+jchen.6727 also, I'm curious about this --
+the cellParams nested dictionary structure can causes issues when trying to vary individual parameters through a cell population
+for instance:
+----------------------------------------------------------------------
+# some cell with soma length of 5
+cellParams = {...'secs': {...'soma': {'geom': {'L':5...}...}...}...}
+netParams.cellParams['length=5'] = cellParams
+# some cell with soma same as before but length of 10
+cellParams['secs']['soma']['geom'] = 10
+netParams.cellParams['length=10'] = cellParams
+----------------------------------------------------------------------
+Since these parameters being handled as pointers, we are changing the length of both cells to 10.
+copy.deepcopy() doesn't seem to work on these cellParams dictionaries because of a recursion limit?
+various ways to handle this case though so
+2:07 PM
+jchen.6727 including parameterization via batchfile in context of single cells only
+or importing a whole bunch of cell parameters to generate new dictionaries -> essentially doing "deepcopy"
