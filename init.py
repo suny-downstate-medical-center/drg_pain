@@ -13,10 +13,10 @@ sim.gatherData()
 data = sim.allSimData
 
 traceGroups = {
-    'tau'      : {'rgx': re.compile('tau'), 'xaxis': 't (ms)', 'yaxis': 'tau (1/ms)' },
-    'inf'      : {'rgx': re.compile('inf'), 'xaxis': 't (ms)', 'yaxis': 'inf (mv)'   },
-    'voltage'  : {'rgx': re.compile('v_') , 'xaxis': 't (ms)', 'yaxis': 'v (mv)'     },
-    'current'  : {'rgx': re.compile('i_') , 'xaxis': 't (ms)', 'yaxis': 'i (nA/cm2)' }
+    'tau'      : {'rgx': re.compile('tau')  , 'xaxis': 't (ms)', 'yaxis': 'tau (1/ms)' },
+    'inf'      : {'rgx': re.compile('inf')  , 'xaxis': 't (ms)', 'yaxis': 'inf (mv)'   },
+    'voltage'  : {'rgx': re.compile('v_')   , 'xaxis': 't (ms)', 'yaxis': 'v (mv)'     },
+    'current'  : {'rgx': re.compile('ina_') , 'xaxis': 't (ms)', 'yaxis': 'i (nA/cm2)' }
 }
 
 xdata = data['t']

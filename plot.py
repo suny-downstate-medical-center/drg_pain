@@ -10,13 +10,14 @@ def plot_data(xdatas=[[0]], ydatas=[[0]], labels=None, prefix='data/', title='ti
     ax.set_title(title)
     ax.set_xlabel(xaxis)
     ax.set_ylabel(yaxis)
+    ax.ticklabel_format(useOffset=False, style='plain')
 
     if hasattr(xdatas[0], '__iter__'):
         for xdata, ydata in zip(xdatas, ydatas):
             ax.plot(xdata, ydata)
     else:
         for ydata in ydatas:
-        ax.plot(xdatas, ydatas)
+            ax.plot(xdatas, ydata)
 
     if labels:
         ax.legend(labels)
@@ -26,7 +27,7 @@ def plot_data(xdatas=[[0]], ydatas=[[0]], labels=None, prefix='data/', title='ti
     ax.grid(which='minor', linestyle=':')
 
     plt.margins(x=0, y=0.0125)
-    plt.savefig("%s%s.png" %(prefix,data), bbox_inches='tight', pad_inches=0.075)
+    plt.savefig("%s%s.png" %(prefix, title), bbox_inches='tight', pad_inches=0.075)
 
     plt.cla()
     plt.clf()

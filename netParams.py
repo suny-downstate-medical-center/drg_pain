@@ -3,6 +3,7 @@ try:
     from __main__ import cfg
 except:
     from cfg import cfg
+from copy import deepcopy as dcp
 
 numcells = 3
 # calculate stimulus based on index
@@ -10,9 +11,16 @@ cs = lambda i: (i + 1.0)/numcells
 # NetParams object to store network parameters
 netParams = specs.NetParams()   # object of class NetParams to store the network parameters
 
+# shallow copies of tjargs and sargs, sargs consisting of just soma.
+tjargssh = {'secs': cfg.secs, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': cfg.cons}
+sargssh  = {'secs': {'drgsoma': cfg.secs['drgsoma']}, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': ()}
+
+# change parameter referenced universally by tjargs and sargs through cfg.
 del cfg.mechs['nav18']
-tjargs = {'secs': cfg.secs, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': cfg.cons}
-sargs  = {'secs': {'drgsoma': cfg.secs['drgsoma']}, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': ()}
+
+# deepcopy here, changing these values will cause individual changes.
+tjargs = dcp(tjargssh)
+sargs  = dcp(sargssh)
 
 # set up voltage clamps
 
