@@ -26,10 +26,10 @@ for group in traceGroups:
         ydatas = []
         labels = []
         if grp['rgx'].search(key):
-            ydatas.append(data[key])
             for cell in data[key]:
-                ydatas.append(data[key][cell])
-                labels.append("%s:%s" %(cell, key))
+                if data[key][cell]:
+                    ydatas.append(data[key][cell])
+                    labels.append("%s:%s" %(cell, key))
         if ydatas:
             plot_data(title=group, xaxis=grp['xaxis'], yaxis=grp['yaxis'], labels=labels, xdatas=xdata, ydatas=ydatas)
 

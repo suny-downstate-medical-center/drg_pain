@@ -1,8 +1,8 @@
 #plot function
 import matplotlib.pyplot as plt
 
-def plot_data(title='title', xaxis='xlabel', yaxis='ylabel', labels=None, xdatas=[[0]], ydatas=[[0]]):
-    if not hasattr(ydatas[0]):
+def plot_data(xdatas=[[0]], ydatas=[[0]], labels=None, prefix='data/', title='title', xaxis='xlabel', yaxis='ylabel'):
+    if not hasattr(ydatas[0], '__iter__'):
         ydatas = [ydatas]
 
     fig, ax = plt.subplots(figsize=(12, 9))
@@ -15,6 +15,7 @@ def plot_data(title='title', xaxis='xlabel', yaxis='ylabel', labels=None, xdatas
         for xdata, ydata in zip(xdatas, ydatas):
             ax.plot(xdata, ydata)
     else:
+        for ydata in ydatas:
         ax.plot(xdatas, ydatas)
 
     if labels:
@@ -25,7 +26,7 @@ def plot_data(title='title', xaxis='xlabel', yaxis='ylabel', labels=None, xdatas
     ax.grid(which='minor', linestyle=':')
 
     plt.margins(x=0, y=0.0125)
-    plt.savefig(self.output + title + ".png", bbox_inches='tight', pad_inches=0.075)
+    plt.savefig("%s%s.png" %(prefix,data), bbox_inches='tight', pad_inches=0.075)
 
     plt.cla()
     plt.clf()

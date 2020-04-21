@@ -4,12 +4,13 @@ try:
 except:
     from cfg import cfg
 
-numcells = 5
+numcells = 3
 # calculate stimulus based on index
-cs = lambda i: (i + 1)/numcells
+cs = lambda i: (i + 1.0)/numcells
 # NetParams object to store network parameters
 netParams = specs.NetParams()   # object of class NetParams to store the network parameters
 
+del cfg.mechs['nav18']
 tjargs = {'secs': cfg.secs, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': cfg.cons}
 sargs  = {'secs': {'drgsoma': cfg.secs['drgsoma']}, 'props': cfg.props, 'mechs': cfg.mechs, 'ions': cfg.ions, 'cons': ()}
 

@@ -1,0 +1,46 @@
+* Email Regarding Project / concerns about Choi et. al. 2011
+Some concerns regarding model referenced in a Choi et. al. paper describing NaV1.7 NaV1.8 activity in a small diameter sensory afferent soma. 
+At this time, getting source code is unlikely.
+https://paperpile.com/app/p/3f0c8cd7-9f85-0980-8494-8f3fdbdd17ef
+** Concerns
+<<#>> are areas of confusion.
+In Materials and Methods:
+
+Passive membrane properties of the model neuron
+"Action potential firing was studied using a single compartment cylindrical model of length 30 μm and <<1>>radius 23 μm, simulating a small sensory neuron with a 2,168 μm2 surface area and <<2>>20.2 pF/cm2 capacitance, based on electrically and microscopically measured values (Choi et al. 2007)."
+
+1. Is this "radius 23 μm" value the radius or the diameter? It seems like this is the diameter as that will provide a 2,168 um2 surface area.
+2. Can this "20.2 pF/cm2" value be clarified? It seemed very low. When Choi et al. 2007 was reviewed, the cell capacitance reported there is around 26 pF which, assuming same surface area of 2,168 μm2 (2.168e-5 cm2) should give a value around 1.2e6 pF/cm2. It seems like 1.2e6 pF/cm2 -- or 1.2 μF/cm2 happens to be closer to capacitance of other models. 
+
+KDR potassium current
+"The KDR current was defined as: IKDR = gKDR * n * (V − Ek), where gKDR is the delayed rectifier potassium conductance and n is a dimensionless activation variable that varies between 0 and 1. The kinetic characterization of the channel described by Schild et al. (1994) has been used <<1>> with alphan = 0.001265 * (V + 14.273)/{1 − exp[(V + 14.273)/−10]}; betan = 0.125 * exp(V + 55/−2.5); and ninf = 1/{1 + exp[(V + 14.62)/−18.38]}. The peak conductance for KDR (gKDR) was set to 0.0035 S/cm2, which corresponds to 6 nA potassium current at 0 mV."
+
+1. Can the equation for tau be clarified, we assumed it to be:
+taun = 1 / (alphan + betan)
+As it was not given. However, when reviewing the prior paper, the tau equation is different. Because of this, there is some confusion over whether this change to tau should be used.
+tau as given in Schild et al. (1994)
+taun = (1 / (alphan + betan)) + 1
+
+Nav1.8 sodium current.
+The Nav1.8 sodium current (INav1.8) was best fit with a HH model that employed <<1>> only one activation gate: INav1.8 = gNav1.8 * m * h * (V − ENa), where gNav1.8 is the Nav1.8 sodium conductance and m and h are dimensionless activation and inactivation variables that vary between 0 and 1. Based on previous reports (Herzog et al. 2001; Sheets et al. 2007), we defined the following equations for Nav1.8 m and h <<1>>: m = m + [1 − exp(−dt/taum)] * (minf − m), h = h + [1 − exp(−dt/tauh)] * (hinf − h), alpham = 2.85 − (2.839)/{1 + exp[(v − 1.159)/13.95]}; betam = (7.6205)/{1 + exp[(v + 46.463)/8.8289]}; taum = 1/(alpham + betam); minf = alpham/(alpham + betam); tauh = (1.218 + 42.043 * exp{−[(v + 38.1) ∧ 2]/(2 * 15.19 ∧ 2)}); hinf = 1/{1 + exp[(v + 32.2)/4]}. The peak current of 25 nA was modeled by setting the peak value gNav1.8 to 0.026 S/cm2, which was chosen to match experimental values (Choi et al. 2007; Cummins and Waxman 1997).
+
+1. There is confusion over the use of the modelling with only one m, the "INav1.8 = gNav1.8 * m * h * (V − ENa)" equation, as the equations for rate/ tau, inf equations:
+
+alpha_m = 2.85-(2.839)/(1+exp((v-1.159)/13.95))
+beta_m = (7.6205)/(1+exp((v+46.463)/8.8289))
+
+tau_h = (1.218+42.043*exp(-((v+38.1)^2)/(2*15.19^2)))
+inf_h = (1)/(1 + exp((v+32.2)/4))
+
+all come from Sheets et al. 2007, though in this paper, the formula for current does not use a single m to describe activation but instead is:
+
+ina = gnabar * m^3 * h * (v-ena)
+
+The one activation gate from Herzog et al. 2001, which uses current equation described in the paper has characterised m, h differently:
+
+alpham  = 1.032/{1 + exp[(υ + 6.99)/−14.87115]}
+betam   = 5.79/{1 + exp[(υ + 130.4)/22.9]}
+
+alphah  = 0.06435/{1 + exp[(υ + 73.26415)/3.71928]}
+betah   = 0.13496/{1 + exp[(υ + 10.27853)/(−9.09334)]}
+*

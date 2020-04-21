@@ -22,6 +22,8 @@ cfg.mechs = mechs
 cfg.ions  = ions
 cfg.cons  = cons
 
+#without plot traces, this is necessary
+cfg.recordCells = ['all']
 #generate recordTraces for the peripheral axon, note that will be in centimeters
 
 #generate recordTraces along the fiber
