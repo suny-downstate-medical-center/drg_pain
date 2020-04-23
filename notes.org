@@ -43,7 +43,36 @@ betam   = 5.79/{1 + exp[(υ + 130.4)/22.9]}
 
 alphah  = 0.06435/{1 + exp[(υ + 73.26415)/3.71928]}
 betah   = 0.13496/{1 + exp[(υ + 10.27853)/(−9.09334)]}
-* Notes on cell parameterization on netpyne
+* 4.12 Calculating proper nseg given a dlambda and max frequency
+Link is here:
+https://www.neuron.yale.edu/neuron/static/docs/d_lambda/d_lambda.html
+Some additional observations regarding nseg calculation in myelinated axons:
+https://www.neuron.yale.edu/phpBB/viewtopic.php?t=2271
+** Implemented in python:
+def cal_nseg( sec, freq, d_lambda ):
+#neuron+python of https://www.neuron.yale.edu/neuron/static/docs/d_lambda/d_lambda.html
+    nseq = lambda fc_: int((sec.L / (d_lambda * fc_) + 0.9) / 2) * 2 + 1
+    fpfrc = 4 * h.PI * freq * sec.Ra * sec.cm
+    h.define_shape()
+    fc = 0
+    n3d = sec.n3d()
+    if n3d < 2:
+        fc = 1e5 * h.sqrt(sec.diam / (fpfrc))
+        return nseq(fc)
+
+    x1 = sec.arc3d(0)
+    d1 = sec.diam3d(0)
+
+    for i in range(n3d):
+        x2 = sec.arc3d(i)
+        d2 = sec.diam3d(i)
+        fc += (x2 - x1) / h.sqrt(d1 + d2)
+        x2 = x1
+        d2 = d1
+
+    fc *= h.sqrt(2) * 1e-5 * h.sqrt(fpfrc)
+    return nseq(sec.L/fc)
+* 4.21 Notes on cell parameterization on netpyne
 Note that due to storage of cell parameters in dictionaries
 copy.deepcopy() does not work with cell parameters (recursion limit reached)
 Pushed onto genrn git as commit to revisit this issue later ...
@@ -66,3 +95,4 @@ various ways to handle this case though so
 2:07 PM
 jchen.6727 including parameterization via batchfile in context of single cells only
 or importing a whole bunch of cell parameters to generate new dictionaries -> essentially doing "deepcopy"
+* 4.22 using re to handle data grouping for analysis

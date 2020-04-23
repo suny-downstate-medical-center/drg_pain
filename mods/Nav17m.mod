@@ -1,4 +1,4 @@
-TITLE Nav1.8 ionic voltage-gated channel with kinetic scheme
+TITLE Nav1.7 ionic voltage-gated channel with kinetic scheme
 
 COMMENT
 A six-states markovian kinetic model of sodium channel.
@@ -7,7 +7,7 @@ Author: Piero Balbi, August 2016
 ENDCOMMENT
 
 NEURON {
-	SUFFIX nav18
+	SUFFIX nav17m
 	USEION na READ ena WRITE ina
 	RANGE gnabar, ina, gna
 	RANGE C1C2_a ,C2C1_a ,C2O1_a ,O1C2_a ,C2O2_a ,O2C2_a ,O1I1_a ,I1O1_a ,I1I2_a ,I2I1_a ,I1C1_a ,C1I1_a
@@ -24,65 +24,65 @@ PARAMETER {
 	celsius (degC)
 	gnabar  = 0.1	 (mho/cm2)
 	
-	C1C2b2	  = 5
-	C1C2v2    = 17
-	C1C2k2	  = -8
+	C1C2b2	  = 16
+	C1C2v2    = -18
+	C1C2k2	  = -9
 	
-	C2C1b1	  = 1
-	C2C1v1    = -23
-	C2C1k1	  = 8
-	C2C1b2	  = 5
-	C2C1v2    = 17
-	C2C1k2	  = -8
+	C2C1b1	  = 6
+	C2C1v1    = -48
+	C2C1k1	  = 9
+	C2C1b2	  = 16
+	C2C1v2    = -18
+	C2C1k2	  = -9
 
-	C2O1b2	  = 5
-	C2O1v2    = 13
-	C2O1k2	  = -8
+	C2O1b2	  = 16
+	C2O1v2    = -23
+	C2O1k2	  = -9
 	
-	O1C2b1	  = 1
-	O1C2v1    = -27
-	O1C2k1	  = 8
-	O1C2b2	  = 5
-	O1C2v2    = 13
-	O1C2k2	  = -8
+	O1C2b1	  = 2
+	O1C2v1    = -53
+	O1C2k1	  = 9
+	O1C2b2	  = 16
+	O1C2v2    = -23
+	O1C2k2	  = -9
 	
-	C2O2b2	  = 0.02
-	C2O2v2	  = 15
-	C2O2k2	  = -8
+	C2O2b2	  = 0.01
+	C2O2v2	  = -35
+	C2O2k2	  = -5
 	
-	O2C2b1	  = 0.8
-	O2C2v1	  = -60
+	O2C2b1	  = 3
+	O2C2v1	  = -75
 	O2C2k1	  = 5
-	O2C2b2	  = 0.002
-	O2C2v2	  = 10
-	O2C2k2	  = -6
-		
-	O1I1b1	  = 0.8
-	O1I1v1	  = -21
-	O1I1k1	  = 10
-	O1I1b2	  = 1
-	O1I1v2	  = -1
-	O1I1k2	  = -7
+	O2C2b2	  = 0.01
+	O2C2v2	  = -35
+	O2C2k2	  = -5
+	
+	O1I1b1	  = 4
+	O1I1v1	  = -52
+	O1I1k1	  = 12
+	O1I1b2	  = 8
+	O1I1v2	  = -27
+	O1I1k2	  = -12
 	
 	I1O1b1	  = 0.00001
-	I1O1v1	  = -21
+	I1O1v1	  = -52
 	I1O1k1	  = 10
 	
-	I1C1b1	  = 0.28
-	I1C1v1	  = -61
-	I1C1k1	  = 9.5
+	I1C1b1	  = 0.085
+	I1C1v1	  = -110
+	I1C1k1	  = 5
 	
-	C1I1b2	  = 0.02
-	C1I1v2	  = -10
+	C1I1b2	  = 0.025
+	C1I1v2	  = -55
 	C1I1k2	  = -20
-	
-	I1I2b2	  = 0.001
-	I1I2v2	  = -50
-	I1I2k2	  = -3
 
-	I2I1b1	  = 0.0003
-	I2I1v1	  = -50
-	I2I1k1	  = 5
+	I1I2b2    = 0
+	I1I2v2	  = -80
+	I1I2k2	  = -20
+
+	I2I1b1	  = 0.00001
+	I2I1v1	  = -80
+	I2I1k1	  = 20
 	
 }
 
@@ -117,28 +117,31 @@ STATE {
 
 
 INITIAL {
-	Q10 = 2^((celsius-20(degC))/10 (degC))
+	Q10 = 3^((celsius-22(degC))/10 (degC))
+	I2 = 0
 	SOLVE kin
 	STEADYSTATE sparse
 }
 
 BREAKPOINT {
 	SOLVE kin METHOD sparse
+	I2 = 0
 	gna = gnabar * (O1 + O2)	: (mho/cm2)
 	ina = gna * (v - ena)   	: (mA/cm2)
 }
 
 KINETIC kin {
 	rates(v)
-	
+
 	~ C1 <->  C2 (C1C2_a, C2C1_a)
 	~ C2 <->  O1 (C2O1_a, O1C2_a)
 	~ C2 <->  O2 (C2O2_a, O2C2_a)
 	~ O1 <->  I1 (O1I1_a, I1O1_a)
 	~ I1 <->  C1 (I1C1_a, C1I1_a)
-	~ I1 <->  I2 (I1I2_a, I2I1_a)
+:   removing I1 <-> I2 flux. 
+:	~ I1 <->  I2 (I1I2_a, I2I1_a)
 	
-	CONSERVE O1 + O2 + C1 + C2 + I1 + I2 = 1
+	CONSERVE O1 + O2 + C1 + C2 + I1 = 1
 }
 
 FUNCTION rates2(v, b, vv, k) {
