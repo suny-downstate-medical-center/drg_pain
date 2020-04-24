@@ -25,11 +25,11 @@ secs = {'drgperi': {'nseg':257, 'L':5000,  'diam': 0.8 },
         'drgcntr': {'nseg':363, 'L':5000,  'diam': 0.4 }}
 
 # section mechanisms
-mechs = {'nav17': {'gnabar': 0.018 },
-         'nav18': {'gnabar': 0.026 },
-         'kdr'  : {'gkbar' : 0.0035},
-         'ka'   : {'gkbar' : 0.0055},
-         'pas'  : {'g': 5.75e-5, 'e': -58.91}}
+mechs = {'nav17m' : {'gnabar': 0.018 },
+         'nav18m' : {'gnabar': 0.026 },
+         'kdr'    : {'gkbar' : 0.0035},
+         'ka'     : {'gkbar' : 0.0055},
+         'pas'    : {'g': 5.75e-5, 'e': -58.91}}
 
 # ion reversal potentials
 ions  = {'na':  67.1,
@@ -68,6 +68,38 @@ props = {'cm': 1.2,
 cons = (('drgstem', 'drgperi'),
         ('drgsoma', 'drgstem'),
         ('drgcntr', 'drgperi'))
+class gesec():
+
+    def __init__(self, name='allsec', ions=['na', 'k']):
+        self.sec   = h.Section(name=name)
+        self.mechs = []
+        self.pps   = []
+        self.ions  = {}
+        for ion in ions:
+            self.ions[ion] = []
+        self.insert = self.im = self.insert_mech
+        self.gm = self.get_mechs
+        self.gs = self.get_sec
+
+    def insert_mech(self, mech):
+        self.sec.insert(mech)
+        self.mechs.append(mech)
+        for ion in self.ions:
+            if hasattr(self.sec, "i%s_%s" %(ion, mech)):
+                self.ions[ion].append(mech)
+
+    def get_mechs(self, mech):
+        return self.mechs
+
+    def get_sec(self):
+        return self.sec
+
+    def __call__(self, item):
+        return self.sec(item)
+
+#    def __iter__(self):
+#    def __next__(self):
+#    def __getitem__(self, item):
 
 class genrn():
 
@@ -80,21 +112,23 @@ class genrn():
 
         self.tags = {'all': []}
         # secs -> pointer
-        self.secs = self.tags['all']
-        self.init_morphology(secs)
+        self.secs = {}
+        ionstrs = ions.keys()
+        self.init_morphology(secs, ionstrs)
         self.set_props('all', props)
         self.insert_mechs('all', mechs, ions)        
         self.connect_secs(cons)
 
-    def init_morphology(self, secs):
+    def init_morphology(self, secs, ions):
         for sec in secs:
-            self.add_comp(sec, sec[0:3], 'all')
+            self.add_comp(sec, ions, sec[0:3], 'all')
             self.set_geom(sec = sec, **secs[sec])
 
-    def add_comp(self, sec, *tags):
-        sec_ = h.Section(name=sec)
+    def add_comp(self, sec, ions, *tags):
+        sec_ = gesec(sec, ions)
         # sec_ -> pointer
-        self.__dict__[sec] = sec_
+        self.secs[sec] = sec_
+        self.__dict__[sec] = sec_.sec
         for tag in tags:
             try:
                 self.tags[tag].append(sec_)
@@ -109,9 +143,11 @@ class genrn():
     def set_props(self, tag, props):
         for sec in self.tags[tag]:
             for prop in props:
-                setattr(sec, '%s' %(prop), props[prop])
+                setattr(sec.sec, '%s' %(prop), props[prop])
 
     def fset_prop(self, sec, prop, func):
+        if isinstance(sec, gesec):
+            sec = sec.sec
         #set properties of the segment, diam
         for seg in sec:
             val = func(seg.x)
@@ -122,11 +158,13 @@ class genrn():
             for mech in mechs:
                 sec.insert(mech)
                 for param in mechs[mech]:
-                    setattr(sec, '%s_%s' %(param, mech), mechs[mech][param])
+                    setattr(sec.sec, '%s_%s' %(param, mech), mechs[mech][param])
             for ion in ions:
-                setattr(sec, 'e%s' %(ion), ions[ion])
+                setattr(sec.sec, 'e%s' %(ion), ions[ion])
 
     def fset_mech(self, sec, mech, param, func):
+        if isinstance(sec, gesec):
+            sec = sec.sec
         for seg in sec:
             val = func(seg.x)
             setattr(seg, '%s_%s' %(param, mech), val)
@@ -142,41 +180,45 @@ class genrn():
 
     def edit_mechs(self, tag, mech, param, value):
         for sec in self.tags[tag]:
-            setattr(sec, '%s_%s' %(param, mech), value)
+            setattr(sec.sec, '%s_%s' %(param, mech), value)
 
     def fedit_mechs(self, tag, mech, param, func):
         for sec in self.tags[tag]:
-            for seg in sec:
+            for seg in sec.sec:
                 val = func(seg.x)
                 setattr(seg, '%s_%s' %(param, mech), val)
 
     def get_dict(self, tag = 'all'):
         rpr = {}
         for sec in self.tags[tag]:
-            rpr[sec] = sec.psection()
+            rpr[sec] = sec.sec.psection()
         return rpr
 
     def __gt__(self, tag):
-        #retrieve sections in a tag using '>' operator (i.e. self>'all')
+        #retrieve gesec objects in a tag using '>' operator (i.e. self>'all')
         return self.tags[tag]
 
+    def __rshift__(self, tag):
+        #retrieve section objects in a tag using '>>' operator (i.e. self>>'all)
+        return [sec.sec for sec in self.tags[tag]]
+
     def __call__(self, item):
-        #can do self(tag) to return sections associated with string or self(index) to return a section at index
+        #returns the gesec items of a specific tag
         try:
             return self.tags[item]
-        except:
+        except KeyError:
             return self.secs[item]
 
     def __getitem__(self, item):
         #indices for sections (sections stored in order of creation)
-        return self.secs[item]
+        return self.tags['all'][item].sec
 
     def __repr__(self):
         #printing a shows consolidated information about class
         rpr = ''
-        for sec in self.secs:
-            r = sec.psection()
-            rpr += '%s\n' %(sec)
+        for sec in self.tags['all']:
+            r = sec.sec.psection()
+            rpr += '%s\n' %(sec.sec)
             rpr += 'parent:\t%s\n' %(r['morphology']['parent'])
             rpr += 'morphology:\tL:%f\tdiam:%f\n' %(r['morphology']['L'], max(r['morphology']['diam']))
             rpr += 'mechs:\t%s\n\n' %(list(r['density_mechs'].keys()))
@@ -206,3 +248,6 @@ def cal_nseg( sec, freq, d_lambda ):
     fc *= h.sqrt(2) * 1e-5 * h.sqrt(fpfrc)
     return nseq(sec.L/fc)
 
+# for debugging
+if __name__ == 'main':
+    pass
