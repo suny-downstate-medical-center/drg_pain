@@ -139,7 +139,3 @@ note that stdrun library can be found at /nrn/share/lib/hoc/stdrun.hoc
 looks like v_init is not being changed properly with just h.v_init assignment.
 *** changing dt after starting a simulation requires h.setdt()
 https://www.neuron.yale.edu/phpBB/viewtopic.php?t=2665
-
-
-
-

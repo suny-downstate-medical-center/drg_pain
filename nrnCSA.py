@@ -83,7 +83,7 @@ for tgl in tgls:
 # in case some hoc toggle function must be called.
     for exstr in execs:
         exec(exstr)
-    
+    h.setdt()
 
 # plot traces
 for trace in recvs:
