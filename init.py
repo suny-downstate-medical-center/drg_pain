@@ -2,7 +2,7 @@ from netpyne import sim
 from plot import plot_data, plot_groups
 import re
 
-cfg, netParams = sim.readCmdLineArgs()	
+cfg, netParams = sim.readCmdLineArgs()
 sim.create(simConfig = cfg, netParams = netParams)
 sim.simulate()
 """

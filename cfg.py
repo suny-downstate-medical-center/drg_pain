@@ -53,8 +53,8 @@ for label, chan in [ ['KDR','kdr'], ['KA','ka'] ]:
 for label, sec in [ ['v_peri', 'drgperi'], ['v_soma', 'drgsoma'], ['v_cntr', 'drgcntr'] ]:
     cfg.recordTraces[label] = {'sec': sec, 'loc': 0.5, 'var': 'v'}
 
-cfg.recordTraces['mtau'] = {'sec': 'drgsoma', 'loc': 0.5, 'var': 'minf_nav18m'}
-cfg.recordTraces['htau'] = {'sec': 'drgsoma', 'loc': 0.5, 'var': 'hinf_nav18m'}
+cfg.recordTraces['mtau'] = {'sec': 'drgsoma', 'loc': 0.5, 'var': 'minf_%s' %(nav18)}
+cfg.recordTraces['htau'] = {'sec': 'drgsoma', 'loc': 0.5, 'var': 'hinf_%s' %(nav18)}
 
 """
 #generate recordTraces along the fiber

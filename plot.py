@@ -44,7 +44,6 @@ def plot_groups(data               , keys                        , tracegroups  
                 plot_data(title="%s_%s" % (group, trace), xaxis=grp['xaxis'], yaxis=grp['yaxis'], labels=trc['labels'],
                           xdatas=xdata, ydatas=trc['ydatas'], colors=trc['colors'])
 
-
 def plot_data(xdatas=[[0]], ydatas=[[0]], labels=None, prefix='data/', title='title', xaxis='xlabel', yaxis='ylabel', colors=None):
     # if y is a single data series, only plot it.
     if not hasattr(ydatas[0], '__iter__'):
