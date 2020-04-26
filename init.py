@@ -26,7 +26,7 @@ tracecells = {
 #    "iclamp": {'labels': [], 'ydatas': [], 'conds': lambda id: id != 0},
 }
 
-plot_groups(sim.allSimData, cfg.recordTraces.keys(), tracegroups, tracecells)
+plot_groups(sim.allSimData, cfg.recordTraces.keys(), tracegroups, tracecells, showmins=True, showmaxs=True)
 
 pass
 # sim.analyze()

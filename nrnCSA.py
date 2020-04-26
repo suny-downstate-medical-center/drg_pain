@@ -1,8 +1,8 @@
 from neuron import h
 from genrn import genrn
-from plot import plot_data
-from copy import deepcopy as dcp
+from plot import plot_data, plot_groups
 import re
+# from copy import deepcopy as dcp
 
 h.load_file("stdrun.hoc")
 
@@ -28,51 +28,65 @@ cons   = (('drgstem', 'drgperi'),
           ('drgcntr', 'drgperi'))
 # tjargs = {'secs': secs, 'props': props, 'mechs': mechs, 'ions': ions, 'cons': cons}
 sargs  = {'secs': {'drgsoma': secs['drgsoma']}, 'props': props, 'mechs': mechs, 'ions': ions, 'cons': ()}
+def setVClamp(seg, durs, amps):
+## VClamp as vstim
+    amps = [x if isinstance(x, (int, float, complex)) else h.v_init for x in amps]
+    vstim = h.VClamp(seg)
+    vstim.dur[0], vstim.dur[1], vstim.dur[2] = durs[0], durs[1], durs[2]
+    vstim.amp[0], vstim.amp[1], vstim.amp[2] = amps[0], amps[1], amps[2]
+## SEClamp as vstim
+#    vstim = h.SEClamp(csomas[cell].drgsoma(0.5))
+#    vstim.dur1, vstim.dur2, vstim.dur3 = durs[0], durs[1], durs[2]
+#    vstim.amp1, vstim.amp2, vstim.amp3 = amps[0], amps[1], amps[2]
+    return vstim
+def setIClamp(seg, delay, dur, amp):
+    istim = h.IClamp(seg)
+    istim.delay, istim.dur, istim.amp = delay, dur, amp
+    return istim
 
-csomas = {}
-ctjs   = {}
-vstims = {}
-recvs  = {}
+csomas, ctjs, stims, recvs = {}, {}, {}, {"voltage": {}}
 
-vars = ['gna', 'ina']
+vars = ["i%s" %(i) for i in ions] + ["g%s" %(i) for i in ions]
+vars = vars + ["n", "h"]
 for cell in range(numcells):
-# set up cells
+## set up cells
     csomas[cell] = genrn(**sargs)
-# set up stims
-# VClamp as vstim
-#    vstim = h.VClamp(csomas[cell].drgsoma(0.5))
-#    vstim.dur[0], vcstim.dur[1], vcstim.dur[2] = 50, 50, 0
-#    vstim.amp[0], vcstim.amp[1], vcstim.amp[2] = h.v_init, 0, h.v_init
-# SEClamp as vstim
-    vstim = h.SEClamp(csomas[cell].drgsoma(0.5))
-    vstim.dur1, vstim.dur2, vstim.dur3 = 50, 50, 0
-    vstim.amp1, vstim.amp2, vstim.amp3 = h.v_init, 0, h.v_init
-# set up recordings
-    vstims[cell] = vstim
-    for ion in ions.keys():
-        for mech in csomas[cell]('drgsoma').ions[ion]:
-            trstr = "i%s_%s" %(ion, mech)
-            trace = h.Vector()
-            trace.record(getattr(csomas[cell].drgsoma(0.5), '_ref_%s' %(trstr)))
-            recvs["%s:%s" %(cell, trstr)] = trace
-    recvs["%s:voltage"] = h.Vector()
-    recvs["%s:voltage"].record(csomas[cell].drgsoma(0.5)._ref_v)
+## set up stims
+## VClamp as vstim
+    if (cell == 0):
+        stims[cell] = setVClamp(csomas[cell]('drgsoma')(0.5), [50, 50, 50], ['', 0, ''])
+    else:
+        stims[cell] = setIClamp(csomas[cell]('drgsoma')(0.5), 50, 5, cell/10)
+## set up recordings
+    for var in vars:
+        for mech in mechs:
+            trstr = "%s_%s" %(var, mech)
+            if hasattr(csomas[cell].drgsoma(0.5), '_ref_%s' %(trstr)):
+                if trstr not in recvs:
+                    recvs[trstr] = {}
+                trace = h.Vector()
+                trace.record(getattr(csomas[cell].drgsoma(0.5), '_ref_%s' %(trstr)))
+                recvs[trstr]["cell_%s" %(cell)] = trace
+                print("tracing %s for cell_%s" %(trstr, cell))
+    vv = h.Vector()
+    vv.record(csomas[cell].drgsoma(0.5)._ref_v)
+    recvs["voltage"]["cell_%s" %(cell)] = vv
 tv = h.Vector()
 tv.record(h._ref_t)
-
-# simulate
+recvs['t'] = tv
+## simulate
 h.dt, h.steps_per_ms, h.tstop = 0.0125, 0.5, 100
-#cvode = h.CVode()
-#cvode.active()
+# cvode = h.CVode()
+# cvode.active()
 h.t = 0
 h.finitialize(h.v_init)
 h.stdinit()
-# time vector for when parameters are changed, last value is when the sim should end
+## time vector for when parameters are changed, last value is when the sim should end
 tgls = [
     [0  , {'dt': 5     , 'steps_per_ms': 0.2}, []],
     [45 , {'dt': 0.0125, 'steps_per_ms': 2  }, []],
-    [55 , {'dt': 0.0125, 'steps_per_ms': 2  }, []],
-    [100, {}, []]# end of simulation
+    [55 , {'dt': 0.05, 'steps_per_ms': 2  }, []],
+    [200, {}, []]# end of simulation
 ]
 
 for tgl in tgls:
@@ -80,12 +94,49 @@ for tgl in tgls:
     h.continuerun(runto)
     for attr in attrs:
         setattr(h, attr, attrs[attr])
-# in case some hoc toggle function must be called.
+## in case some hoc toggle function must be called.
     for exstr in execs:
         exec(exstr)
     h.setdt()
 
-# plot traces
+## additional calculations - surface area at our recording (current density * surface area = current)
+## mA/cm2 * um2 * (cm2 / (1e8 * um2)) * ((1e6 * nA) / mA)
+## mA * um2 * cm2 * 1e6nA
+## ----------------------
+##   cm2 * 1e8um2 * mA
+
+## compute current from current density
+area = csomas[0]('drgsoma')(0.5).area()
+re_i = re.compile('(ina)|(ik)')
 for trace in recvs:
-    plot_data(tv, recvs[trace], [trace], 'data/', trace)
-pass
+    if re_i.search(trace):
+        for cell in recvs[trace]:
+            recvs[trace][cell].mul(area * 1e-2)
+
+tgs = {
+    'conductivity': {'rgx': re.compile('(gna)|(gk)'), 'xaxis': 't (ms)', 'yaxis': 'g (S/cm2)', 'conds': lambda id: True},
+    'current'     : {'rgx': re_i                    , 'xaxis': 't (ms)', 'yaxis': 'i (nA)'   , 'conds': lambda id: True},
+    'voltage'     : {'rgx': re.compile('voltage')   , 'xaxis': 't (ms)', 'yaxis': 'v (mV)'   , 'conds': lambda id: True},
+}
+tcs = {
+    'vclamp' : {'labels': [], 'ydatas': [], 'conds': lambda id: id == 0},
+    'iclamp' : {'labels': [], 'ydatas': [], 'conds': lambda id: id != 0},
+}
+plot_groups(data=recvs, keys=recvs.keys(), tracegroups=tgs, tracecells=tcs)
+## plot traces
+# xdatas = [None, [0, h.t], [0, h.t]]
+# ydatas = [None, None, None]
+# labels = [None, None, None]
+# colors = ['b', 'g', 'g']
+# lines  = ['-', ':', ':']
+#
+# for trace in recvs:
+#     for cell in recvs[trace]:
+#         ydata = recvs[trace][cell]
+#         if trace[0] == 'i':
+#             ydata.mul(area * 1e-2)
+#         xdatas[0] = tv
+#         ydatas[0], ydatas[1], ydatas[2] = ydata, [min(ydata)]*2, [max(ydata)]*2
+#         labels[0], labels[1], labels[2] = trace, "min:%f" %(ydatas[1][0]), "max:%f" %(ydatas[2][0])
+#         plot_data(xdatas=xdatas, ydatas=ydatas, labels=labels, prefix='data/', title="%s_%s" %(cell, trace),
+#                   xaxis='time (ms)', yaxis=trace, colors=colors, lines=lines)

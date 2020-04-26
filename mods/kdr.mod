@@ -52,7 +52,8 @@ INITIAL{
 BREAKPOINT{
     SOLVE states METHOD cnexp
     
-    gk = gkbar * n * (v - ek)
+    gk = gkbar * n
+    ik = gk * (v - ek)
 }
 
 DERIVATIVE states{

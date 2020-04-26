@@ -137,5 +137,38 @@ elif 'synMech' in params:  # eg. soma(0.5).AMPA._ref_g
 ** DONE h.stdinit() discrepancy in v_init, does not seem to initialize to correct values, additional h.finitialize(h.v_init) look into this
 note that stdrun library can be found at /nrn/share/lib/hoc/stdrun.hoc
 looks like v_init is not being changed properly with just h.v_init assignment.
-*** changing dt after starting a simulation requires h.setdt()
+*** changing dt after starting a simulation requires a call to h.setdt()
 https://www.neuron.yale.edu/phpBB/viewtopic.php?t=2665
+* 4.26 notes on recording current
+** the value recorded at segment is a current density (mA/cm2), to calculate for current at a segment, need to know area of the segment.
+** with a genrn() this is done through:
+** genrn.sec(x).area() * 1e-8
+** total surface area of a cell can also be calculated through:
+area = 0
+for sec in genrn:
+    for seg in sec:
+        area += seg.area()
+area *= 1e-8
+** area returns in microns squared
+** unit conversion:
+additional calculations - surface area at our recording (current density * surface area = current)
+mA/cm2 * um2 * (cm2 / (1e8 * um2))(=1) * ((1e6 * nA) / mA)(=1)
+mA * um2 * cm2 * 1e6nA                      mA                      nA*cm2   
+----------------------  conversion is:  D (-----) * A (um2) * 1e-2 -------- = D * A * 1e-2 (nA)                        
+  cm2 * 1e8um2 * mA                         cm2                     um2*mA
+** examples of mutable objects, python
+a = [1,2,3]
+b = [a]*3
+b
+Out[4]: [[1, 2, 3], [1, 2, 3], [1, 2, 3]]
+a[2] = 'foo'
+b
+Out[6]: [[1, 2, 'foo'], [1, 2, 'foo'], [1, 2, 'foo']]
+** some list comprehensions, python
+[i if y else z for i in arr]
+i if condition y is true, z if condition y is false for i in arr
+** issue with L, diam caught when evaluating with area()
+on printout of area, caught issue with modifications to L, diam assignments not being reflected on the section.
+ultimately, the best method of catching this was using h.psection(), which has been implemented within the genrn() repr function (can be called when displaying the object)
+value assignment automatically causes creation of the variable of an object.
+on another note, the area of the default segment happens to be: 157079.63267948964

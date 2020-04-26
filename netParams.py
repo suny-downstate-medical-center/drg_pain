@@ -42,7 +42,6 @@ netParams.cellParams[vc] = vcLblParams
 netParams.stimSourceParams[vc] = {'type': 'SEClamp', 'dur1': delay, 'dur2': delay, 'dur3': 0,  'amp1': vrest,  'amp2': 0,  'amp3': 0 }
 netParams.stimTargetParams[vc] = {'source': vc, 'conds': {'cellModel': vc}, 'sec': 'drgsoma', 'loc': 0.5}
 
-
 # set up current clamps
 for i in range(numcells):
 
