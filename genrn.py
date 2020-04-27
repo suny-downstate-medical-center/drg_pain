@@ -9,20 +9,21 @@ from neuron import h
 # section morphologies
 #        sec         dimensions
 # from tjunction paper
-#secs = {'axnperi': {'nseg':100, 'L':5000, 'diam': 0.8 },
-#        'drgperi': {'nseg':100, 'L':100,  'diam': 0.8 },
-#        'drgstem': {'nseg':100, 'L':75,   'diam': 1.4 },
-#        'drgsoma': {'nseg':1,   'L':25,   'diam': 25  },
-#        'drgcntr': {'nseg':100, 'L':100,  'diam': 0.4 },
-#        'axncntr': {'nseg':100, 'L':5000,  'diam': 0.4 }}
+#secs = {'axnperi': {'nseg':100, 'L':5000, 'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
+#        'drgperi': {'nseg':100, 'L':100,  'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
+#        'drgstem': {'nseg':100, 'L':75,   'diam': 1.4, 'cm': 1.2, 'Ra': 123 },
+#        'drgsoma': {'nseg':1,   'L':25,   'diam': 25 , 'cm': 1.2, 'Ra': 123 },
+#        'drgcntr': {'nseg':100, 'L':100,  'diam': 0.4, 'cm': 1.2, 'Ra': 123 },
+#        'axncntr': {'nseg':100, 'L':5000, 'diam': 0.4, 'cm': 1.2, 'Ra': 123 }}
 
 # our values:
 # nseg with frequency<50, d_lambda 0.1
 # use cal_nseg(sec, 50, 0.1) for values
-secs = {'drgperi': {'nseg':257, 'L':5000,  'diam': 0.8 },
-        'drgstem': {'nseg':3,   'L':75,    'diam': 1.4 },
-        'drgsoma': {'nseg':1,   'L':30,    'diam': 23  },
-        'drgcntr': {'nseg':363, 'L':5000,  'diam': 0.4 }}
+# props for the sections
+secs = {'drgperi': {'nseg':257, 'L':5000,  'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
+        'drgstem': {'nseg':3  , 'L':75  ,  'diam': 1.4, 'cm': 1.2, 'Ra': 123 },
+        'drgsoma': {'nseg':1  , 'L':30  ,  'diam': 23 , 'cm': 1.2, 'Ra': 123 },
+        'drgcntr': {'nseg':363, 'L':5000,  'diam': 0.4, 'cm': 1.2, 'Ra': 123 }}
 
 # section mechanisms
 mechs = {'nav17m' : {'gnabar': 0.018 },
@@ -34,10 +35,6 @@ mechs = {'nav17m' : {'gnabar': 0.018 },
 # ion reversal potentials
 ions  = {'na':  67.1,
          'k' : -84.7 }
-
-# section properties
-props = {'cm': 1.2,
-         'Ra': 123}
 
 # connection list
 
@@ -70,7 +67,7 @@ cons = (('drgstem', 'drgperi'),
         ('drgcntr', 'drgperi'))
 class gesec():
 
-    def __init__(self, name='allsec', ions=['na', 'k']):
+    def __init__(self, name='sec', ions=['na', 'k']):
         self.sec   = h.Section(name=name)
         self.mechs = []
         self.pps   = []
@@ -104,25 +101,29 @@ class gesec():
 class genrn():
 
     def __init__(self,x=0,y=0,z=0,ID=0,
-                 secs  = secs,
-                 props = props,
-                 mechs = mechs,
-                 ions  = ions,
-                 cons  = cons):
+                 secs  = {},
+                 mechs = {},
+                 ions  = {},
+                 cons  = ()):
 
         self.tags = {'all': []}
         # secs -> pointer
         self.secs = {}
         ionstrs = ions.keys()
-        self.init_morphology(secs, ionstrs)
-        self.set_props('all', props)
-        self.insert_mechs('all', mechs, ions)        
+        self.init_cell(secs, ionstrs)
+        self.tag_insert_mechs('all', mechs, ions)
         self.connect_secs(cons)
 
-    def init_morphology(self, secs, ions):
+    def return_sec(self, sec):
+        if isinstance(sec, type(h.Section())): return sec
+        elif isinstance(sec, str): return self.secs[sec].sec
+        elif isinstance(sec, gesec): return sec.sec
+        raise TypeError
+
+    def init_cell(self, secs, ions):
         for sec in secs:
             self.add_comp(sec, ions, sec[0:3], 'all')
-            self.set_geom(sec = sec, **secs[sec])
+            self.set_props(sec = sec, props = secs[sec])
 
     def add_comp(self, sec, ions, *tags):
         sec_ = gesec(sec, ions)
@@ -135,25 +136,24 @@ class genrn():
             except:
                 self.tags[tag] = [sec_]
 
-    def set_geom(self, sec, L, diam, nseg):
-        self.__dict__[sec].L    = secs[sec]['L']
-        self.__dict__[sec].diam = secs[sec]['diam']
-        self.__dict__[sec].nseg = secs[sec]['nseg']
+    def set_props(self, sec, props):
+        sec = self.return_sec(sec)
+        for prop in props:
+            setattr(sec, prop, props[prop])
 
-    def set_props(self, tag, props):
+    def tag_set_props(self, tag, props):
         for sec in self.tags[tag]:
             for prop in props:
                 setattr(sec.sec, '%s' %(prop), props[prop])
 
     def fset_prop(self, sec, prop, func):
-        if isinstance(sec, gesec):
-            sec = sec.sec
+        sec = self.return_sec(sec)
         #set properties of the segment, diam
         for seg in sec:
             val = func(seg.x)
             setattr(seg, prop, val)
 
-    def insert_mechs(self, tag, mechs, ions):
+    def tag_insert_mechs(self, tag, mechs, ions):
         for sec in self.tags[tag]:
             for mech in mechs:
                 sec.insert(mech)
@@ -163,8 +163,7 @@ class genrn():
                 setattr(sec.sec, 'e%s' %(ion), ions[ion])
 
     def fset_mech(self, sec, mech, param, func):
-        if isinstance(sec, gesec):
-            sec = sec.sec
+        sec = self.return_sec(sec)
         for seg in sec:
             val = func(seg.x)
             setattr(seg, '%s_%s' %(param, mech), val)
@@ -182,7 +181,7 @@ class genrn():
         for sec in self.tags[tag]:
             setattr(sec.sec, '%s_%s' %(param, mech), value)
 
-    def fedit_mechs(self, tag, mech, param, func):
+    def tag_fedit_mechs(self, tag, mech, param, func):
         for sec in self.tags[tag]:
             for seg in sec.sec:
                 val = func(seg.x)
@@ -191,7 +190,7 @@ class genrn():
     def get_dict(self, tag = 'all'):
         rpr = {}
         for sec in self.tags[tag]:
-            rpr[sec] = sec.sec.psection()
+            rpr[sec.sec] = sec.sec.psection()
         return rpr
 
     def __gt__(self, tag):
@@ -218,7 +217,7 @@ class genrn():
         rpr = ''
         for sec in self.tags['all']:
             r = sec.sec.psection()
-            rpr += '%s\n' %(sec.sec)
+            rpr += '%s\n' %(sec.sec.name())
             rpr += 'parent:\t%s\n' %(r['morphology']['parent'])
             rpr += 'morphology:\tL:%f\tdiam:%f\n' %(r['morphology']['L'], max(r['morphology']['diam']))
             rpr += 'mechs:\t%s\n\n' %(list(r['density_mechs'].keys()))
@@ -249,5 +248,7 @@ def cal_nseg( sec, freq, d_lambda ):
     return nseq(sec.L/fc)
 
 # for debugging
-if __name__ == 'main':
-    pass
+if __name__ == '__main__':
+    args = {'secs': secs, 'mechs': mechs, 'ions': ions, 'cons': cons}
+    test = gesec(**args)
+    print(test.get_dict())

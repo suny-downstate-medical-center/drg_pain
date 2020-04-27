@@ -9,10 +9,10 @@ h.load_file("stdrun.hoc")
 h.v_init, h.celsius = -58.91, 22
 
 numcells = 1
-secs   = {'drgperi': {'nseg':257, 'L':5000,  'diam': 0.8 },
-          'drgstem': {'nseg':3,   'L':75,    'diam': 1.4 },
-          'drgsoma': {'nseg':1,   'L':30,    'diam': 23  },
-          'drgcntr': {'nseg':363, 'L':5000,  'diam': 0.4 }}
+secs   = {'drgperi': {'nseg':257, 'L':5000,  'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
+          'drgstem': {'nseg':3,   'L':75,    'diam': 1.4, 'cm': 1.2, 'Ra': 123 },
+          'drgsoma': {'nseg':1,   'L':30,    'diam': 23 , 'cm': 1.2, 'Ra': 123 },
+          'drgcntr': {'nseg':363, 'L':5000,  'diam': 0.4, 'cm': 1.2, 'Ra': 123 }}
 nav17, nav18  = 'nav17h', 'nav18m'
 mechs  = { nav17 : {'gnabar': 0.018 },
            nav18 : {'gnabar': 0.026 },
@@ -21,13 +21,11 @@ mechs  = { nav17 : {'gnabar': 0.018 },
           'pas'  : {'g': 5.75e-5, 'e': h.v_init}}
 ions   = {'na':  67.1,
           'k' : -84.7 }
-props  = {'cm': 1.2,
-          'Ra': 123}
 cons   = (('drgstem', 'drgperi'),
           ('drgsoma', 'drgstem'),
           ('drgcntr', 'drgperi'))
 # tjargs = {'secs': secs, 'props': props, 'mechs': mechs, 'ions': ions, 'cons': cons}
-sargs  = {'secs': {'drgsoma': secs['drgsoma']}, 'props': props, 'mechs': mechs, 'ions': ions, 'cons': ()}
+sargs  = {'secs': {'drgsoma': secs['drgsoma']}, 'mechs': mechs, 'ions': ions, 'cons': ()}
 def setVClamp(seg, durs, amps):
 ## VClamp as vstim
     amps = [x if isinstance(x, (int, float, complex)) else h.v_init for x in amps]

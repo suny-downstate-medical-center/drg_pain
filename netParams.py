@@ -16,8 +16,8 @@ netParams = specs.NetParams()   # object of class NetParams to store the network
 
 # tjargs and sargs, sargs consisting of just soma.
 # note that these are all shallow copies...
-tjargs = {'secs': secs, 'props': props, 'mechs': mechs, 'ions': ions, 'cons': cons}
-sargs  = {'secs': {'drgsoma': secs['drgsoma']}, 'props': props, 'mechs': mechs, 'ions': ions, 'cons': ()}
+tjargs = {'secs': secs, 'mechs': mechs, 'ions': ions, 'cons': cons}
+sargs  = {'secs': {'drgsoma': secs['drgsoma']}, 'mechs': mechs, 'ions': ions, 'cons': ()}
 
 # changing parameters in tjargs and sargs will be universal -- e.g.
 mechs[nav18]['gnabar'] = 1
