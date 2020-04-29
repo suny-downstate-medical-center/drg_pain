@@ -8,14 +8,14 @@ h.load_file("stdrun.hoc")
 
 h.v_init, h.celsius = -58.91, 22
 
-numcells = 1
+numcells = 10
 secs   = {'drgperi': {'nseg':257, 'L':5000,  'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
           'drgstem': {'nseg':3,   'L':75,    'diam': 1.4, 'cm': 1.2, 'Ra': 123 },
           'drgsoma': {'nseg':1,   'L':30,    'diam': 23 , 'cm': 1.2, 'Ra': 123 },
           'drgcntr': {'nseg':363, 'L':5000,  'diam': 0.4, 'cm': 1.2, 'Ra': 123 }}
 nav17, nav18  = 'nav17h', 'nav18m'
-mechs  = { nav17 : {'gnabar': 0.018 },
-           nav18 : {'gnabar': 0.026 },
+mechs  = { nav17 : {'gnabar': 0.035 },
+           nav18 : {'gnabar': 0.03 },
           'kdr'  : {'gkbar' : 0.0035},
           'ka'   : {'gkbar' : 0.0055},
           'pas'  : {'g': 5.75e-5, 'e': h.v_init}}
@@ -46,15 +46,15 @@ csomas, ctjs, stims, recvs = {}, {}, {}, {"voltage": {}}
 
 vars = ["i%s" %(i) for i in ions] + ["g%s" %(i) for i in ions]
 vars = vars + ["n", "h"]
-for cell in range(numcells):
+for cell in range(numcells+1):
 ## set up cells
     csomas[cell] = genrn(**sargs)
 ## set up stims
 ## VClamp as vstim
     if (cell == 0):
-        stims[cell] = setVClamp(csomas[cell]('drgsoma')(0.5), [50, 50, 50], ['', 0, ''])
+        stims[cell] = setVClamp(csomas[cell]('drgsoma')(0.5), [50, 3, 50], [-57, 10, -57])
     else:
-        stims[cell] = setIClamp(csomas[cell]('drgsoma')(0.5), 50, 5, cell/10)
+        stims[cell] = setIClamp(csomas[cell]('drgsoma')(0.5), 50, 5, cell/numcells)
 ## set up recordings
     for var in vars:
         for mech in mechs:
@@ -120,8 +120,9 @@ tcs = {
     'vclamp' : {'labels': [], 'ydatas': [], 'conds': lambda id: id == 0},
     'iclamp' : {'labels': [], 'ydatas': [], 'conds': lambda id: id != 0},
 }
+# plot_groups(data=recvs, keys=recvs.keys(), tracegroups=tgs, tracecells=tcs, showmins=True, showmaxs=True)
 plot_groups(data=recvs, keys=recvs.keys(), tracegroups=tgs, tracecells=tcs)
-## plot traces
+## old plot traces option
 # xdatas = [None, [0, h.t], [0, h.t]]
 # ydatas = [None, None, None]
 # labels = [None, None, None]

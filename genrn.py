@@ -5,7 +5,7 @@ peripheral fiber, drg with soma, central fiber
 properties taken from Waxman
 '''
 from neuron import h
-
+import re
 # section morphologies
 #        sec         dimensions
 # from tjunction paper
@@ -67,7 +67,7 @@ cons = (('drgstem', 'drgperi'),
         ('drgcntr', 'drgperi'))
 class gesec():
 
-    def __init__(self, name='sec', ions=['na', 'k']):
+    def __init__(self, name='sec', ions=['na', 'k', 'ca', 'cl']):
         self.sec   = h.Section(name=name)
         self.mechs = []
         self.pps   = []
@@ -78,9 +78,12 @@ class gesec():
         self.gm = self.get_mechs
         self.gs = self.get_sec
 
-    def insert_mech(self, mech):
+    def insert_mech(self, mech, ions = {}):
         self.sec.insert(mech)
         self.mechs.append(mech)
+        for ion in ions:
+            if ion not in self.ions:
+                self.ions[ion] = []
         for ion in self.ions:
             if hasattr(self.sec, "i%s_%s" %(ion, mech)):
                 self.ions[ion].append(mech)
@@ -109,15 +112,22 @@ class genrn():
         self.tags = {'all': []}
         # secs -> pointer
         self.secs = {}
+#        self.useions = re.compile("USEION ([A-Za-z0-9]+)")
         ionstrs = ions.keys()
         self.init_cell(secs, ionstrs)
-        self.tag_insert_mechs('all', mechs, ions)
+        self.initialize_mechs('all', mechs, ions)
         self.connect_secs(cons)
 
     def return_sec(self, sec):
         if isinstance(sec, type(h.Section())): return sec
         elif isinstance(sec, str): return self.secs[sec].sec
-        elif isinstance(sec, gesec): return sec.sec
+        elif isinstance(sec, type(gesec())): return sec.sec
+        raise TypeError
+
+    def return_gesec(self, sec):
+        if isinstance(self, type(h.Section())): return self.secs[sec.name]
+        elif isinstance(sec, str): return self.secs[sec]
+        elif isinstance(sec, type(gesec())): return sec
         raise TypeError
 
     def init_cell(self, secs, ions):
@@ -153,14 +163,21 @@ class genrn():
             val = func(seg.x)
             setattr(seg, prop, val)
 
-    def tag_insert_mechs(self, tag, mechs, ions):
+    def insert_mech(self, sec, mech, ions):
+        sec = self.return_gesec(sec)
+        sec.insert(mech, ions)
+        for ion in ions:
+            setattr(sec.sec, 'e%s' %(ion), ions[ion])
+
+    def initialize_mechs(self, tag, mechs, ions):
         for sec in self.tags[tag]:
             for mech in mechs:
                 sec.insert(mech)
                 for param in mechs[mech]:
                     setattr(sec.sec, '%s_%s' %(param, mech), mechs[mech][param])
             for ion in ions:
-                setattr(sec.sec, 'e%s' %(ion), ions[ion])
+                try: setattr(sec.sec, 'e%s' %(ion), ions[ion])
+                except: pass
 
     def fset_mech(self, sec, mech, param, func):
         sec = self.return_sec(sec)

@@ -172,3 +172,88 @@ on printout of area, caught issue with modifications to L, diam assignments not 
 ultimately, the best method of catching this was using h.psection(), which has been implemented within the genrn() repr function (can be called when displaying the object)
 value assignment automatically causes creation of the variable of an object.
 on another note, the area of the default segment happens to be: 157079.63267948964
+* 4.27 updated genrn
+** genrn now has all section properties handled together (instead of being split into morphology--L, diam, nseg-- and electrophysiology--cm, Ra)
+** upgraded to Ubuntu 20.0.4 LTS. (everything else seemed to work but getting neuron to run again requiring excising conda from my machine...)
+*** python/conda seems to have been affected, including neuron and netpyne.
+*** issue with reinstalling neuron as well. seems like something happened to libmemacs -> libncurses?
+(base) jchen@18-04-4:~/nrn$ sudo make -j
+...
+make[3]: Entering directory '/home/jchen/nrn/src/nrniv'
+/bin/bash ../../libtool  --tag=CXX   --mode=link mpic++  -g -O2   -o nrniv nvkludge.o ../ivoc/nrnmain.o ../ivoc/ivocmain.o ../oc/modlreg.o ../oc/ockludge.o ../nrnoc/libnrnoc.la ../oc/liboc.la libnrniv.la ../ivoc/libivoc.la ../oc/liboc.la ../nrnmpi/libnrnmpi.la     ../gnu/libneuron_gnu.la ../scopmath/libscopmath.la ../sparse13/libsparse13.la ../sundials/libsundials.la ../memacs/libmemacs.la ../mesch/libmeschach.la  /usr/local/iv/x86_64/lib/libIVhines.la  ../nrnpython/libnrnpython.la -L/home/jchen/anaconda3/lib -lpython3.7m -lpthread -ldl -lutil -lrt  -R/home/jchen/anaconda3/lib ../readline/libreadline.la -Wl,-Bsymbolic-functions -lncurses -ltinfo  -lm -ldl
+libtool: link: mpic++ -g -O2 -o .libs/nrniv nvkludge.o ../ivoc/nrnmain.o ../ivoc/ivocmain.o ../oc/modlreg.o ../oc/ockludge.o -Wl,-Bsymbolic-functions   ../nrnoc/.libs/libnrnoc.so ./.libs/libnrniv.so ../ivoc/.libs/libivoc.so ../oc/.libs/liboc.so ../nrnmpi/.libs/libnrnmpi.so ../gnu/.libs/libneuron_gnu.so ../scopmath/.libs/libscopmath.so ../sparse13/.libs/libsparse13.so ../sundials/.libs/libsundials.so ../memacs/.libs/libmemacs.so ../mesch/.libs/libmeschach.so /usr/local/iv/x86_64/lib/libIVhines.so ../nrnpython/.libs/libnrnpython.so -L/home/jchen/anaconda3/lib -lpython3.7m -lpthread -lutil -lrt ../readline/.libs/libreadline.so -lm -lX11 -lncurses -ltinfo -ldl -Wl,-rpath -Wl,/usr/local/nrn/x86_64/lib -Wl,-rpath -Wl,/usr/local/iv/x86_64/lib -Wl,-rpath -Wl,/home/jchen/anaconda3/lib
+/usr/bin/ld: ../memacs/.libs/libmemacs.so: undefined reference to `tgoto@NCURSES6_TINFO_5.0.19991023'
+/usr/bin/ld: ../memacs/.libs/libmemacs.so: undefined reference to `tgetent@NCURSES6_TINFO_5.0.19991023'
+/usr/bin/ld: ../memacs/.libs/libmemacs.so: undefined reference to `tgetnum@NCURSES6_TINFO_5.0.19991023'
+/usr/bin/ld: ../memacs/.libs/libmemacs.so: undefined reference to `tgetstr@NCURSES6_TINFO_5.0.19991023'
+/usr/bin/ld: ../memacs/.libs/libmemacs.so: undefined reference to `tputs@NCURSES6_TINFO_5.0.19991023'
+collect2: error: ld returned 1 exit status
+make[3]: *** [Makefile:748: nrniv] Error 1
+make[3]: Leaving directory '/home/jchen/nrn/src/nrniv'
+make[2]: *** [Makefile:519: all-recursive] Error 1
+make[2]: Leaving directory '/home/jchen/nrn/src'
+make[1]: *** [Makefile:656: all-recursive] Error 1
+make[1]: Leaving directory '/home/jchen/nrn'
+make: *** [Makefile:514: all] Error 2
+
+(base) jchen@18-04-4:~/nrn$ dpkg -l '*ncurses*'
+*** can use dpkg -l '*packagename*' to look for specific packages
+*** Root issue is conda? Uninstalled and now everything is working again
+*** BUG.am error:
+BUG.am: error: 'install.sh' is an anachronism; use 'install-sh' instead
+happens when there is an install.sh in the outer directory
+** seems like a big caveat for conda, as this is the second time this particular environment handler has caused issues.
+** PyCharm adding a path (in cases where avoiding pip3)->
+Project->Python Interpreter->Gear Button->Directory Button->Plus Button
+** How to find the USEION var associated with a file, python.
+if mechanism was gabaat, could use:
+
+regstr = re.compile("USEION ([A-Za-z0-9]+) ")
+mobj = regstr.search(h.gabaat.code)
+ion = mobj.group(1)
+
+to get the ion string... assuming that only one USEION per mode
+
+regstr = re.compile("USEION ([A-Za-z0-9]+) ")
+ions = regstr.findall(h.gabaat.code)
+
+* 4.28 NaV conduction -> vclamp -> current
+*** conduction as specified in original paper https://paperpile.com/app/p/3f0c8cd7-9f85-0980-8494-8f3fdbdd17ef
+poorly sourced or there are typo's here when describing NaV currents (I hesitate placing my trust in the original paper given issues as stated above)
+"The peak current of 15 nA was modeled by ..." 
+peak current when what? during an AP or during a vclamp stim at some arbitrary setting?
+no external validation here.
+** HH nav17 conductivity
+*** however, as a starting point, here are the conduction values given...
+nav17 is HH, nav18 is MM
+mechs  = { nav17 : {'gnabar': 0.018 },
+           nav18 : {'gnabar': 0.026 },
+          'kdr'  : {'gkbar' : 0.0035},
+          'ka'   : {'gkbar' : 0.0055},
+          'pas'  : {'g': 5.75e-5, 'e': h.v_init}}
+*** see https://paperpile.com/app/p/b70779e3-5b15-026f-bec6-3b4f7d9a7969 which provides non-silico data in table 1
+whole cell patch-clamp
+NaV1.7 -> -2.69 nA : 2.11 nA (n=17)
+NaV1.8 -> -6.96 nA : 8.97 nA (n=17)
+admittedly the stdev is worrying (noted in the paper)
+*** vclamp is -57 -> 10 mV
+currents
+simulation           experimental (whole cell patch-clamp)
+nav17 -> -1.40 nA -> target -2.69 nA
+nav18 -> -6.14 nA -> target -6.96 nA
+kdr   -> +5.81 nA
+ka    -> +1.64 nA
+*** revise conductivity
+revise 
+nav17 -> 2.7/1.4 * 0.018 -> gnabar set to ~0.035 umho
+nav18 -> 7/6.14 * 0.026 -> gnabar set to ~0.03 umho
+** MM nav17 conductivity...
+** when using the Markov Model
+simulation for nav17
+peak at -0.001 nA
+*** revised conductivity (in other words, the MM serves as a poor choice)
+nav17 -> 2.7/0.001 * 0.018 -> gnabar @ 48.6 umho
+** MM nav18 has a strange spike in current upon deactivion
+*** upon transition from 10 mV -> -57 mV, current peak.
+*** magnitude of the continuous wave is -7 nA, but something approaching a dirac delta with magnitude of -11.72 observed
+*** something that would normally be caught in a trap function...
