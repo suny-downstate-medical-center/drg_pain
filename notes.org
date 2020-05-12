@@ -43,7 +43,7 @@ betam   = 5.79/{1 + exp[(υ + 130.4)/22.9]}
 
 alphah  = 0.06435/{1 + exp[(υ + 73.26415)/3.71928]}
 betah   = 0.13496/{1 + exp[(υ + 10.27853)/(−9.09334)]}
-* 4.12 Calculating proper nseg given a dlambda and max frequency
+* 4.12 Calculating proper nseg given a dlambda and max frequency #techdetails
 Link is here:
 https://www.neuron.yale.edu/neuron/static/docs/d_lambda/d_lambda.html
 Some additional observations regarding nseg calculation in myelinated axons:
@@ -257,3 +257,30 @@ nav17 -> 2.7/0.001 * 0.018 -> gnabar @ 48.6 umho
 *** upon transition from 10 mV -> -57 mV, current peak.
 *** magnitude of the continuous wave is -7 nA, but something approaching a dirac delta with magnitude of -11.72 observed
 *** something that would normally be caught in a trap function...
+** revised, using HH nav17 and MM nav18. first sweep is tagged: data_4_28_ab8467
+** current too strong, ka too low?
+** current range from 0 -> 0.3 nA more appropriate for capturing threshold of depolarization; however, still need to resolve ka?
+** no parameters for conductance setting of K channels
+** also added KA from a small diameter DRG of the bladder as SUFFIX 'kam', original SUFFIX 'ka' from paper and Sheets now kas
+
+* 5.01 Discussion on dorsal horn modelling
+** Have been posting notes on dorsal horn network to github, some observations from today:
+2:36 AM
+jchen.6727 posted more notes to github, going to start on a cartoon of it ** -> may already have good cartoons existing. but some of the ones I've observed do not really incorporate inhib pop.  densities or descending input from rostral ventromedial medulla.
+seems like deeper lamina not as well understood, which is a problem because the density of WDR is higher as one moves into deeper lamina.
+I also think its notable that as we get into deeper layers, the NK1R projection neurons become more dendritically complex and receive greater numbers of inputs.
+** Just realized I could steal my brother's Wacom tablet to do this! (edited) 
+2:49 AM
+jchen.6727 ---that is, superficial NK1R projection neurons have dendrites mostly confined to their lamina (LI), seems like primarily excitatory, whilst deeper NK1R projection neurons have dendrites extending superficially.
+---descending inhibitory inputs are heavily LII
+---inhibitory populations increase as we move from LI->LIII
+Prior modelling, NK1R played a heavy role in windup, which I find curious in this context (edited) 
+2:57 AM
+jchen.6727 the pattern that we get more WDR neurons as we move deeper, that we see these inhibitory signals becoming more detailed as we move deeper
+and that the NK1R projection neurons possess this more vertical dendritic organization is elegant, though may be misleading. (edited) 
+3:09 AM
+jchen.6727 or, we can forego the 'WDR' label, say we have these morphologically and  dendritically distinct projection neurons as we move into deeper lamina, and see what they are.
+
+* 5.03 Google draw posted, consolidating information regarding DHN. Additionally genrn using VClamp when mods are using Crank-Nicholson
+** seems like this may be cause of problem with strange peak in MM nav18?
+** TODO switch back to SEClamp?

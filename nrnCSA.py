@@ -9,15 +9,17 @@ h.load_file("stdrun.hoc")
 h.v_init, h.celsius = -58.91, 22
 
 numcells = 10
+currmax = 0.3
 secs   = {'drgperi': {'nseg':257, 'L':5000,  'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
           'drgstem': {'nseg':3,   'L':75,    'diam': 1.4, 'cm': 1.2, 'Ra': 123 },
           'drgsoma': {'nseg':1,   'L':30,    'diam': 23 , 'cm': 1.2, 'Ra': 123 },
           'drgcntr': {'nseg':363, 'L':5000,  'diam': 0.4, 'cm': 1.2, 'Ra': 123 }}
 nav17, nav18  = 'nav17h', 'nav18m'
+kdr, ka = 'kdr', 'kam'
 mechs  = { nav17 : {'gnabar': 0.035 },
            nav18 : {'gnabar': 0.03 },
-          'kdr'  : {'gkbar' : 0.0035},
-          'ka'   : {'gkbar' : 0.0055},
+           kdr   : {'gkbar' : 0.0035},
+#           ka    : {'gkbar' : 0.0055},
           'pas'  : {'g': 5.75e-5, 'e': h.v_init}}
 ions   = {'na':  67.1,
           'k' : -84.7 }
@@ -54,7 +56,7 @@ for cell in range(numcells+1):
     if (cell == 0):
         stims[cell] = setVClamp(csomas[cell]('drgsoma')(0.5), [50, 3, 50], [-57, 10, -57])
     else:
-        stims[cell] = setIClamp(csomas[cell]('drgsoma')(0.5), 50, 5, cell/numcells)
+        stims[cell] = setIClamp(csomas[cell]('drgsoma')(0.5), 50, 5, currmax * cell / numcells)
 ## set up recordings
     for var in vars:
         for mech in mechs:
