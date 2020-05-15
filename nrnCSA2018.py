@@ -1,59 +1,84 @@
 from neuron import h
 from genrn import genrn
-from plot import plot_data, plot_groups
+from plot import plot_groups
+from cells import hGlobals, scr
 import re
 # from copy import deepcopy as dcp
 
+# initialization calls
 h.load_file("stdrun.hoc")
+h.load_file("tautables.hoc")
+for var in hGlobals:
+    execstr = 'h.%s = %s' % (var, hGlobals[var])
+    print('exec: %s' % (execstr))
+    exec(execstr)
 
-h.v_init, h.celsius = -58.91, 22
+# cell parameters from Mandge 2018
+somaCellArgs= {
+    'h'    : h,
+    'secs' : {'soma': scr['geom']},
+    'mechs': scr['mechs'],
+    'ions' : scr['ions'],
+    'cons' : ()
+}
 
-numcells = 10
-currmax = 0.3
-
+# cell stimulate functions, VClamp, SEClamp and IClamp
 def setVClamp(seg, durs, amps):
 ## VClamp as vstim
-    amps = [x if isinstance(x, (int, float, complex)) else h.v_init for x in amps]
+    amps = [x if isinstance(x, (int, float)) else h.v_init for x in amps]
     vstim = h.VClamp(seg)
     vstim.dur[0], vstim.dur[1], vstim.dur[2] = durs[0], durs[1], durs[2]
     vstim.amp[0], vstim.amp[1], vstim.amp[2] = amps[0], amps[1], amps[2]
-## SEClamp as vstim
-#    vstim = h.SEClamp(csomas[cell].drgsoma(0.5))
-#    vstim.dur1, vstim.dur2, vstim.dur3 = durs[0], durs[1], durs[2]
-#    vstim.amp1, vstim.amp2, vstim.amp3 = amps[0], amps[1], amps[2]
     return vstim
+
+def setSEClamp():
+# SEClamp as vstim
+    vstim = h.SEClamp(csomas[cell].drgsoma(0.5))
+    vstim.dur1, vstim.dur2, vstim.dur3 = durs[0], durs[1], durs[2]
+    vstim.amp1, vstim.amp2, vstim.amp3 = amps[0], amps[1], amps[2]
+    return vstim
+
 def setIClamp(seg, delay, dur, amp):
     istim = h.IClamp(seg)
     istim.delay, istim.dur, istim.amp = delay, dur, amp
     return istim
 
-csomas, ctjs, stims, recvs = {}, {}, {}, {"voltage": {}}
+# simulation parameters
+numcells = 10
+currmax = 0.3
 
-vars = ["i%s" %(i) for i in ions] + ["g%s" %(i) for i in ions]
-vars = vars + ["n", "h"]
+# simulation storage objects
+csomas, ctjs, stims, recvs = {}, {}, {}, {"voltage": {}}
+ions = ['na', 'k', 'cl', 'ca']
+# generate record vars
+vars = ["i%s" %(i) for i in ions]
+
 for cell in range(numcells+1):
 ## set up cells
-    csomas[cell] = h.load_file('')
+    csomas[cell] = genrn(**somaCellArgs)
 ## set up stims
 ## VClamp as vstim
     if (cell == 0):
-        stims[cell] = setVClamp(csomas[cell]('drgsoma')(0.5), [50, 3, 50], [-57, 10, -57])
+        stims[cell] = setVClamp(csomas[cell].soma(0.5), [50, 3, 50], [h.v_init, 10, h.v_init])
     else:
-        stims[cell] = setIClamp(csomas[cell]('drgsoma')(0.5), 50, 5, currmax * cell / numcells)
+        stims[cell] = setIClamp(csomas[cell].soma(0.5), 50, 5, currmax * cell / numcells)
 ## set up recordings
     for var in vars:
-        for mech in mechs:
+        for mech in scr['mechs']:
             trstr = "%s_%s" %(var, mech)
-            if hasattr(csomas[cell].drgsoma(0.5), '_ref_%s' %(trstr)):
+            if hasattr(csomas[cell].soma(0.5), '_ref_%s' %(trstr)):
                 if trstr not in recvs:
                     recvs[trstr] = {}
                 trace = h.Vector()
-                trace.record(getattr(csomas[cell].drgsoma(0.5), '_ref_%s' %(trstr)))
+                trace.record(getattr(csomas[cell].soma(0.5), '_ref_%s' %(trstr)))
                 recvs[trstr]["cell_%s" %(cell)] = trace
                 print("tracing %s for cell_%s" %(trstr, cell))
     vv = h.Vector()
-    vv.record(csomas[cell].drgsoma(0.5)._ref_v)
+    vv.record(csomas[cell].soma(0.5)._ref_v)
     recvs["voltage"]["cell_%s" %(cell)] = vv
+
+
+# simulation script
 tv = h.Vector()
 tv.record(h._ref_t)
 recvs['t'] = tv
@@ -64,6 +89,7 @@ h.dt, h.steps_per_ms, h.tstop = 0.0125, 0.5, 100
 h.t = 0
 h.finitialize(h.v_init)
 h.stdinit()
+
 ## time vector for when parameters are changed, last value is when the sim should end
 tgls = [
     [0  , {'dt': 5     , 'steps_per_ms': 0.2}, []],
@@ -89,15 +115,14 @@ for tgl in tgls:
 ##   cm2 * 1e8um2 * mA
 
 ## compute current from current density
-area = csomas[0]('drgsoma')(0.5).area()
-re_i = re.compile('(ina)|(ik)')
+area = csomas[0]('soma')(0.5).area()
+re_i = re.compile('(ina)|(ik)|(icl)|(ica)')
 for trace in recvs:
     if re_i.search(trace):
         for cell in recvs[trace]:
             recvs[trace][cell].mul(area * 1e-2)
 
 tgs = {
-    'conductivity': {'rgx': re.compile('(gna)|(gk)'), 'xaxis': 't (ms)', 'yaxis': 'g (S/cm2)', 'conds': lambda id: True},
     'current'     : {'rgx': re_i                    , 'xaxis': 't (ms)', 'yaxis': 'i (nA)'   , 'conds': lambda id: True},
     'voltage'     : {'rgx': re.compile('voltage')   , 'xaxis': 't (ms)', 'yaxis': 'v (mV)'   , 'conds': lambda id: True},
 }
@@ -107,20 +132,3 @@ tcs = {
 }
 # plot_groups(data=recvs, keys=recvs.keys(), tracegroups=tgs, tracecells=tcs, showmins=True, showmaxs=True)
 plot_groups(data=recvs, keys=recvs.keys(), tracegroups=tgs, tracecells=tcs)
-## old plot traces option
-# xdatas = [None, [0, h.t], [0, h.t]]
-# ydatas = [None, None, None]
-# labels = [None, None, None]
-# colors = ['b', 'g', 'g']
-# lines  = ['-', ':', ':']
-#
-# for trace in recvs:
-#     for cell in recvs[trace]:
-#         ydata = recvs[trace][cell]
-#         if trace[0] == 'i':
-#             ydata.mul(area * 1e-2)
-#         xdatas[0] = tv
-#         ydatas[0], ydatas[1], ydatas[2] = ydata, [min(ydata)]*2, [max(ydata)]*2
-#         labels[0], labels[1], labels[2] = trace, "min:%f" %(ydatas[1][0]), "max:%f" %(ydatas[2][0])
-#         plot_data(xdatas=xdatas, ydatas=ydatas, labels=labels, prefix='data/', title="%s_%s" %(cell, trace),
-#                   xaxis='time (ms)', yaxis=trace, colors=colors, lines=lines)

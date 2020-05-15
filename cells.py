@@ -13,11 +13,7 @@ hGlobals = {'cai0_ca_ion': 0.000136,
 somaCellRule = {
  'globals': hGlobals,
  'secLists': {},
- 'secs': {'sec': {'geom': {'L': 24.0,
-                           'Ra': 100.0,
-                           'cm': 1.5481245576786977,
-                           'diam': 24.0,
-                           'nseg': 1},
+ 'secs': {'sec': {'geom': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1},
                   'ions': {'ca': {'e': 132.4579341637009, 'i': 0.000136, 'o': 2.0},
                            'caer': {'e': 0.0, 'i': 0.4, 'o': 1.0},
                            'caip3r': {'e': 0.0, 'i': 0.000136, 'o': 1.0},
@@ -61,15 +57,29 @@ somaCellRule = {
                   'vinit': -53.5}}
 }
 
-scr = somaCellRule['secs']['sec']
+scr= somaCellRule['secs']['sec']
 
-cellArgs = {
-    'h': h,
+somaCellArgs= {
+    'h'    : h,
     'secs' : {'soma': scr['geom']},
     'mechs': scr['mechs'],
     'ions' : scr['ions'],
     'cons' : ()
 }
+
+tjCellArgs= {
+    'h'   : h,
+    'secs': {'peri': { 'nseg': 257, 'L': 5000, 'diam': 0.8 , 'cm': 1.5481245576786977 },
+             'stem': { 'nseg': 3  , 'L': 75  , 'diam': 1.4 , 'cm': 1.5481245576786977 },
+             'soma': { 'nseg': 1  , 'L': 24.0, 'diam': 24.0, 'cm': 1.5481245576786977 },
+             'cntr': { 'nseg': 363, 'L': 5000, 'diam': 0.4 , 'cm': 1.5481245576786977 }},
+    'mechs': scr['mechs'],
+    'ions' : scr['ions'],
+    'cons' : (('stem', 'peri'),
+              ('soma', 'stem'),
+              ('cntr', 'peri'))
+}
+
 
 def hInit():
     h.load_file('stdrun.hoc')
@@ -79,11 +89,16 @@ def hInit():
         print('exec: %s' %(execstr))
         exec(execstr)
 
-def createSoma():
-    return genrn(**cellArgs)
+def npSoma():
+    hInit()
+    return genrn(**somaCellArgs)
+
+def npTJ():
+    hInit()
+    return genrn(**tjCellArgs)
 
 if __name__=='__main__':
-    from pprint import pprint
-    hInit()
-    soma = createSoma()
-    pprint(soma.get_dict())
+#    from pprint import pprint
+    soma = npSoma()
+    print(soma)
+#    pprint(soma.get_dict())

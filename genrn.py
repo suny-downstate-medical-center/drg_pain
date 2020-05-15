@@ -26,6 +26,7 @@ class gesec():
         self.mechs = []
         self.pps   = []
         self.ions  = {}
+        self.rgxions = {}
         for ion in ions:
             self.create_ion(ion, ions[ion])
         self.insert = self.im = self.insert_mech
@@ -53,6 +54,7 @@ class gesec():
         if isinstance(props, dict):
             for prop in props: iondict['props'][prop] = props[prop]
         self.ions[ion] = iondict
+        self.rgxions[ion] = re.compile("USEION %s" %(ion))
 
     def insert_mech(self, mech, ions = {}, params = {}):
         # TODO ->DONE does sec.insert(mech) insert mech if the mechanism already exists in section?
@@ -74,8 +76,8 @@ class gesec():
             if not callable(params[param]): loose_set(self.sec, '%s_%s' %(param, mech), params[param])
             else: self.fset_mech(mech, param, params[param])
         # add mech to any ionlist
-        for ion in self.ions:
-            if hasattr(self.sec, "i%s_%s" %(ion, mech)):
+        for ion in self.rgxions:
+            if self.rgxions[ion].search(getattr(self.h, mech).code):
                 self.ions[ion]['mechs'].append(mech)
 
     def fset_mech(self, mech, param, func):
@@ -133,7 +135,7 @@ class genrn():
         # secs -> pointer
         self.secs = {}
         self.gesecs = self.tags['all']
-#        self.useions = re.compile("USEION ([A-Za-z0-9]+)")
+        # self.useions = re.compile("USEION ([A-Za-z0-9]+)")
         self.init_cell(secs, ions)
         self.initialize_mechs('all', mechs)
         self.initialize_ionprops()
@@ -262,7 +264,6 @@ class genrn():
         try: return self.tags[item]
         except KeyError: return self.secs[item]
 
-
     def __rshift__(self, tag):
         #retrieve section objects in a tag using '>>' operator (i.e. self>>'all)
         return [sec.sec for sec in self.tags[tag]]
@@ -286,12 +287,15 @@ class genrn():
             rpr += 'morphology:\tL:%f\tdiam:%f\n' %(r['morphology']['L'], max(r['morphology']['diam']))
             rpr += 'ions:\n'
             for ion in sec.ions:
-                rpr += '%s:\t{' %(ion)
+                rpr += '%s: {' %(ion)
                 for prop in sec.ions[ion]['props']:
                     rpr +='%s: %s, ' %(prop, sec.ions[ion]['props'][prop])
-                rpr += '}\n\t'
-                for mech in sec.ions[ion]['mechs']:
-                    rpr +='%s, ' %(mech)
+                rpr += '}'
+                if len(sec.ions[ion]['mechs']) > 0:
+                    rpr += '\n\t'
+                    for mech in sec.ions[ion]['mechs']:
+                        rpr +='%s, ' %(mech)
+                rpr += '\n'
         return rpr
 
 def cal_nseg( sec, freq, d_lambda ):
