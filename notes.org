@@ -302,5 +302,5 @@ https://senselab.med.yale.edu/ModelDB/showmodel.cshtml?model=243448#tabs-1
 https://github.com/ModelDBRepository/243448
 *** port from hoc to python+neuron
 *** creation of a current pulse generator (specify amplitude and duration of pulse)
-*** seems like 
-
+*** there is certainly a maximum frequency for the 2018 soma, somewhere around 25 Hz (ISI = 40 ms)
+tag: 11b6af
