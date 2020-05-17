@@ -31,9 +31,9 @@ def setVClamp(seg, durs, amps):
     vstim.amp[0], vstim.amp[1], vstim.amp[2] = amps[0], amps[1], amps[2]
     return vstim
 
-def setSEClamp():
+def setSEClamp(seg, durs, amps):
 # SEClamp as vstim
-    vstim = h.SEClamp(csomas[cell].drgsoma(0.5))
+    vstim = h.SEClamp(seg)
     vstim.dur1, vstim.dur2, vstim.dur3 = durs[0], durs[1], durs[2]
     vstim.amp1, vstim.amp2, vstim.amp3 = amps[0], amps[1], amps[2]
     return vstim
