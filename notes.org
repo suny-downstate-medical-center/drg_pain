@@ -284,3 +284,23 @@ jchen.6727 or, we can forego the 'WDR' label, say we have these morphologically 
 * 5.03 Google draw posted, consolidating information regarding DHN. Additionally genrn using VClamp when mods are using Crank-Nicholson
 ** seems like this may be cause of problem with strange peak in MM nav18?
 ** TODO switch back to SEClamp?
+
+* 5.14 See notes in DHN, switched to 2018 model, started stims
+** Work on dorsal horn.
+*** see DHN repository.
+*** Kazutaka's questions re: an older hoc model dorsal horn neuron here:
+https://senselab.med.yale.edu/ModelDB/showmodel.cshtml?model=62284#tabs-1
+https://github.com/ModelDBRepository/62284
+to note: the IClamp current stimulus is a magnitude of 10 too large.
+*** appropriate settings for a polyspike response phasic response:
+hillock gnabar_B_Na to 0.5
+IClamp with amplitude to 0.06
+alpha_shift_B_Na = 5
+beta_shift_B_Na = 11
+** Switched to 2018 model of a sensory small fiber soma
+https://senselab.med.yale.edu/ModelDB/showmodel.cshtml?model=243448#tabs-1
+https://github.com/ModelDBRepository/243448
+*** port from hoc to python+neuron
+*** creation of a current pulse generator (specify amplitude and duration of pulse)
+*** seems like 
+
