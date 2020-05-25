@@ -72,7 +72,7 @@ for cell in range(numcells+1):
         stims[cell] = setVClamp(csomas[cell].soma(0.5), [25, 3, 50], [h.v_init, 10, h.v_init])
     else:
 #                                seg, delay, freq, number, dur, amp
-        stims[cell] = setIPClamp(csomas[cell].soma(0.5), 25, 50, 10, 5, currmax * cell / numcells)
+        stims[cell] = setIPClamp(csomas[cell].soma(0.5), 25, 25, 10, 5, currmax * cell / numcells)
 #        stims[cell] = setIClamp(csomas[cell].soma(0.5), 50, 5, currmax * cell / numcells)
 ## set up recordings
     for trstr in trstrs:
@@ -89,7 +89,7 @@ tv.record(h._ref_t)
 recvs['t'] = tv
 
 ## simulate
-h.dt, h.steps_per_ms, h.tstop = 0.0125, 0.5, 100
+h.dt, h.steps_per_ms, h.tstop = 0.0125, 1, 1000
 # cvode = h.CVode()
 # cvode.active()
 h.t = 0
@@ -100,7 +100,7 @@ h.stdinit()
 tgls = [
     [0   , {'dt': 5     , 'steps_per_ms': 0.2}, []],
     [20  , {'dt': 0.0125, 'steps_per_ms': 2  }, []],
-    [200 , {}, []]# end of simulation
+    [1000, {}, []]# end of simulation
 ]
 
 for tgl in tgls:

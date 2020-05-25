@@ -89,13 +89,21 @@ def hInit():
         print('exec: %s' %(execstr))
         exec(execstr)
 
-def npSoma():
+def npSoma( mulnattxs = 1, mulnav1p8 = 1 ):
     hInit()
-    return genrn(**somaCellArgs)
+    cell = genrn(**somaCellArgs)
+    cell.soma.gbar_nattxs *= mulnattxs
+    cell.soma.gbar_nav1p8 *= mulnav1p8
+    return cell
 
-def npTJ():
+def npTJ( mulnattxs = 1, mulnav1p8 = 1 ):
     hInit()
-    return genrn(**tjCellArgs)
+    cell = genrn(**tjCellArgs)
+    gbar_nattxs = 0.0001 * mulnattxs
+    gbar_nav1p8 = 0.0087177 * mulnav1p8
+    cell.edit_mechs('all', 'nattxs', 'gbar', gbar_nattxs)
+    cell.edit_mechs('all', 'nav1p8', 'gbar', gbar_nav1p8)
+    return cell
 
 if __name__=='__main__':
 #    from pprint import pprint

@@ -210,7 +210,6 @@ class genrn():
         for sec in self.tags['all']:
             sec.set_ionprops()
 
-
     def edit_mechs(self, tag, mech, param, value):
         for sec in self.tags[tag]:
             loose_set(sec.sec, '%s_%s' %(param, mech), value)
