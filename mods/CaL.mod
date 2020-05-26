@@ -80,6 +80,9 @@ FUNCTION ghk( v(mV), ci(mM), co(mM), z)  (millicoul/cm3) { LOCAL e, w
 
 PROCEDURE rates(v(mV)) {
 	UNITSOFF
+    TABLE mtau, htau, minf, hinf
+    FROM -100 TO 100 WITH 200
+
 	mtau = 2.10686 + (77.425/(16.02197*sqrt(3.14/2)))*exp(-2*((v+10)/16.022(mV))^2) :Data Fit: Fox et al., 1987
 	htau = 825.80 + (31780.18/(39.75*sqrt(3.14/2)))*exp(-2*((v-0)/39.74938(mV))^2) :Data Fit: Fox et al., 1987
 	

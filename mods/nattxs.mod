@@ -59,7 +59,9 @@ DERIVATIVE states {
 
 PROCEDURE rates(v (mV)) {
 	LOCAL alpha_m, beta_m, alpha_h, beta_h
-	
+    TABLE minf, hinf, mtau, htau
+    FROM -100 TO 100 WITH 200
+
 	UNITSOFF
 	minf 	= 1/(1+exp(((-25.8)-v)/7.8)) 		: Data Fit: Yoshimura et al., 1996 
 	hinf 	= 1/(1+exp((v+55.8)/8.9))			: Data Fit: Yoshimura et al., 1996

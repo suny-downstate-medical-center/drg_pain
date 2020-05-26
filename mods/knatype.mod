@@ -58,6 +58,9 @@ INITIAL{
 }
 
 PROCEDURE rates(nai(mM)){
+    TABLE winf, tau
+    FROM 5 TO 15 WITH 50
+
 	winf = 1/(1+(38.7(mM)/nai)^3.5) : Biscoff et al., 1998
 													
 	tau = 1(ms)

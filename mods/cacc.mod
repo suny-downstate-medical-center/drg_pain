@@ -63,7 +63,7 @@ DERIVATIVE states {
 }
  
 PROCEDURE rates(v(mV)) {
-		 
+:TABLE would have to consider changing values of caip3ri ...
 		 UNITSOFF
         :"n" CACC activation 		
 		hc = -0.3126*exp(-v/81.02) + 2.086

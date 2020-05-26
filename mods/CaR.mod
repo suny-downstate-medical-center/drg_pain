@@ -81,13 +81,16 @@ FUNCTION_TABLE tabhtau(v(mV)) (ms)
 FUNCTION_TABLE tabhtau2(v(mV)) (ms)
 
 
-PROCEDURE rates(v(mV)) { 	
+PROCEDURE rates(v(mV)) {
+    TABLE minf, mtau, hinf, htau, h2tau
+    FROM -100 TO 100 WITH 200
+
 	minf = 1 / (1+exp((-5-v)/5)) 	: Li et al., 2007
 	mtau = tabmtau(v)				: Hilaire et al., 1997
 	
 	hinf = 1 / (1+exp((v+51)/12)) 	: Hilaire et al., 1997
-	    
     htau  = tabhtau(v)	: Hilaire et al., 1997
+
 	h2tau = tabhtau2(v) : Hilaire et al., 1997
 }
 

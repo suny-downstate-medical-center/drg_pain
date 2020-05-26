@@ -63,10 +63,13 @@ DERIVATIVE states {
 		msl' =  (minf-msl)/mtausl
 }
 
-
-PROCEDURE rates(v(mV)) {  
-		LOCAL q10
+PROCEDURE rates(v(mV)) {
+:unused var, not sure why declared
+:		LOCAL q10
 UNITSOFF
+    TABLE minf, mtauf, mtausl
+    FROM -100 TO 100 WITH 200
+
 		minf = 1/(1+exp((v+87.2)/9.7)) : Kouronova 2008
 
 		if (v < -70){

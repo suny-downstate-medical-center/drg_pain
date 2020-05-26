@@ -79,13 +79,15 @@ FUNCTION ghk( v(mV), ci(mM), co(mM), z)  (millicoul/cm3) { LOCAL e, w
 }
 
 UNITSOFF
+
 FUNCTION_TABLE tabhtau(v(mV)) (ms)
 
- PROCEDURE rates(v(mV)) {
-	mtau = 0.80448 + (101.05111/(14.9947*sqrt(3.14/2)))*exp(-2*((v+20)/14.9947)^2)
- 
-	htau = tabhtau(v)  : Aosaki et al., 1989
+PROCEDURE rates(v(mV)) {
+    TABLE mtau, htau, minf, hinf
+    FROM -100 TO 100 WITH 200
 
+	mtau = 0.80448 + (101.05111/(14.9947*sqrt(3.14/2)))*exp(-2*((v+20)/14.9947)^2)
+	htau = tabhtau(v)  : Aosaki et al., 1989
 	minf = 1 / (1+exp((-6.5-v)/6.5)) : Fox et al., 1987
 	hinf = 1 / (1+exp((v+70)/12.5))  : Fox et al., 1987
 }

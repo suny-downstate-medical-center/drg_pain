@@ -59,8 +59,10 @@ DERIVATIVE states {
  
 
 PROCEDURE rates(v(mV)) {
-        LOCAL  alpha, beta
-UNITSOFF        
+        LOCAL alpha, beta
+	    TABLE ninf, ntau
+	    FROM -100 TO 100 WITH 200
+UNITSOFF
         :"n" potassium activation system
         ninf = (1/(1+exp(-(v+30)/6)))
         		

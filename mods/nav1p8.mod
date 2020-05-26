@@ -66,8 +66,9 @@ DERIVATIVE states {
 }
 
 PROCEDURE rates(v(mV)) {
-                      
         LOCAL  alpha_m, beta_m, alpha_h, beta_h
+	    TABLE mtau, minf, htau, hinf
+	    FROM -100 TO 100 WITH 200
 
 UNITSOFF
 		alpha_m = 7.21 -7.21/(1+exp((v-0.063)/7.86))

@@ -88,7 +88,11 @@ DERIVATIVE states {
 	h2' = (hinf-h2)/h2tau
 }
  
-PROCEDURE rates(v(mV)) { 
+PROCEDURE rates(v(mV)) {
+    TABLE ninf, ntau, hinf, h1tau, h2tau
+	DEPEND vh1, vh2, AN, BN, A1, B1, A2, B2, xcN, ycN, xc1, yc1, xc2, yc2
+    FROM -100 TO 100 WITH 200
+
         UNITSOFF   
 		ninf = (1/(1+exp((vh1-v)/9.5)))  		: Data fit: Yoshimura et al., 1996
 		ntau = AN + BN*exp(-2*((v+xcN)/ycN)^2)	: Data fit: Yoshimura et al., 2006

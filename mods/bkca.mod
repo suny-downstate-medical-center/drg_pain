@@ -64,6 +64,7 @@ DERIVATIVE states {
 
 PROCEDURE rates(v(mV)) { 
 UNITSOFF
+:TABLE would have to consider changing values of cai ...
 		:"n" potassium activation system
 		:Data Fit: Scholz et al., 1998
 		pCa = log10(cai*1e-3)

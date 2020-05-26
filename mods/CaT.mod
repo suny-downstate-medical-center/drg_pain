@@ -74,7 +74,10 @@ FUNCTION_TABLE tabmtau(v(mV)) (ms)
 FUNCTION_TABLE tabhtau(v(mV)) (ms)
 UNITSOFF
 
-PROCEDURE rates(v(mV)) { 
+PROCEDURE rates(v(mV)) {
+    TABLE mtau, htau, minf, hinf
+    FROM -100 TO 100 WITH 200
+
 	mtau = tabmtau(v) : Adapted from Steephen and Manchanda, 2009
 	htau = tabhtau(v) : Data from Fox et al.,1987
 

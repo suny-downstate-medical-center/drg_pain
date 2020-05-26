@@ -60,8 +60,8 @@ BREAKPOINT {
 INITIAL {
 	rates(v)
 	: assume that equilibrium has been reached
-	m = alpham(v)/(alpham(v)+betam(v))
-	h = alphah(v)/(alphah(v)+betah(v))
+	m = minf
+	h = hinf
 }
 
 DERIVATIVE states {
@@ -70,26 +70,22 @@ DERIVATIVE states {
 	h' = (hinf - h)/htau
 }
 
-FUNCTION alpham(Vm (mV)) (/ms) {
-	alpham=A_am9/(1+exp((Vm+B_am9)/C_am9))
-}
+PROCEDURE rates(v(mV)) (/ms) {
+	LOCAL alpham, betam, alphah, betah
+    TABLE mtau, minf, htau, hinf
+	DEPEND A_am9, B_am9, C_am9, A_ah9, B_ah9, C_ah9, A_bm9, B_bm9, C_bm9, A_bh9, B_bh9, C_bh9
+    FROM -100 TO 100 WITH 200
 
-FUNCTION alphah(Vm (mV)) (/ms) {
-	alphah=A_ah9/(1+exp((Vm+B_ah9)/C_ah9))
-}
+	alpham=A_am9/(1+exp((v+B_am9)/C_am9))
+	betam=A_bm9/(1+exp((v+B_bm9)/C_bm9))
 
-FUNCTION betam(Vm (mV)) (/ms) {
-	betam=A_bm9/(1+exp((Vm+B_bm9)/C_bm9))
-}
+	alphah=A_ah9/(1+exp((v+B_ah9)/C_ah9))
+	betah=A_bh9/(1+exp((v+B_bh9)/C_bh9))
 
-FUNCTION betah(Vm (mV)) (/ms) {
-	betah=A_bh9/(1+exp((Vm+B_bh9)/C_bh9))
-}
+	mtau = 1.0 / (alpham + betam)
+	minf = alpham * mtau
 
-FUNCTION rates(Vm (mV)) (/ms) {
-	mtau = 1.0 / (alpham(Vm) + betam(Vm))
-	minf = alpham(Vm) * mtau
+	htau = 1.0 / (alphah + betah)
+	hinf = alphah * htau
 
-	htau = 1.0 / (alphah(Vm) + betah(Vm))
-	hinf = alphah(Vm) * htau
 }

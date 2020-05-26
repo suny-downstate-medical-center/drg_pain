@@ -64,7 +64,8 @@ DERIVATIVE states {
 PROCEDURE rates(v(mV)) {
 
 UNITSOFF
-        
+    TABLE ninf, ntau
+    FROM -100 TO 100 WITH 200
         :"n" potassium activation system
         ninf = 1/(1+exp(-(v+35)/15.4)) :Sheets et al., 2007 supplement
 		ntau = 7.14085 + (636.5557/(17.07686*sqrt(3.14/2)))*exp(-2*((v+19.99951)/17.07686)^2): by fitting data from Yoshimura et al., 2006
