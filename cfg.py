@@ -11,7 +11,7 @@ cfg.recordStims = False
 cfg.recordStep = 0.5
 
 #netParam vars
-cfg.freq = 25
+cfg.freq = 5
 cfg.npulses = 20
 cfg.amp = 0.3
 cfg.dur = 5
@@ -53,7 +53,8 @@ cfg.saveDataInclude = ['simData']
 
 # run simulation
 cfg.hParams = {'celsius': 22, 'v_init': -53.5}
-cfg.duration = 1000/cfg.freq * cfg.npulses + 50
+
+cfg.duration = 1000/cfg.freq * cfg.npulses + 100
 
 cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'cell', 'saveData': True, 'saveFig': True,
                            'showFig': False, 'timeRange': [0, cfg.duration]}
