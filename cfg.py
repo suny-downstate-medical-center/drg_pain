@@ -8,18 +8,27 @@ cfg = specs.SimConfig()
 #cfg.cvode_active = False
 cfg.cvode_active = True
 cfg.recordStims = False
-cfg.recordStep = 1
+cfg.recordStep = 0.5
 
 #netParam vars
 cfg.freq = 25
-cfg.npulses = 10
+cfg.npulses = 20
 cfg.amp = 0.3
 cfg.dur = 5
 cfg.mttxs = 1.0
 cfg.mn1p8 = 1.0
 
-#in case plotTraces does not get called
+#in case plotTraces does not get called -- need to specify to record from all cells
 cfg.recordCells = ['all']
+
+#simple plot traces
+cfg.recordTraces['stim'] = {'sec': 'peri', 'loc': 0.0, 'var': 'v'}
+cfg.recordTraces['junction'] = {'sec': 'peri', 'loc': 1.0, 'var': 'v'}
+cfg.recordTraces['soma'] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
+cfg.recordTraces['terminal'] = {'sec': 'cntr', 'loc': 1.0, 'var': 'v'}
+
+#more plot traces
+"""
 for label, chan in [ ['NaV1.7', 'nattxs'], ['NaV1.8', 'nav1p8'] ]:
     cfg.recordTraces[label] = {'sec': 'soma', 'loc': 0.5, 'var': 'ina_%s' %(chan)}
 
@@ -34,7 +43,7 @@ for x in range(0, pts+1):
     cfg.recordTraces['v_fiber(%+1.2f)' %(x)] = {'sec': 'cntr', 'loc': x    , 'var': 'v'}
     
 cfg.recordTraces['v_soma'] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
-
+"""
 # Saving
 cfg.simLabel = 'sim1'
 cfg.saveFolder = 'data'
