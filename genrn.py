@@ -77,7 +77,7 @@ class gesec():
             else: self.fset_mech(mech, param, params[param])
         # add mech to any ionlist
         # Section object gets dereferenced and destroyed if there's a gc
-        isec = h.Section()
+        isec = self.h.Section()
         isec.insert(mech)
         iions = isec.psection()['ions'].keys()
         # version if using later versions of neuron, may not even be faster so just use psection instead
