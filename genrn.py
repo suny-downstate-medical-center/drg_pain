@@ -7,7 +7,7 @@ properties taken from Waxman
 '''
 from neuron import h as h_
 import logging as lgg
-import re
+#import re
 
 def loose_set(object, attribute, value):
     try: setattr(object, attribute, value)
@@ -26,7 +26,7 @@ class gesec():
         self.mechs = []
         self.pps   = []
         self.ions  = {}
-        self.rgxions = {}
+        # self.rgxions = {}
         for ion in ions:
             self.create_ion(ion, ions[ion])
         self.insert = self.im = self.insert_mech
@@ -54,7 +54,7 @@ class gesec():
         if isinstance(props, dict):
             for prop in props: iondict['props'][prop] = props[prop]
         self.ions[ion] = iondict
-        self.rgxions[ion] = re.compile("USEION %s" %(ion))
+        # self.rgxions[ion] = re.compile("USEION %s" %(ion))
 
     def insert_mech(self, mech, ions = {}, params = {}):
         # TODO ->DONE does sec.insert(mech) insert mech if the mechanism already exists in section?
@@ -76,9 +76,19 @@ class gesec():
             if not callable(params[param]): loose_set(self.sec, '%s_%s' %(param, mech), params[param])
             else: self.fset_mech(mech, param, params[param])
         # add mech to any ionlist
-        for ion in self.rgxions:
-            if self.rgxions[ion].search(getattr(self.h, mech).code):
+        # Section object gets dereferenced and destroyed if there's a gc
+        isec = h.Section()
+        isec.insert(mech)
+        iions = isec.psection()['ions'].keys()
+        # version if using later versions of neuron, may not even be faster so just use psection instead
+        # for ion in self.rgxions:
+        #     if self.rgxions[ion].search(getattr(self.h, mech).code):
+        #         self.ions[ion]['mechs'].append(mech)
+        # less good version for earlier versions of neuron
+        for ion in self.ions:
+            if ion in iions:
                 self.ions[ion]['mechs'].append(mech)
+
 
     def fset_mech(self, mech, param, func):
         for seg in self.sec:
@@ -93,7 +103,7 @@ class gesec():
                 loose_set(self.sec, '%s' %(prop), props[prop])
 
     def fset_prop(self, prop, func):
-        #set properties of the segment, diam
+        # set properties of the segment, diam
         for seg in self.sec:
             val = func(seg.x)
             loose_set(seg, prop, val)
@@ -181,7 +191,7 @@ class genrn():
 
     def fset_prop(self, sec, prop, func):
         sec = self.return_gesec(sec)
-        #set properties of the segment, diam
+        # set properties of the segment, diam
         sec.fset_prop(prop, func)
 
     def insert_mech(self, sec, mech, ions={}, params={}):
@@ -259,25 +269,25 @@ class genrn():
         return self.secs[item]
 
     def __gt__(self, item):
-        #retrieve gesec objects in a tag using '>' operator, by tag or section name (i.e. self>'all')
+        # retrieve gesec objects in a tag using '>' operator, by tag or section name (i.e. self>'all')
         try: return self.tags[item]
         except KeyError: return self.secs[item]
 
     def __rshift__(self, tag):
-        #retrieve section objects in a tag using '>>' operator (i.e. self>>'all)
+        # retrieve section objects in a tag using '>>' operator (i.e. self>>'all)
         return [sec.sec for sec in self.tags[tag]]
 
     def __call__(self, item):
-        #returns the gesec items of a specific tag
+        # returns the gesec items of a specific tag
         try: return self.tags[item]
         except KeyError: return self.secs[item]
 
     def __getitem__(self, item):
-        #indices for sections (sections stored in order of creation)
+        # indices for sections (sections stored in order of creation)
         return self.tags['all'][item].sec
 
     def __repr__(self):
-        #printing a shows consolidated information about class
+        # printing a shows consolidated information about class
         rpr = ''
         for sec in self.tags['all']:
             r = sec.sec.psection()
@@ -298,7 +308,7 @@ class genrn():
         return rpr
 
 def cal_nseg( sec, freq, d_lambda ):
-#neuron+python of https://www.neuron.yale.edu/neuron/static/docs/d_lambda/d_lambda.html
+# neuron+python of https://www.neuron.yale.edu/neuron/static/docs/d_lambda/d_lambda.html
     nseq = lambda fc_: int((sec.L / (d_lambda * fc_) + 0.9) / 2) * 2 + 1
     fpfrc = 4 * h_.PI * freq * sec.Ra * sec.cm
     h_.define_shape()
@@ -326,12 +336,12 @@ if __name__ == '__main__':
     # section morphologies
     #        sec         dimensions
     # from tjunction paper
-    #secs = {'axnperi': {'nseg':100, 'L':5000, 'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
-    #        'drgperi': {'nseg':100, 'L':100,  'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
-    #        'drgstem': {'nseg':100, 'L':75,   'diam': 1.4, 'cm': 1.2, 'Ra': 123 },
-    #        'drgsoma': {'nseg':1,   'L':25,   'diam': 25 , 'cm': 1.2, 'Ra': 123 },
-    #        'drgcntr': {'nseg':100, 'L':100,  'diam': 0.4, 'cm': 1.2, 'Ra': 123 },
-    #        'axncntr': {'nseg':100, 'L':5000, 'diam': 0.4, 'cm': 1.2, 'Ra': 123 }}
+    # secs = {'axnperi': {'nseg':100, 'L':5000, 'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
+    #         'drgperi': {'nseg':100, 'L':100,  'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
+    #         'drgstem': {'nseg':100, 'L':75,   'diam': 1.4, 'cm': 1.2, 'Ra': 123 },
+    #         'drgsoma': {'nseg':1,   'L':25,   'diam': 25 , 'cm': 1.2, 'Ra': 123 },
+    #         'drgcntr': {'nseg':100, 'L':100,  'diam': 0.4, 'cm': 1.2, 'Ra': 123 },
+    #         'axncntr': {'nseg':100, 'L':5000, 'diam': 0.4, 'cm': 1.2, 'Ra': 123 }}
 
     # our values:
     # nseg with frequency<50, d_lambda 0.1
@@ -372,11 +382,11 @@ if __name__ == '__main__':
     #------------------------------------------------------------#
     #            0    ->    1
 
-    #cons = (('drgperi', 'axnperi'),
-    #        ('axncntr', 'drgcntr'),
-    #        ('drgstem', 'drgperi'),
-    #        ('drgsoma', 'drgstem'),
-    #        ('drgcntr', 'drgperi'))
+    # cons = (('drgperi', 'axnperi'),
+    #         ('axncntr', 'drgcntr'),
+    #         ('drgstem', 'drgperi'),
+    #         ('drgsoma', 'drgstem'),
+    #         ('drgcntr', 'drgperi'))
 
     # simplified connection list
     cons = (('drgstem', 'drgperi'),
