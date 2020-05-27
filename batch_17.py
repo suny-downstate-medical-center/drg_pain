@@ -1,9 +1,10 @@
 from netpyne import specs
 from netpyne.batch import Batch
+import numpy as np
 
 params = specs.ODict()
 
-params['freq'] = range(5, 25)
+params['mnttxs'] = np.linspace(0.5, 1, 6)
 
 b = Batch(params = params, cfgFile = 'cfg.py', netParamsFile = 'netParams.py')
 

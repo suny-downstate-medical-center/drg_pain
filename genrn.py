@@ -140,6 +140,23 @@ class genrn():
                  mechs = {},
                  ions  = {},
                  cons  = ()):
+        """
+        __init__(self, h=h_, x=0, y=0, z=0,ID=0,v_init=None,
+                 secs  = {'genrn': {}},
+                 mechs = {},
+                 ions  = {},
+                 cons  = ()):
+        secs, mechs, and ions are all dictionaries containing properties as either constants or functions. These are applied globally during initialization.
+        sec names are by default added to a taglist (consisting of the first three characters of the sec name, which allows for easier editing of a group of sections. This can be done through:
+        cell = genrn(...secs={'dnd0', 'dnd1', 'dnd2', 'soma', 'ais', 'axon'}...)
+        for sec in cell>>’dnd’:
+        for sec in cell.tags[‘dnd’]:
+        to modify properties in all ‘dnd’ (dendrite) tagged sections
+
+        of note, all sections are also accessible as dictionary entries:
+        cell[‘dnd0’]
+        cell.dnd0
+        """
         self.h = h
         self.tags = {'all': []}
         # secs -> pointer
@@ -151,7 +168,6 @@ class genrn():
         self.initialize_ionprops()
         self.connect_secs(cons)
         self.v_init = v_init
-
 
     def return_sec(self, sec):
         if isinstance(sec, type(h_.Section())): return sec
@@ -171,6 +187,10 @@ class genrn():
             self.set_props(sec = sec, props = secs[sec])
 
     def add_comp(self, sec, ions, *tags):
+        """
+        add_comp(self, sec, ions, *tags):
+        add a section with sec properties (L, diam, nseg, cm, Ra) and ions
+        """
         sec_ = gesec(self.h, sec, ions)
         # sec_ -> pointer
         self.secs[sec] = (sec_)
@@ -181,10 +201,18 @@ class genrn():
             except: self.tags[tag] = [sec_]
 
     def set_props(self, sec, props):
+        """
+        set_props(self, sec, props):
+        set properties (L, diam, nseg, cm, Ra) of a section
+        """
         sec = self.return_gesec(sec)
         sec.set_props(props)
 
     def tag_set_props(self, tag, props):
+        """
+        tag_set_props(self, tag, props):
+        set properties (L, diam, nseg, cm, Ra) of a group of sections that have been attached to a tag
+        """
         for sec in self.tags[tag]:
             for prop in props:
                 loose_set(sec.sec, '%s' %(prop), props[prop])
@@ -237,7 +265,6 @@ class genrn():
 
 
     def init_pas(self, v_init, set_pas = False):
-        e = {}
         self.h.finitialize(v_init)
         self.h.fcurrent()
         i_net = 0
@@ -274,7 +301,7 @@ class genrn():
         except KeyError: return self.secs[item]
 
     def __rshift__(self, tag):
-        # retrieve section objects in a tag using '>>' operator (i.e. self>>'all)
+        # retrieve section objects in a tag using '>>' operator (i.e. self>>'all')
         return [sec.sec for sec in self.tags[tag]]
 
     def __call__(self, item):
