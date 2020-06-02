@@ -290,7 +290,7 @@ jchen.6727 or, we can forego the 'WDR' label, say we have these morphologically 
 *** see DHN repository.
 *** Kazutaka's questions re: an older hoc model dorsal horn neuron here:
 https://senselab.med.yale.edu/ModelDB/showmodel.cshtml?model=62284#tabs-1
-https://github.com/ModelDBRepository/62284
+ttps://github.com/ModelDBRepository/62284
 to note: the IClamp current stimulus is a magnitude of 10 too large.
 *** appropriate settings for a polyspike response phasic response:
 hillock gnabar_B_Na to 0.5
@@ -304,3 +304,64 @@ https://github.com/ModelDBRepository/243448
 *** creation of a current pulse generator (specify amplitude and duration of pulse)
 *** there is certainly a maximum frequency for the 2018 soma, somewhere around 25 Hz (ISI = 40 ms)
 tag: 11b6af
+
+* 5.29 Meeting notes
+** Meeting With Dr. Lytton, Dr. Prescott 5/28
+
+** Small fiber modelling
+*** Goals:
+If want to look at AP loss per frequency and channel effects, should model T-junction as well as soma. Model with pulse and variable ISI or current clamp?
+Reiterating goal: grant -- looking at targetting NaV 1.7
+Sodium channel wise may want to target NaV 1.7, NaV 1.8, NaV 1.9
+*** Dr. Prescott work is on AB-LTMR, these are larger myelinated fibers. In certain contexts, had AP loss -- firing at a consistent frequency that experienced "skipped" beats, and proved was not an artifact
+*** His work was in-vivo modelling. Have some discrepancies in our model.
+*** Ensure that our model is valid for the stimulus frequency -- Is there additional validity beyond dlambda+nseg rules?
+We have very low frequency firing, according to rules at https://www.neuron.yale.edu/neuron/static/docs/d_lambda/d_lambda.html we are okay for up to 50 Hz with a d_lambda of 0.1
+The frequency range we tested is 5-15 Hz.
+*** Good to keep frequency low -- we are in the 5-15 Hz. Dr. Prescott mentioned that some research was "pushing" firing frequency to up to 100 Hz. Don't want to do that.
+What should we have as the highest frequency input?
+I believe we can have higher firing frequency in a pathologic pain state, but that this will still be modulated by t-junction.
+*** Model axons could be longer?
+Currently peripheral and central axon lengths are 5000 microns. Need to evaluate the AP propagation instead of seeing the passive changes of a nearby voltage source. 5000 microns sufficient for this.
+Want to get a fiber length comparable to a rodent's afferent? Maybe up to 1 cm?
+*** What is the AP width of a somatic AP?
+I want fat APs, but should recheck waveform with some in-vitro data (or in-vivo)
+Clarify--width at base. C fibers have fatter APs than other afferents.
+*** What is the "proper" stimulus?
+Check Dr. Richard Koerber https://pubmed.ncbi.nlm.nih.gov/?term=Koerber+HR&cauthor_id=30236284 
+skin nerve preparation.
+Otherwise stimulus parameter sweep may be more relevant.
+
+** Dorsal Horn Network modelling
+*** Goal:
+Expand on previous Dorsal Horn Network.
+Only 3 (EXC, INH, WDR) stereotyped cells in previous model, including more cell types and firing responses in order to gain a representation of the encoding of pain.
+Larger (far in future goal) of seeing how projection neurons in more superficial lamina and deeper lamina act vs. each other -> stretch goal since involves characterizing effects of descending input
+*** Looking at inhibitory signaling to nociceptive specific projection neurons -- projection neurons in superficial lamina currently
+Modeling heterogenous populations including tonic, delayed and burst firing
+Need to check that the sim. match experimental data -- there is a 40 picoamp difference in stimulation to the burst firing cell -- how was this figure produced?
+Note that superficially looks like 37 degree sim to match 22 degree in vitro data (dorsal horn hard to get data at body temperature)
+*** What correlates to "more" pain?
+Many nociceptive afferents firing at once, nociceptive afferents repeatedly firing
+AD firing -> superficial lamina -> fast pain
+Ongoing debate as to which, between nociceptive specific or wide-dynamic-range neurons, is "more responsible" for painful sensation, but agreed that both contribute to pain sensation
+*** Different spiking patterns for interneurons
+Balachandar and Prescott reproduced multiple spiking patterns by varying ion channel conductances. Combination spiking patterns by "straddling" different densities 
+https://physoc.onlinelibrary.wiley.com/doi/full/10.1113/JP275240
+*** Still looking to reproduce the "stuttering" neuron
+A bursting steady state. The neuron fires rhythmic irregular bursts of action potentials; this activity pattern is named “stuttering”
+*** Increase population of all cells and include more heterogeneity in population esp. interneuron and multiple patterns of firing
+Would require creating a lot of cellParams -- this should be a project to be implemented in NetPyNE at some point.
+*** Descending inhibitory input still a stretch goal, early goal is just describing this superficial lamina projection neuron and then modelling pathologies
+
+** TODO List
+*** c-fiber
+Look into what the soma AP looks like- TODO
+Ensure model is valid for stimulus frequency- DONE unless further input from someone with more modelling experienced
+Lengthen axons in model- TODO
+Dr. Koerber- TODO
+*** DHN
+Do the sims match in vitro data? What is 40 picoamp difference in input 
+Balachandar and Prescott paper- TODO
+Increase population of all cells, heterogeneity in population (sounds like NetPyNE, bring up in discussion)
+
