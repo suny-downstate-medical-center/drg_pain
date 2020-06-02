@@ -3,7 +3,7 @@ try:
     from __main__ import cfg
 except:
     from cfg import cfg
-from cellcopy import dcp, cell_copy
+
 freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 = cfg.freq, cfg.npulses, cfg.dur, cfg.amp, cfg.mttxs, cfg.mn1p8, cfg.mn1p9
 
 # NetParams object to store network parameters
@@ -19,7 +19,7 @@ tjlbl= 'tjcnrn'
 #solbl= 'socnrn'
 
 # load cell designs
-tjRules= netParams.importCellParams(label= tjlbl, conds={'cellType': tjlbl, 'cellModel': tjlbl}, fileName= 'cells.py', cellName= 'npTJ'  , cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1.9': mn1.9})
+tjRules= netParams.importCellParams(label= tjlbl, conds={'cellType': tjlbl, 'cellModel': tjlbl}, fileName= 'cells.py', cellName= 'npTJ'  , cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1p9': mn1p9})
 #soRules= netParams.importCellParams(label= solbl, conds={'cellType': solbl, 'cellModel': solbl}, fileName= 'cells.py', cellName= 'npSoma', cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8})
 
 # assign cell parameters

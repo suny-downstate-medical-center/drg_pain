@@ -20,11 +20,10 @@ MN1P9='1.0'
 echo "generating freqtmp.py file"
 sed "s/CFGNPULSES/$NPULSES/" template.py | sed "s/CFGAMP/$AMP/" | sed "s/CFGDUR/$DUR/" | sed "s/CFGMTTXS/$MTTXS/" | sed "s/CFGMN1P8/$MN1P8/" | sed "s/CFGMN1P9/$MN1P9/" > freqtmp.py
 #iterate and run processes
-for freq in 25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5
+for freq in 25 23 21 19 17 15 13 11 9 7 5
 do
     echo "freq: $freq Hz"
-    sed "s/CFGFREQ/$freq/" freqtmp.py > cfg.py
-    sed "s/CFGSIMLABEL/freq$freq"
+    sed "s/CFGFREQ/$freq/" freqtmp.py | sed "s/CFGSIMLABEL/freq$freq" > cfg.py
     python init.py
 done
 #clean up
