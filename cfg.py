@@ -17,6 +17,7 @@ cfg.amp = 0.3
 cfg.dur = 5
 cfg.mttxs = 1.0
 cfg.mn1p8 = 1.0
+cfg.mn1p9 = 1.0
 
 #in case plotTraces does not get called -- need to specify to record from all cells
 cfg.recordCells = ['all']

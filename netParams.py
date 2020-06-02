@@ -4,7 +4,7 @@ try:
 except:
     from cfg import cfg
 from cellcopy import dcp, cell_copy
-freq, npulses, dur, amp, mttxs, mn1p8 = cfg.freq, cfg.npulses, cfg.dur, cfg.amp, cfg.mttxs, cfg.mn1p8
+freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 = cfg.freq, cfg.npulses, cfg.dur, cfg.amp, cfg.mttxs, cfg.mn1p8, cfg.mn1p9
 
 # NetParams object to store network parameters
 netParams= specs.NetParams()   # object of class NetParams to store the network parameters
@@ -19,7 +19,7 @@ tjlbl= 'tjcnrn'
 #solbl= 'socnrn'
 
 # load cell designs
-tjRules= netParams.importCellParams(label= tjlbl, conds={'cellType': tjlbl, 'cellModel': tjlbl}, fileName= 'cells.py', cellName= 'npTJ'  , cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8})
+tjRules= netParams.importCellParams(label= tjlbl, conds={'cellType': tjlbl, 'cellModel': tjlbl}, fileName= 'cells.py', cellName= 'npTJ'  , cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1.9': mn1.9})
 #soRules= netParams.importCellParams(label= solbl, conds={'cellType': solbl, 'cellModel': solbl}, fileName= 'cells.py', cellName= 'npSoma', cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8})
 
 # assign cell parameters

@@ -20,6 +20,7 @@ cfg.amp = CFGAMP
 cfg.dur = CFGDUR
 cfg.mttxs = CFGMTTXS
 cfg.mn1p8 = CFGMN1P8
+cfg.mn1p9 = CFGMN1P9
 
 #in case plotTraces does not get called -- need to specify to record from all cells
 cfg.recordCells = ['all']
