@@ -49,10 +49,12 @@ class gesec():
                     if 'params' not in mech: mech['params'] = {}
                     self.insert_mech(mech, mechs[mech]['ions'], mechs[mech]['params'])
 
-    def create_ion(self, ion, props):
-        iondict = {'props': {'e': props}, 'mechs': []}
+    def create_ion(self, ion, props = None):
+        iondict = {'mechs': [], 'props': {}}
         if isinstance(props, dict):
-            for prop in props: iondict['props'][prop] = props[prop]
+            iondict['props'] = props
+        elif props:
+            iondict['props']['e'] = props
         self.ions[ion] = iondict
         # self.rgxions[ion] = re.compile("USEION %s" %(ion))
 
@@ -66,11 +68,11 @@ class gesec():
         # use list, set, tuple or dictionary.
         for ion in ions:
             if ion not in self.ions:
-                if isinstance(ions, dict): self.create_ion(ions[ion])
-                else: self.create_ion(ion)
+                if isinstance(ions, dict): self.create_ion(ion, ions[ion])
+                else: self.create_ion(ion, None)
                 for prop in self.ions[ion]['props']:
-                    if prop == 'e': loose_set(self.sec, 'e%s' %(ion))
-                    else: loose_set(self.sec, '%s%s' %(ion, prop), self.ions[ion]['props'])
+                    if prop == 'e': loose_set(self.sec, 'e%s' %(ion), self.ions[ion]['props']['e'])
+                    else: loose_set(self.sec, '%s%s' %(ion, prop), self.ions[ion]['props'][prop])
         for param in params:
             # if there is a function for the parameter, call it
             if not callable(params[param]): loose_set(self.sec, '%s_%s' %(param, mech), params[param])
