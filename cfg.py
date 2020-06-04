@@ -46,7 +46,7 @@ for x in range(0, pts+1):
 cfg.recordTraces['v_soma'] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
 """
 # Saving
-cfg.simLabel = 'sim1'
+cfg.simLabel = 'sim'
 cfg.saveFolder = 'data'
 cfg.savePickle = True
 # cfg.saveJson = True
