@@ -15,6 +15,7 @@ iplbl = 'IPC(%.1fnAx%.1fms)' %(dur, amp)
 netParams.stimSourceParams[nslbl] = {'type': 'NetStim', 'rate': freq, 'noise': 0, 'start': 15, 'number': npulses}
 netParams.synMechParams[iplbl] = {'mod': 'IPClamp', 'dur': dur, 'amp': amp}
 # create unique tag strings for soma and tjunction
+
 tjlbl= 'tjcnrn'
 #solbl= 'socnrn'
 

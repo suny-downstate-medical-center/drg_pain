@@ -16,18 +16,15 @@ DUR=$3
 MTTXS=$4
 MN1P8=$5
 MN1P9=$6
-TMP=$7
+
 #create appropriate tmp python file
 
-[ -z "$7" ] && $TMP='temp'
-echo $TMP
-
-#echo "generating template file: $7"
-#sed "
-#s/CFGNPULSES/$NPULSES/
-#s/CFGAMP/$AMP/
-#s/CFGDUR/$DUR/
-#s/CFGMTTXS/$MTTXS/
-#s/CFGMN1P8/$MN1P8/
-#s/CFGMN1P9/$MN1P9/
-#" template.py > $7
+echo "generating template file output to STDOUT: $7"
+sed "
+s/CFGNPULSES/$NPULSES/
+s/CFGAMP/$AMP/
+s/CFGDUR/$DUR/
+s/CFGMTTXS/$MTTXS/
+s/CFGMN1P8/$MN1P8/
+s/CFGMN1P9/$MN1P9/
+" template.py
