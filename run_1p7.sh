@@ -21,7 +21,7 @@ MN1P9='1.0'
 echo "generating freqtmp.py file"
 for CNDCT in 1.0 1.2 1.4 1.6 1.8 2.0
 do
-    bash gen_tmp 30 0.3 5 1.0 1.0 ${CNDCT} > mn1p9tmp
+    bash gen_tmp.sh 30 0.3 5 ${CNDCT} 1.0 1.0 > mn1p7tmp
     for FREQ in 25 23 21 19 17 15 13 11 9 7 5
     do
         echo "TESTING: cndct: ${CNDCT}, freq: ${FREQ} Hz"
