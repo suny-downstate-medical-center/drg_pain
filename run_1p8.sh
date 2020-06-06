@@ -8,7 +8,7 @@ do
     for FREQ in 25 23 21 19 17 15 13 11 9 7 5
     do
         echo "TESTING: cndct: ${CNDCT}, freq: ${FREQ} Hz"
-        sed "s/CFGFREQ/${FREQ}/; s/CFGSIMLABEL/mn1p9${CNDCT}freq${FREQ}" mn1p8tmp > cfg.py
+        sed "s/CFGFREQ/${FREQ}/; s/CFGSIMLABEL/mn1p9${CNDCT}freq${FREQ}/" mn1p8tmp > cfg.py
         python init.py
     done
 done
