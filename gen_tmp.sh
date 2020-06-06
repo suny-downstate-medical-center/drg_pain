@@ -19,7 +19,6 @@ MN1P9=$6
 
 #create appropriate tmp python file
 
-echo "generating template file output to STDOUT: $7"
 sed "
 s/CFGNPULSES/$NPULSES/
 s/CFGAMP/$AMP/
