@@ -10,12 +10,19 @@ import logging as lgg
 #import re
 
 def loose_set(object, attribute, value):
-    try: setattr(object, attribute, value)
-    except: print("%s.%s does not exist" %(object, attribute))
+    try: 
+        setattr(object, attribute, value)
+        return True
+    except: 
+        print("%s.%s does not exist" %(object, attribute))
+        return False
 
 def loose_get(object, attribute):
-    try: getattr(object, attribute)
-    except: print("%s.%s does not exist" %(object, attribute))
+    try: 
+        return getattr(object, attribute)
+    except: 
+        print("%s.%s does not exist" %(object, attribute))
+        return False
 
 class gesec():
 
@@ -49,12 +56,16 @@ class gesec():
                     if 'params' not in mech: mech['params'] = {}
                     self.insert_mech(mech, mechs[mech]['ions'], mechs[mech]['params'])
 
-    def insert_pp(self, pp, loc, params = {}):
+    def insert_pp(self, pp, loc, ions = {}, params = {}):
         if pp not in self.pps:
             self.pps[pp] = {}
         if loc not in self.pps:
             self.pps[pp][loc] = []
-        self.pps[pp][loc].append(0)
+        ppf = getattr(self.h, pp)
+        ppo = ppf(self.sec(loc))
+        for param in params:
+            loose_set(ppo, param, params[param])
+        self.pps[pp][loc].append(ppo)
 
     def create_ion(self, ion, props = None):
         iondict = {'mechs': [], 'props': {}}
