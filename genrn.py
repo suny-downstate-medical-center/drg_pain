@@ -24,7 +24,7 @@ class gesec():
         self.name  = name
         self.sec   = self.h.Section(name=name)
         self.mechs = []
-        self.pps   = []
+        self.pps   = {}
         self.ions  = {}
         # self.rgxions = {}
         for ion in ions:
@@ -48,6 +48,13 @@ class gesec():
                     if 'ions' not in mech: mech['ions'] = {}
                     if 'params' not in mech: mech['params'] = {}
                     self.insert_mech(mech, mechs[mech]['ions'], mechs[mech]['params'])
+
+    def insert_pp(self, pp, loc, params = {}):
+        if pp not in self.pps:
+            self.pps[pp] = {}
+        if loc not in self.pps:
+            self.pps[pp][loc] = []
+        self.pps[pp][loc].append(0)
 
     def create_ion(self, ion, props = None):
         iondict = {'mechs': [], 'props': {}}
