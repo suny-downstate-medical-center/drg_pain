@@ -63,6 +63,13 @@ class gesec():
             self.pps[pp][loc] = []
         ppf = getattr(self.h, pp)
         ppo = ppf(self.sec(loc))
+        for ion in ions:
+            if ion not in self.ions:
+                if isinstance(ions, dict): self.create_ion(ion, ions[ion])
+                else: self.create_ion(ion, None)
+                for prop in self.ions[ion]['props']:
+                    if prop == 'e': loose_set(self.sec, 'e%s' %(ion), self.ions[ion]['props']['e'])
+                    else: loose_set(self.sec, '%s%s' %(ion, prop), self.ions[ion]['props'][prop])
         for param in params:
             loose_set(ppo, param, params[param])
         self.pps[pp][loc].append(ppo)
