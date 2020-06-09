@@ -12,7 +12,7 @@ cfg.recordStep = 0.5
 
 #netParam vars
 cfg.freq = 5
-cfg.npulses = 20
+cfg.npulses = 1
 cfg.amp = 0.3
 cfg.dur = 5
 cfg.mttxs = 1.0
