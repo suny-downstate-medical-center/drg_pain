@@ -1,5 +1,6 @@
 from netpyne import specs
 from netpyne.batch import Batch
+import numpy as np
 
 params = specs.ODict()
 
