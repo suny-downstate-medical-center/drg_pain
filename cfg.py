@@ -46,11 +46,11 @@ for x in range(0, pts+1):
 cfg.recordTraces['v_soma'] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
 """
 # Saving
-cfg.simLabel = 'sim'
+cfg.simLabel = 'simtest'
 cfg.saveFolder = 'data'
 cfg.savePickle = True
 # cfg.saveJson = True
-cfg.saveDataInclude = ['simData']
+# cfg.saveDataInclude = ['netParams', 'netCells', 'simData', 'simConfig', 'simData', 'plotData']
 
 # run simulation
 cfg.hParams = {'celsius': 22, 'v_init': -53.5}
