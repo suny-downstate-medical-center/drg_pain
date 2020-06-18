@@ -29,10 +29,10 @@ cfg.recordTraces['soma'] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
 cfg.recordTraces['terminal'] = {'sec': 'cntr', 'loc': 1.0, 'var': 'v'}
 
 #more plot traces
-"""
 for label, chan in [ ['NaV1.7', 'nattxs'], ['NaV1.8', 'nav1p8'] ]:
     cfg.recordTraces[label] = {'sec': 'soma', 'loc': 0.5, 'var': 'ina_%s' %(chan)}
 
+"""
 pts = 3
 #generate recordTraces along the fiber and at soma (ordered dictionary so generate them in order)
 for x in range(-pts, 0):
@@ -57,7 +57,7 @@ cfg.hParams = {'celsius': 22, 'v_init': -53.5}
 
 cfg.duration = 1000/cfg.freq * cfg.npulses + 100
 
-cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'cell', 'saveData': True, 'saveFig': True,
+cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,
                            'showFig': False, 'timeRange': [0, cfg.duration]}
 
 #use the saveData to plot values

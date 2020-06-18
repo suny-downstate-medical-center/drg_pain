@@ -7,56 +7,64 @@ import pickle
 import numpy as np
 import re
 
-_lfc = {
-    'pkl': lambda fp: pickle.load(fp)
-    'json': lambda fp: json.load(fp)
-}
-
-class data():
+class DataHandler():
     def __init__(self, output = 'analysis/', delim = '_'):
         self.output = output
         self.data = {}
         self.delim = delim
+        self.dotre = re.compile('\.')
+        self.usre = re.compile('_')
+        self.delimre = re.compile(re.escape(delim))
 
-    def load_data(self, filename, filetype = None, prepend = None):
+    def load_file(self, filename, filetype = None, prepend = None):
+        splitarr = self.dotre.split(filename)
         if not prepend:
-            prepend = "%s%s" %(filename)
+            prepend = splitarr[0]
         if not filetype:
-            filetype = re.split('.', filename)[1]
+            filetype = splitarr[1]
         try:
-            _lfc[filetype](filename)
-                data
-        except:
-            return False
-        data = _lfc[filetype](fp)
-        self.load_simData(data)
-        return True
-        
-    def load_pkl(self, filename, prepend = None):
-        if not prepend:
-            prepend = "%s%s" %(filename)
-        try:
-            with open(filename, 'rb') as fp:
+            if   filetype == 'pkl':
+                fp = open(filename, 'rb')
                 data = pickle.load(fp)
+            elif filetype == 'json':
+                fp = open(filename, 'r')
+                data = json.load(fp)
+            else:
+                return False
         except:
             return False
-        self.load_simData(data) 
+        self.load_npnData(data, prepend)
         return True
 
-    def load_simData(self, data):
+    def load_npnData(self, data, prepend):
         self.data[prepend] = data
         for key in data['simData']:
             if isinstance(data['simData'][key], dict):
                 for cell in data['simData'][key]:
-                    cellid = int(re.split('_', cell)[1])
-                    pop = data['net']['cells'][cellid]
-                    self.data['%s%s%s%s%s%s%s' %(prepend, self.delim, pop, self.delim, cellid, self.delim, key)] = data['simData'][key][cell]
+                    cellid = int(self.usre.split(cell)[1])
+                    pop = data['net']['cells'][cellid]['tags']['pop']
+                    self.data['%s%s%s%s%s%s%s' %(prepend, self.delim, pop, self.delim, cellid, self.delim, key)] = np.array(data['simData'][key][cell])
             else:
-                self.data['%s%s%s' %(prepend, self.delim, key)] = self.data['simData'][key]
-        
-    def group_traces(self, gfunction):
+                self.data['%s%s%s' %(prepend, self.delim, key)] = data['simData'][key]
+
+    def filter_traces(self, filter):
         group = {}
-        for key in self.data:
-            if gfunction(key):
-                group[key] = self.data[key]
+        if isinstance(filter, str):
+            filterre = re.compile(filter)
+            for key in self.data:
+                if filterre.search(key): group[key] = self.data[key]
+        elif callable(filter):
+            for key in self.data:
+                if filter(key): group[key] = self.data[key]
         return group
+
+    def __getitem__(self, item):
+        if item in self.data: return self.data[item]
+        return self.filter_traces(item)
+
+    def __call__(self, filename, filetype = None, prepend = None):
+        return self.load_file(filename, filetype, prepend)
+
+if __name__ == "__main__":
+    dh = DataHandler()
+    dh('data/simtest.pkl')
