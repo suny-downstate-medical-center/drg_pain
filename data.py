@@ -11,6 +11,7 @@ class DataHandler():
     def __init__(self, output = 'analysis/', delim = '_'):
         self.output = output
         self.data = {}
+        self.traces = {}
         self.delim = delim
         self.dotre = re.compile('\.')
         self.usre = re.compile('_')
@@ -31,7 +32,8 @@ class DataHandler():
                 data = json.load(fp)
             else:
                 return False
-        except:
+        except Exception as exstr:
+            print(exstr)
             return False
         self.load_npnData(data, prepend)
         return True
@@ -44,6 +46,7 @@ class DataHandler():
                     cellid = int(self.usre.split(cell)[1])
                     pop = data['net']['cells'][cellid]['tags']['pop']
                     self.data['%s%s%s%s%s%s%s' %(prepend, self.delim, pop, self.delim, cellid, self.delim, key)] = np.array(data['simData'][key][cell])
+                    self.traces['%s%s%s%s%s%s%s' %(prepend, self.delim, pop, self.delim, cellid, self.delim, key)] = np.array(data['simData'][key][cell])
             else:
                 self.data['%s%s%s' %(prepend, self.delim, key)] = data['simData'][key]
 
@@ -58,6 +61,9 @@ class DataHandler():
                 if filter(key): group[key] = self.data[key]
         return group
 
+    def keys(self):
+        return self.data.keys()
+
     def __getitem__(self, item):
         if item in self.data: return self.data[item]
         return self.filter_traces(item)
@@ -67,4 +73,4 @@ class DataHandler():
 
 if __name__ == "__main__":
     dh = DataHandler()
-    dh('data/simtest.pkl')
+    dh('data/n1p7.pkl')
