@@ -97,13 +97,13 @@ def npSoma( mulnattxs = 1, mulnav1p8 = 1 , mulnav1p9 = 1 ):
     cell.soma.gbar_nav1p9 *= mulnav1p9
     return cell
 
-def npSomaMut( wt = 1 ):
+def npSomaMut( wtp = 1 ):
     hInit()
     cell = genrn(**somaCellArgs)
-    gbar_nattxs = 0.0001 * (wt)
-    gbar_navmut = 0.0001 * (1 - wt)
-    cell.insert_mech(sec='soma', mech='navmut', ions={'nak': {'e': -15.87}}, params={'gbar': gbar_navmut})
+    gbar_nattxs = 0.0001 * (wtp)
+    gbar_navmut = 0.0001 * (1 - wtp)
     cell.edit_mechs('all', 'nattxs', 'gbar', gbar_nattxs)
+    cell.insert_mech(sec='soma', mech='navmut', ions={'nak': {'e': -15.87}}, params={'gbar': gbar_navmut})
     return cell
 
 def npTJ( mulnattxs = 1, mulnav1p8 = 1, mulnav1p9 = 1 ):

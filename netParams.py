@@ -13,10 +13,10 @@ freqs, npulsess, durs, amps, mttxss, mn1p8s, mn1p9s = cfg.freqs, cfg.npulsess, c
 # NetParams object to store network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
-params = product( amps, durs, mttxss)
+params = product( freqs, npulsess, durs, amps, mttxss, mn1p8s, mn1p9s)
 # params = product( amps, durs, mn1p8s )
 
-for amp, dur, mttxs in params:
+for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
 # for amp, dur, mn1p8 in params:
 # for amp, dur, mttxs, mn1p8 in params:
     # set up current clamp definitions, NetStim and IPClamp point process
@@ -28,34 +28,44 @@ for amp, dur, mttxs in params:
     # create unique tag strings for soma and tjunction
     tjlbl = 'tjcnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
     solbl = 'socnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
-
+    xsolbl = 'xsocnrn(wtn1p7:%.3f)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
+    xtglbl = 'xtjcnrn(wtn1p7:%.3f)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
     # load cell designs
+    
     # t-junction model
-    tjRules = netParams.importCellParams(label=tjlbl, conds={'cellType': tjlbl, 'cellModel': tjlbl},
-                                         fileName='cells.py', cellName='npTJ',
-                                         cellArgs={'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1p9': mn1p9})
+    # tjRules = netParams.importCellParams(label=tjlbl, conds={'cellType': tjlbl, 'cellModel': tjlbl},
+    #                                      fileName='cells.py', cellName='npTJ',
+    #                                      cellArgs={'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1p9': mn1p9})
     # soma cell model
     soRules = netParams.importCellParams(label= solbl, conds={'cellType': solbl, 'cellModel': solbl},
                                          fileName= 'cells.py', cellName= 'npSoma',
                                          cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1p9': mn1p9})
 
+    # mutRules = netParams.importCellParams(label= mxlbl, conds={'cellType': mxlbl, 'cellModel': mxlbl},
+    #                                       fileName= 'cells.py', cellName='npSomaMut',
+    #                                       cellArgs= {'wtp': mttxs})
     # assign cell parameters
-    netParams.cellParams[tjlbl] = tjRules
+    # netParams.cellParams[tjlbl] = tjRules
     netParams.cellParams[solbl] = soRules
+    # netParams.cellParams[mxlbl] = mutRules
     # assign cells to populations
-    netParams.popParams[tjlbl] = {'numCells': 1, 'cellType': tjlbl, 'cellModel': tjlbl}
+    # netParams.popParams[tjlbl] = {'numCells': 1, 'cellType': tjlbl, 'cellModel': tjlbl}
     netParams.popParams[solbl] = {'numCells': 1, 'cellType': solbl, 'cellModel': solbl}
+    # netParams.popParams[mxlbl] = {'numCells': 1, 'cellType': mxlbl, 'cellModel': mxlbl}
     # attach current pulse to cells ( to socnrn->soma(0.5), tjcnrn->peri(0.0) )
-    netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, tjlbl)] = {'source': nslbl, 'conds': {'pop': tjlbl},
-                                                                      'sec': 'peri', 'loc': 0.0, 'weight': 1,
-                                                                      'delay': 5, 'synMech': iplbl}
+    # netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, tjlbl)] = {'source': nslbl, 'conds': {'pop': tjlbl},
+    #                                                                   'sec': 'peri', 'loc': 0.0, 'weight': 1,
+    #                                                                   'delay': 5, 'synMech': iplbl}
     netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, solbl)] = {'source': nslbl, 'conds': {'pop': solbl},
                                                                       'sec': 'soma', 'loc': 0.5, 'weight': 1,
                                                                       'delay': 5, 'synMech': iplbl}
+    # netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, mxlbl)] = {'source': nslbl, 'conds': {'pop': mxlbl},
+    #                                                                   'sec': 'soma', 'loc': 0.5, 'weight': 1,
+    #                                                                   'delay': 5, 'synMech': iplbl}
 
 if __name__ == '__main__':
     from pprint import pprint
-    print('---TJ---')
-    pprint(tjRules)
+    # print('---TJ---')
+    # pprint(tjRules)
     print('--SOMA--')
     pprint(soRules)

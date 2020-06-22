@@ -1,5 +1,9 @@
 """ cfg.py """
 from netpyne import specs
+import numpy as np
+
+def nparr(start, end, incr):
+    return np.arange(start, end+incr/2, incr)
 
 cfg = specs.SimConfig()  
 
@@ -8,25 +12,30 @@ cfg = specs.SimConfig()
 #cfg.cvode_active = False
 cfg.cvode_active = True
 cfg.recordStims = False
-cfg.recordStep = 0.5
+cfg.recordStep = 0.25
 
+#toggle cell models to sim
+cfg.simso
+cfg.simtj
+cfg.simxso
+cfg.simxtg
 #netParam vars
 cfg.freqs = [1000]
 cfg.npulsess = [1]
-cfg.amps = [0.14, 0.15, 0.16, 0.17, 0.18]
-cfg.durs = [15, 20, 25]
-cfg.mttxss = [0.6, 0.7, 0.8, 0.9, 1.0]
-cfg.mn1p8s = [0.6, 0.7, 0.8, 0.9, 1.0]
+cfg.amps = nparr(0.10, 0.20, 0.01)
+cfg.durs = [20]
+cfg.mttxss = nparr(0.6, 1.0, 0.05)
+cfg.mn1p8s = nparr(0.6, 1.0, 0.05)
 cfg.mn1p9s = [1.0]
 
 #in case plotTraces does not get called -- need to specify to record from all cells
 cfg.recordCells = ['all']
 
 #simple plot traces
-cfg.recordTraces['stim'] = {'sec': 'peri', 'loc': 0.0, 'var': 'v'}
+#cfg.recordTraces['stim'] = {'sec': 'peri', 'loc': 0.0, 'var': 'v'}
 #cfg.recordTraces['junction'] = {'sec': 'peri', 'loc': 1.0, 'var': 'v'}
 cfg.recordTraces['soma'] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
-cfg.recordTraces['terminal'] = {'sec': 'cntr', 'loc': 1.0, 'var': 'v'}
+#cfg.recordTraces['terminal'] = {'sec': 'cntr', 'loc': 1.0, 'var': 'v'}
 
 #more plot traces
 for label, chan in [ ['NaV1.7', 'nattxs'], ['NaV1.8', 'nav1p8'] ]:
@@ -55,7 +64,7 @@ cfg.saveJson = True
 # run simulation
 cfg.hParams = {'celsius': 22, 'v_init': -53.5}
 
-cfg.duration = 1000/cfg.freq * cfg.npulses + 100
+cfg.duration = 1000/min(cfg.freqs) * max(cfg.npulsess) + 100
 
 cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,
                            'showFig': False, 'timeRange': [0, cfg.duration]}
