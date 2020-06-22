@@ -11,13 +11,13 @@ cfg.recordStims = False
 cfg.recordStep = 0.5
 
 #netParam vars
-cfg.freq = 5
-cfg.npulses = 1
-cfg.amp = 0.3
-cfg.dur = 5
-cfg.mttxs = 1.0
-cfg.mn1p8 = 1.0
-cfg.mn1p9 = 1.0
+cfg.freqs = [1000]
+cfg.npulsess = [1]
+cfg.amps = [0.14, 0.15, 0.16, 0.17, 0.18]
+cfg.durs = [15, 20, 25]
+cfg.mttxss = [0.6, 0.7, 0.8, 0.9, 1.0]
+cfg.mn1p8s = [0.6, 0.7, 0.8, 0.9, 1.0]
+cfg.mn1p9s = [1.0]
 
 #in case plotTraces does not get called -- need to specify to record from all cells
 cfg.recordCells = ['all']
@@ -49,8 +49,8 @@ cfg.recordTraces['v_soma'] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
 cfg.simLabel = 'simtest'
 cfg.saveFolder = 'data'
 cfg.savePickle = True
-# cfg.saveJson = True
-# cfg.saveDataInclude = ['netParams', 'netCells', 'simData', 'simConfig', 'simData', 'plotData']
+cfg.saveJson = True
+# cfg.saveDataInclude = ['netParams', 'netCells', 'simData', 'simConfig', 'plotData']
 
 # run simulation
 cfg.hParams = {'celsius': 22, 'v_init': -53.5}

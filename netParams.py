@@ -8,15 +8,10 @@ import numpy as np
 
 from itertools import product
 
-freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 = cfg.freq, cfg.npulses, cfg.dur, cfg.amp, cfg.mttxs, cfg.mn1p8, cfg.mn1p9
+freqs, npulsess, durs, amps, mttxss, mn1p8s, mn1p9s = cfg.freqs, cfg.npulsess, cfg.durs, cfg.amps, cfg.mttxss, cfg.mn1p8s, cfg.mn1p9s
 
 # NetParams object to store network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
-
-amps = np.linspace(0.15, 0.20, 6)
-durs = np.linspace(1, 5, 6)
-mttxss = np.linspace(0.5, 1.0, 6)
-# mn1p8s = np.linspace(0.5, 1.0, 6)
 
 params = product( amps, durs, mttxss)
 # params = product( amps, durs, mn1p8s )
@@ -31,8 +26,8 @@ for amp, dur, mttxs in params:
     netParams.synMechParams[iplbl] = {'mod': 'IPClamp', 'dur': dur, 'amp': amp}
 
     # create unique tag strings for soma and tjunction
-    tjlbl = 'tjcnrn(mn1p7:%.1fx)(mn1p8:%.1fx)(%.2fnAx%.1fms)(%.1fHz)' % (mttxs, mn1p8, amp, dur, freq)
-    solbl = 'socnrn(mn1p7:%.1fx)(mn1p8:%.1fx)(%.2fnAx%.1fms)(%.1fHz)' % (mttxs, mn1p8, amp, dur, freq)
+    tjlbl = 'tjcnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
+    solbl = 'socnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
 
     # load cell designs
     # t-junction model

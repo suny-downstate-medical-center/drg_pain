@@ -6,9 +6,11 @@ import json
 import pickle
 import numpy as np
 import re
+from itertools import product
+
 
 class DataHandler():
-    def __init__(self, output = 'analysis/', delim = '_'):
+    def __init__(self, output='analysis/', delim='_'):
         self.output = output
         self.data = {}
         self.traces = {}
@@ -17,14 +19,14 @@ class DataHandler():
         self.usre = re.compile('_')
         self.delimre = re.compile(re.escape(delim))
 
-    def load_file(self, filename, filetype = None, prepend = None):
+    def load_file(self, filename, prepend=None, filetype=None):
         splitarr = self.dotre.split(filename)
         if not prepend:
             prepend = splitarr[0]
         if not filetype:
             filetype = splitarr[1]
         try:
-            if   filetype == 'pkl':
+            if filetype == 'pkl':
                 fp = open(filename, 'rb')
                 data = pickle.load(fp)
             elif filetype == 'json':
@@ -45,32 +47,56 @@ class DataHandler():
                 for cell in data['simData'][key]:
                     cellid = int(self.usre.split(cell)[1])
                     pop = data['net']['cells'][cellid]['tags']['pop']
-                    self.data['%s%s%s%s%s%s%s' %(prepend, self.delim, pop, self.delim, cellid, self.delim, key)] = np.array(data['simData'][key][cell])
-                    self.traces['%s%s%s%s%s%s%s' %(prepend, self.delim, pop, self.delim, cellid, self.delim, key)] = np.array(data['simData'][key][cell])
+                    # self.data['%s%s%s%s%s' %(prepend, self.delim, pop, self.delim, key)] = np.array(data['simData'][key][cell])
+                    self.traces['%s%s%s%s%s' % (prepend, self.delim, pop, self.delim, key)] = np.array(
+                        data['simData'][key][cell])
             else:
-                self.data['%s%s%s' %(prepend, self.delim, key)] = data['simData'][key]
+                self.data['%s%s%s' % (prepend, self.delim, key)] = data['simData'][key]
 
     def filter_traces(self, filter):
         group = {}
         if isinstance(filter, str):
             filterre = re.compile(filter)
-            for key in self.data:
-                if filterre.search(key): group[key] = self.data[key]
+            for key in self.traces:
+                if filterre.search(key): group[key] = self.traces[key]
+        elif isinstance(filter, re.Match):
+            for key in self.traces:
+                if filter.search(key): group[key] = self.traces[key]
         elif callable(filter):
-            for key in self.data:
-                if filter(key): group[key] = self.data[key]
+            for key in self.traces:
+                if filter(key): group[key] = self.traces[key]
         return group
 
     def keys(self):
-        return self.data.keys()
+        return {'data': self.data.keys(), 'traces': self.traces.keys()}
 
     def __getitem__(self, item):
         if item in self.data: return self.data[item]
+        if item in self.traces: return self.traces[item]
         return self.filter_traces(item)
 
-    def __call__(self, filename, filetype = None, prepend = None):
-        return self.load_file(filename, filetype, prepend)
+    def __call__(self, filename, prepend=None, filetype=None):
+        return self.load_file(filename, prepend, filetype)
+
+
+    def return_arr(self, ixsre, get_val=lambda x: x):
+        if isinstance(ixsre, str): ixsre = re.compile(ixsre)
+        arr = {}
+        for key in self.traces:
+            mobj = ixsre.search(key)
+            if mobj:
+                val = get_val(self.traces[key])
+                tmparr = arr
+                for ix in mobj.groups():
+                    ix = float(ix)
+                    if ix not in tmparr: tmparr[ix] = {}
+                    otmparr = tmparr
+                    tmparr = tmparr[ix]
+                otmparr[ix] = {'key': key, 'val': val}
+        return arr
 
 if __name__ == "__main__":
     dh = DataHandler()
-    dh('data/n1p7.pkl')
+    dh('data/n1p7.json', 'n1p7')
+    ixsre = re.compile('mn1p7:(...).*(.....)nAx(...)ms.*_terminal')
+    arr = dh.return_arr(ixsre, lambda x: x.max())
