@@ -2,7 +2,7 @@
 from netpyne import specs
 import numpy as np
 
-def nparr(start, end, incr):
+def arr(start, end, incr):
     return np.arange(start, end+incr/2, incr)
 
 cfg = specs.SimConfig()  
@@ -15,17 +15,17 @@ cfg.recordStims = False
 cfg.recordStep = 0.25
 
 #toggle cell models to sim
-cfg.simso
-cfg.simtj
-cfg.simxso
-cfg.simxtg
+cfg.simso = True
+cfg.simtj = True
+cfg.simxso = True
+cfg.simxtg = True
 #netParam vars
 cfg.freqs = [1000]
 cfg.npulsess = [1]
-cfg.amps = nparr(0.10, 0.20, 0.01)
+cfg.amps = arr(0.10, 0.20, 0.01)
 cfg.durs = [20]
-cfg.mttxss = nparr(0.6, 1.0, 0.05)
-cfg.mn1p8s = nparr(0.6, 1.0, 0.05)
+cfg.mttxss = arr(0.6, 1.0, 0.05)
+cfg.mn1p8s = arr(0.6, 1.0, 0.05)
 cfg.mn1p9s = [1.0]
 
 #in case plotTraces does not get called -- need to specify to record from all cells
