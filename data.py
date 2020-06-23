@@ -8,7 +8,6 @@ import numpy as np
 import re
 from itertools import product
 
-
 class DataHandler():
     def __init__(self, output='analysis/', delim='_'):
         self.output = output

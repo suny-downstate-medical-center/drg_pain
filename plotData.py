@@ -5,37 +5,38 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from itertools import product
 
-amps = np.linspace(0.16, 0.18, 5)
-durs = np.linspace(1, 5, 5)
-mttxss = np.linspace(0.5, 1.0, 6)
-mn1p8s = np.linspace(0.5, 1.0, 6)
-
-amps = np.array([.16, .165, .17, .175, .18])
-durs = np.array([1, 2, 3, 4, 5])
-mttxss = np.array([.5, .6, .7, .8, .9, 1])
-mn1p8s = np.array([.5, .6, .7, .8, .9, 1])
-
-mamps, mdurs = np.meshgrid(amps, durs)
 dh = DataHandler()
-dh('data/n1p7.json', 'n1p7')
+#dh('data/n1p7.json', 'n1p7')
 dh('data/n1p8.json', 'n1p8')
+#                mul ,    amp
+#ixsre = 'mn1p7:(.....).*(.....)nAx.*'
+ixsre = 'mn1p8:(.....).*(.....)nAx.*'
+data = dh.return_arr(ixsre, lambda x: x.max())
 
-#               mul ,   amp ,    dur
-ixsre = 'mn1p7:(...).*(.....)nAx(...)ms.*_terminal'
-arr = dh.return_arr(ixsre, lambda x: x.max())
+def arr(start, end, incr):
+    return np.array([float("%.3f" %(x)) for x in np.arange(start, end+incr/2, incr)])
 
-def create_surface(arr, mul, amps, durs):
-    surface = np.zeros( (len(amps), len(durs)) )
-    for x, amp in enumerate(amps):
-        for y, dur in enumerate(durs):
-            surface[x][y] = arr[mul][amp][dur]['val']
+amps = arr(0.14, 0.26, 0.005)
+mttxss = arr(0.0, 1.0, 0.05)
+mn1p8s = arr(0.0, 1.0, 0.05)
+#muls = mttxss
+muls = mn1p8s
+def create_surface(muls, amps):
+    surface = np.zeros( (len(amps), len(muls)) )
+    for i, mul in enumerate(muls):
+        for j, amp in enumerate(amps):
+            surface[j][i] = data[mul][amp]['val']
     return surface
 
-for mttxs in mttxss:
-    fig = plt.figure()
-    ax  = fig.gca(projection='3d')
-    v_terminal = create_surface(arr, mttxs, amps, durs)
-    ax.plot_surface(mamps, mdurs, v_terminal, label='v_terminal', cmap=cm.coolwarm)
-    ax.set_xlim(amps.max(), amps.min())
-    ax.set_xlabel('nA')
-    ax.set_ylabel('ms')
+mmuls, mamps = np.meshgrid(muls, amps)
+
+fig = plt.figure()
+ax  = fig.gca(projection='3d')
+v_soma = create_surface(muls, amps)
+ax.plot_surface(mmuls, mamps, v_soma, label='v_soma', cmap=cm.coolwarm)
+ax.set_xlim(muls.max(), muls.min())
+ax.set_ylim(amps.min(), amps.max())
+ax.set_xlabel('NaV1.8')
+ax.set_ylabel('nA')
+plt.show()
+
