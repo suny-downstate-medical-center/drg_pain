@@ -8,17 +8,18 @@ from itertools import product
 from cfg import freqs, npulsess, amps, durs, mttxss, mn1p8s, mn1p9s
 
 # label
-# 'socnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
+# '<celltype>(mn1p7:%.3fx)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
 dh = DataHandler()
-dh('data/n1p7.json', 'n1p7')
+dh('data/curr.json', 'curr')
 
-ixsre = 'mn1p8:(.....).*(.....)nAx.*'
-data = dh.return_arr(ixsre, lambda x: x.max())
+for label, chan in [ ['NaV1.7', 'nattxs'], ['NaV1.8', 'nav1p8'] ]:
+    cfg.recordTraces[label] = {'sec': 'soma', 'loc': 0.5, 'var': 'ina_%s' %(chan)}
+ixsren1p7 = '(.....)nAx(.....)ms.*ina_NaV1.7'
+ixsren1p8 = '(.....)nAx(.....)ms.*ina_NaV1.8'
 
-def arr(start, end, incr):
-    return np.array([float("%.3f" %(x)) for x in np.arange(start, end+incr/2, incr)])
+n1p7 = dh.return_arr(ixsren1p7, lambda x: x)
+n1p8 = dh.return_arr(ixsren1p8, lambda x: x)
 
-muls = mn1p8s
 def create_surface(muls, amps):
     surface = np.zeros( (len(amps), len(muls)) )
     for i, mul in enumerate(muls):

@@ -5,21 +5,20 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from itertools import product
 
+from cfg import freqs, npulsess, amps, durs, mttxss, mn1p8s, mn1p9s
+
+# label
+# 'socnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
 dh = DataHandler()
-#dh('data/n1p7.json', 'n1p7')
-dh('data/n1p8.json', 'n1p8')
+dh('data/n1p7.json', 'n1p7')
+
 #                mul ,    amp
-#ixsre = 'mn1p7:(.....).*(.....)nAx.*'
-ixsre = 'mn1p8:(.....).*(.....)nAx.*'
+ixsre = 'mn1p7:(.....).*(.....)nAx.*'
 data = dh.return_arr(ixsre, lambda x: x.max())
 
 def arr(start, end, incr):
     return np.array([float("%.3f" %(x)) for x in np.arange(start, end+incr/2, incr)])
 
-amps = arr(0.14, 0.26, 0.005)
-mttxss = arr(0.0, 1.0, 0.05)
-mn1p8s = arr(0.0, 1.0, 0.05)
-#muls = mttxss
 muls = mn1p8s
 def create_surface(muls, amps):
     surface = np.zeros( (len(amps), len(muls)) )

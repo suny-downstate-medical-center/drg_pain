@@ -3,7 +3,7 @@ from netpyne import specs
 import numpy as np
 
 def arr(start, end, incr):
-    return np.arange(start, end+incr/2, incr)
+    return np.array([float("%.3f" %(x)) for x in np.arange(start, end+incr/2, incr)])
 
 cfg = specs.SimConfig()  
 
@@ -22,10 +22,10 @@ cfg.simxtg = True
 #netParam vars
 cfg.freqs = [1000]
 cfg.npulsess = [1]
-cfg.amps = arr(0.10, 0.20, 0.01)
-cfg.durs = [20]
-cfg.mttxss = arr(0.6, 1.0, 0.05)
-cfg.mn1p8s = arr(0.6, 1.0, 0.05)
+cfg.amps = arr(0.10, 0.50, 0.05)
+cfg.durs = arr(5, 20, 2.5)
+cfg.mttxss = [1.0]
+cfg.mn1p8s = [1.0]
 cfg.mn1p9s = [1.0]
 
 #in case plotTraces does not get called -- need to specify to record from all cells
