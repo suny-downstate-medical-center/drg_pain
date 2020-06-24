@@ -6,8 +6,10 @@ import numpy as np
 from itertools import product
 
 dh = DataHandler()
-dh('data/n1p7.json', 'n1p7')
-
+#dh('data/n1p7.json', 'n1p7')
+dh('data/n1p8.json', 'n1p8')
+#                mul ,    amp
+#ixsre = 'mn1p7:(.....).*(.....)nAx.*'
 ixsre = 'mn1p8:(.....).*(.....)nAx.*'
 data = dh.return_arr(ixsre, lambda x: x.max())
 
