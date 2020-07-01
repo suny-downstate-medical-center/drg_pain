@@ -16,9 +16,9 @@ cfg.recordStep = 0.25
 
 #toggle cell models to sim
 cfg.simso = True
-cfg.simtj = True
-cfg.simxso = True
-cfg.simxtg = True
+cfg.simtj = False
+cfg.simxso = False
+cfg.simxtj = False
 #netParam vars
 cfg.freqs = [1000]
 cfg.npulsess = [1]
