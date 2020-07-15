@@ -2,12 +2,13 @@
 
 NEURON {
 	POINT_PROCESS SinClamp
-	RANGE dur, i, amp
+	RANGE dur, i, amp, t0, x
 	ELECTRODE_CURRENT i
 }
 
 UNITS {
 	(nA) = (nanoamp)
+  PI = (pi) (1)
 }
 
 PARAMETER {
@@ -22,20 +23,25 @@ ASSIGNED {
 
 INITIAL {
 	i = 0
-    toff = -1
+  toff = -1
 }
 
 NET_RECEIVE(weight (uS)) {
-    i = amp
+  t0 = t
+  i = amp
 	toff = t + dur
 }
 
 BREAKPOINT {
 	at_time(toff)
-    if (t > toff && toff > 0) {
-        i = 0
-        toff = -1
-    }
+  if (t > toff && toff > 0) {
+    i = 0
+    toff = -1
+  } else {
+: sine pulse, amp, at x = dur
+    x = t - t0
+    i = amp * sin(PI * (x / dur))
+  }
 }
 
 
