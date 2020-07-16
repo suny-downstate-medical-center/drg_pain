@@ -16,13 +16,15 @@ netParams = specs.NetParams()  # object of class NetParams to store the network 
 
 params = product( freqs, npulsess, durs, amps, mttxss, mn1p8s, mn1p9s)
 # params = product( amps, durs, mn1p8s )
+netParams.synMechParams['E2S'] = {'mod': 'Exp2Syn', 'tau1': 0.1, 'tau2': 5.0, 'e': 0}
 
 for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
     # set up current clamp definitions, NetStim and IPClamp point process
     nslbl = 'Stim(%dHz)' % (freq)
-    iplbl = 'IPC(%.2fnAx%.1fms)' % (dur, amp)
-    netParams.stimSourceParams[nslbl] = {'type': 'NetStim', 'rate': freq, 'noise': 0, 'start': 15, 'number': npulses}
-    netParams.synMechParams[iplbl] = {'mod': 'IPClamp', 'dur': dur, 'amp': amp}
+    # iplbl = 'IPC(%.2fnAx%.1fms)' % (dur, amp)
+
+    netParams.stimSourceParams[nslbl] = {'type': 'NetStim', 'rate': freq, 'noise': 0, 'start': 45, 'number': npulses}
+    # netParams.synMechParams[iplbl] = {'mod': 'IPClamp', 'dur': dur, 'amp': amp}
 
     # create unique tag strings for soma and tjunction
     if simso:
@@ -31,12 +33,14 @@ for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
         soRules = netParams.importCellParams(label= solbl, conds={'cellType': solbl, 'cellModel': solbl},
                                              fileName= 'cells.py', cellName= 'npSoma',
                                              cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1p9': mn1p9})
+        print(soRules)
         netParams.cellParams[solbl] = soRules
         netParams.popParams[solbl] = {'numCells': 1, 'cellType': solbl, 'cellModel': solbl}
         # soma stim
         netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, solbl)] = {'source': nslbl, 'conds': {'pop': solbl},
                                                                           'sec': 'soma', 'loc': 0.5, 'weight': 1,
-                                                                          'delay': 5, 'synMech': iplbl}
+                                                                          'delay': 5, 'synMech': 'E2S'}
+        #                                                                   'delay': 5, 'synMech': iplbl}
 
     if simtj:
         tjlbl = 'tjcnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
@@ -49,7 +53,8 @@ for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
         # tj stim
         netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, tjlbl)] = {'source': nslbl, 'conds': {'pop': tjlbl},
                                                                           'sec': 'peri', 'loc': 0.0, 'weight': 1,
-                                                                          'delay': 5, 'synMech': iplbl}
+                                                                          'delay': 5, 'synMech': 'E2S'}
+        #                                                                   'delay': 5, 'synMech': iplbl}
 
     if simxso:
         xsolbl = 'xsocnrn(wtn1p7:%.3f)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
@@ -62,7 +67,8 @@ for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
         # mutant soma stim
         netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, mxlbl)] = {'source': nslbl, 'conds': {'pop': mxlbl},
                                                                           'sec': 'soma', 'loc': 0.5, 'weight': 1,
-                                                                          'delay': 5, 'synMech': iplbl}
+                                                                          'delay': 5, 'synMech': 'E2S'}
+        #                                                                   'delay': 5, 'synMech': iplbl}
 
     if simxtj:
         xtjlbl = 'xtjcnrn(wtn1p7:%.3f)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
@@ -74,8 +80,9 @@ for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
         netParams.popParams[xtjlbl] = {'numCells': 1, 'cellType': xtjlbl, 'cellModel': xtjlbl}
         # mutant soma stim
         netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, xtjlbl)] = {'source': nslbl, 'conds': {'pop': xtjlbl},
-                                                                          'sec': 'soma', 'loc': 0.5, 'weight': 1,
-                                                                          'delay': 5, 'synMech': iplbl}
+                                                                           'sec': 'peri', 'loc': 0.0, 'weight': 1,
+                                                                           'delay': 5, 'synMech': 'E2S'}
+        #                                                                   'delay': 5, 'synMech': iplbl}
 
 if __name__ == '__main__':
     from pprint import pprint

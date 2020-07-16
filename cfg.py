@@ -22,8 +22,8 @@ cfg.simxtj = False
 #netParam vars
 cfg.freqs = [1000]
 cfg.npulsess = [1]
-cfg.amps = arr(0.10, 0.50, 0.05)
-cfg.durs = arr(5, 20, 2.5)
+cfg.amps = [0.15]#arr(0.10, 0.50, 0.05)
+cfg.durs = [1000]#arr(5, 20, 2.5)
 cfg.mttxss = [1.0]
 cfg.mn1p8s = [1.0]
 cfg.mn1p9s = [1.0]
@@ -41,6 +41,7 @@ cfg.recordTraces['soma'] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
 for label, chan in [ ['NaV1.7', 'nattxs'], ['NaV1.8', 'nav1p8'] ]:
     cfg.recordTraces[label] = {'sec': 'soma', 'loc': 0.5, 'var': 'ina_%s' %(chan)}
 
+#cfg.recordTraces['SinClamp'] = {'sec': 'soma', 'pointp': 'SinClamp', 'var': 'i'}
 """
 pts = 3
 #generate recordTraces along the fiber and at soma (ordered dictionary so generate them in order)
@@ -64,7 +65,7 @@ cfg.saveJson = True
 # run simulation
 cfg.hParams = {'celsius': 22, 'v_init': -53.5}
 
-cfg.duration = 1000/min(cfg.freqs) * max(cfg.npulsess) + 100
+cfg.duration = 1000/min(cfg.freqs) * max(cfg.npulsess) + 300
 
 cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,
                            'showFig': False, 'timeRange': [0, cfg.duration]}
