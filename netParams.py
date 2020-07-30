@@ -21,10 +21,11 @@ netParams.synMechParams['E2S'] = {'mod': 'Exp2Syn', 'tau1': 0.1, 'tau2': 5.0, 'e
 for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
     # set up current clamp definitions, NetStim and IPClamp point process
     nslbl = 'Stim(%dHz)' % (freq)
-    # iplbl = 'IPC(%.2fnAx%.1fms)' % (dur, amp)
+    # pplbl = 'IPC(%.2fnAx%.1fms)' % (dur, amp)
+    pplbl = 'E2S'
 
     netParams.stimSourceParams[nslbl] = {'type': 'NetStim', 'rate': freq, 'noise': 0, 'start': 45, 'number': npulses}
-    # netParams.synMechParams[iplbl] = {'mod': 'IPClamp', 'dur': dur, 'amp': amp}
+    # netParams.synMechParams[pplbl] = {'mod': 'IPClamp', 'dur': dur, 'amp': amp}
 
     # create unique tag strings for soma and tjunction
     if simso:
@@ -37,10 +38,10 @@ for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
         netParams.cellParams[solbl] = soRules
         netParams.popParams[solbl] = {'numCells': 1, 'cellType': solbl, 'cellModel': solbl}
         # soma stim
-        netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, solbl)] = {'source': nslbl, 'conds': {'pop': solbl},
+        netParams.stimTargetParams['%s->%s%s' % (nslbl, pplbl, solbl)] = {'source': nslbl, 'conds': {'pop': solbl},
                                                                           'sec': 'soma', 'loc': 0.5, 'weight': 1,
                                                                           'delay': 5, 'synMech': 'E2S'}
-        #                                                                   'delay': 5, 'synMech': iplbl}
+        #                                                                   'delay': 5, 'synMech': pplbl}
 
     if simtj:
         tjlbl = 'tjcnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
@@ -51,10 +52,10 @@ for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
         netParams.cellParams[tjlbl] = tjRules
         netParams.popParams[tjlbl] = {'numCells': 1, 'cellType': tjlbl, 'cellModel': tjlbl}
         # tj stim
-        netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, tjlbl)] = {'source': nslbl, 'conds': {'pop': tjlbl},
+        netParams.stimTargetParams['%s->%s%s' % (nslbl, pplbl, tjlbl)] = {'source': nslbl, 'conds': {'pop': tjlbl},
                                                                           'sec': 'peri', 'loc': 0.0, 'weight': 1,
                                                                           'delay': 5, 'synMech': 'E2S'}
-        #                                                                   'delay': 5, 'synMech': iplbl}
+        #                                                                   'delay': 5, 'synMech': pplbl}
 
     if simxso:
         xsolbl = 'xsocnrn(wtn1p7:%.3f)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
@@ -65,10 +66,10 @@ for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
         netParams.cellParams[xsolbl] = xsoRules
         netParams.popParams[xsolbl] = {'numCells': 1, 'cellType': xsolbl, 'cellModel': xsolbl}
         # mutant soma stim
-        netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, mxlbl)] = {'source': nslbl, 'conds': {'pop': mxlbl},
+        netParams.stimTargetParams['%s->%s%s' % (nslbl, pplbl, mxlbl)] = {'source': nslbl, 'conds': {'pop': mxlbl},
                                                                           'sec': 'soma', 'loc': 0.5, 'weight': 1,
                                                                           'delay': 5, 'synMech': 'E2S'}
-        #                                                                   'delay': 5, 'synMech': iplbl}
+        #                                                                   'delay': 5, 'synMech': pplbl}
 
     if simxtj:
         xtjlbl = 'xtjcnrn(wtn1p7:%.3f)(mn1p8:%.3fx)(%.3fnAx%.3fms)(%.3fHz)' % (mttxs, mn1p8, amp, dur, freq)
@@ -79,10 +80,10 @@ for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
         netParams.cellParams[xtjlbl] = xtjRules
         netParams.popParams[xtjlbl] = {'numCells': 1, 'cellType': xtjlbl, 'cellModel': xtjlbl}
         # mutant soma stim
-        netParams.stimTargetParams['%s->%s%s' % (nslbl, iplbl, xtjlbl)] = {'source': nslbl, 'conds': {'pop': xtjlbl},
+        netParams.stimTargetParams['%s->%s%s' % (nslbl, pplbl, xtjlbl)] = {'source': nslbl, 'conds': {'pop': xtjlbl},
                                                                            'sec': 'peri', 'loc': 0.0, 'weight': 1,
                                                                            'delay': 5, 'synMech': 'E2S'}
-        #                                                                   'delay': 5, 'synMech': iplbl}
+        #                                                                   'delay': 5, 'synMech': pplbl}
 
 if __name__ == '__main__':
     from pprint import pprint
