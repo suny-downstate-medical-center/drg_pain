@@ -29,8 +29,8 @@ cfg.amps = arr(0.175, 0.225, 0.00625)
 cfg.durs = [1000]#arr(5, 20, 2.5)
 
 #reduce channel, block
-cfg.mttxss = arr(0.5, 1.0, 0.025)
-cfg.mn1p8s = arr(0.5, 1.0, 0.025)
+cfg.mttxss = arr(0.0, 1.0, 0.05)
+cfg.mn1p8s = arr(0.0, 1.0, 0.05)
 #cfg.mttxss = [1]
 #cfg.mn1p8s = [1]
 cfg.mn1p9s = [1.0]
