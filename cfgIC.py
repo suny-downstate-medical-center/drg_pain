@@ -22,10 +22,17 @@ cfg.simxtj = False
 #netParam vars
 cfg.freqs = [1000]
 cfg.npulsess = [1]
-cfg.amps = [0.15]#arr(0.10, 0.50, 0.05)
+
+#threshold data for amplitude
+cfg.amps = arr(0.175, 0.225, 0.00625)
+#cfg.amps = arr( 1, 2, 0.1 )
 cfg.durs = [1000]#arr(5, 20, 2.5)
-cfg.mttxss = [1.0]
-cfg.mn1p8s = [1.0]
+
+#reduce channel, block
+cfg.mttxss = arr(0.5, 1.0, 0.025)
+cfg.mn1p8s = arr(0.5, 1.0, 0.025)
+#cfg.mttxss = [1]
+#cfg.mn1p8s = [1]
 cfg.mn1p9s = [1.0]
 
 #in case plotTraces does not get called -- need to specify to record from all cells
