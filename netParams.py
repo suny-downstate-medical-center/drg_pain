@@ -16,7 +16,7 @@ netParams = specs.NetParams()  # object of class NetParams to store the network 
 
 params = product( freqs, npulsess, durs, amps, mttxss, mn1p8s, mn1p9s)
 # params = product( amps, durs, mn1p8s )
-netParams.synMechParams['E2S'] = {'mod': 'Exp2Syn', 'tau1': 0.1, 'tau2': 5.0, 'e': 0}
+# netParams.synMechParams['E2S'] = {'mod': 'Exp2Syn', 'tau1': 0.1, 'tau2': 5.0, 'e': 0}
 
 for freq, npulses, dur, amp, mttxs, mn1p8, mn1p9 in params:
     # set up current clamp definitions, NetStim and IPClamp point process
