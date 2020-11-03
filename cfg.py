@@ -10,7 +10,7 @@ cfg = specs.SimConfig()
 #simulation parameters (fixed timestep)
 #cfg.dt = 0.0125
 #cfg.cvode_active = False
-cfg.cvode_active = True
+cfg.cvode_active = False
 cfg.recordStims = False
 cfg.recordStep = 0.25
 
@@ -24,9 +24,9 @@ cfg.freqs = [1000]
 cfg.npulsess = [1]
 cfg.amps = [0.15]#arr(0.10, 0.50, 0.05)
 cfg.durs = [1000]#arr(5, 20, 2.5)
-cfg.mttxss = [1.0]
-cfg.mn1p8s = [1.0]
-cfg.mn1p9s = [1.0]
+cfg.mttxss = [0.5, 1.0]
+cfg.mn1p8s = [0.5, 1.0]
+cfg.mn1p9s = [0.5, 1.0]
 
 #in case plotTraces does not get called -- need to specify to record from all cells
 cfg.recordCells = ['all']
