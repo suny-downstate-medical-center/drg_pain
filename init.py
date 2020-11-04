@@ -6,6 +6,9 @@ sim.create(simConfig = cfg, netParams = netParams)
 
 def waveform(peak, duration, delay):
     np.zeros(delay/cfg.dt)
+
+
+
     
 
 
