@@ -1,31 +1,32 @@
 from netpyne import sim
 import numpy as np
-
 cfg, netParams = sim.readCmdLineArgs()
 sim.create(simConfig = cfg, netParams = netParams)
 
-def waveform(peak, duration, delay):
-    np.zeros(delay/cfg.dt)
+def sinf(peak, duration, t):
+    return peak * np.sin( t * np.pi / duration )
 
+def rmpf(peak, duration, t):
+    return peak * t / duration
 
-
-    
-
-
+def stim(peak, duration, delay, f):
+    dv = np.arange(delay/cfg.dt)
+    tv = np.arange(duration/cfg.dt) * cfg.dt
+    return np.concatenate((dv,f(peak,duration,tv)))
 
 netParams.stimSourceParams['iclamp'] = {'type': 'IClamp', 'amp': 0.0, 'dur': 1000, 'delay': 0}
 netParams.stimTargetParams['iclamp->so'] = {'source': 'iclamp', 'conds': {'morpho': 'so'}, 'sec': 'soma', 'loc': 0.5}
 netParams.stimTargetParams['iclamp->tj'] = {'source': 'iclamp', 'conds': {'morpho': 'tj'}, 'sec': 'peri', 'loc': 0.0}
 
-t = sim.h.Vector(np.arange(0, cfg.duration/(cfg.dt)))
 
-peak
-duration
-npstim =
+t = sim.h.Vector(np.arange(0, cfg.duration/(cfg.dt)))
+npstim = stim( 0.5, 20, 30, rmpf)
 vcstim = h.Vector(npstim)
 for cell in sim.net.cells:
         try:
-            stim
+            vcstim.play(cell.stims[0]['hObj']._ref_amp, t, True)
+        except:
+            pass
 """
 sim.simulate()
 sim.analyze()
