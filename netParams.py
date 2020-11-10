@@ -18,6 +18,8 @@ params = product(mttxss, mn1p8s, mn1p9s)
 # params = product( amps, durs, mn1p8s )
 # netParams.synMechParams['E2S'] = {'mod': 'Exp2Syn', 'tau1': 0.1, 'tau2': 5.0, 'e': 0}
 
+netParams.stimSourceParams['iclamp'] = {'type': 'IClamp', 'amp': 0.0, 'dur': 1000, 'delay': 0}
+
 for mttxs, mn1p8, mn1p9 in params:
 
     # create unique tag strings for soma and tjunction
@@ -30,6 +32,7 @@ for mttxs, mn1p8, mn1p9 in params:
         print(soRules)
         netParams.cellParams[solbl] = soRules
         netParams.popParams[solbl] = {'numCells': 1, 'cellType': solbl, 'cellModel': solbl, 'morpho': 'so'}
+        netParams.stimTargetParams['ic->'+solbl] = {'source': 'iclamp', 'conds': {'cellType': solbl}, 'sec': 'soma', 'loc': 0.5}
 
     if simtj:
         tjlbl = 'tjcnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(mn1p9:%.3fx)' % (mttxs, mn1p8, mn1p9)
@@ -57,6 +60,7 @@ for mttxs, mn1p8, mn1p9 in params:
                                               cellArgs={'wtp': mttxs})
         netParams.cellParams[xtjlbl] = xtjRules
         netParams.popParams[xtjlbl] = {'numCells': 1, 'cellType': xtjlbl, 'cellModel': xtjlbl, 'morpho': 'tj'}
+
 
 if __name__ == '__main__':
     from pprint import pprint

@@ -15,23 +15,27 @@ def stim(peak, duration, delay, f):
     return np.concatenate((dv,f(peak,duration,tv)))
 
 netParams.stimSourceParams['iclamp'] = {'type': 'IClamp', 'amp': 0.0, 'dur': 1000, 'delay': 0}
-netParams.stimTargetParams['iclamp->so'] = {'source': 'iclamp', 'conds': {'morpho': 'so'}, 'sec': 'soma', 'loc': 0.5}
-netParams.stimTargetParams['iclamp->tj'] = {'source': 'iclamp', 'conds': {'morpho': 'tj'}, 'sec': 'peri', 'loc': 0.0}
+netParams.stimTargetParams['iclamp->so'] = {'source': 'iclamp', 'conds': {}, 'sec': 'soma', 'loc': 0.5}
+netParams.stimTargetParams['iclamp->tj'] = {'source': 'iclamp', 'conds': {}, 'sec': 'peri', 'loc': 0.0}
+#netParams.stimTargetParams['iclamp->so'] = {'source': 'iclamp', 'conds': {'morpho': 'so'}, 'sec': 'soma', 'loc': 0.5}
+#netParams.stimTargetParams['iclamp->tj'] = {'source': 'iclamp', 'conds': {'morpho': 'tj'}, 'sec': 'peri', 'loc': 0.0}
 
 
 t = sim.h.Vector(np.arange(0, cfg.duration/(cfg.dt)))
 npstim = stim( 0.5, 20, 30, rmpf)
-vcstim = h.Vector(npstim)
+vcstim = sim.h.Vector(npstim)
 for cell in sim.net.cells:
         try:
             vcstim.play(cell.stims[0]['hObj']._ref_amp, t, True)
         except:
             pass
+
+#sim.simulate()
+#sim.analyze()
+
 """
 sim.simulate()
 sim.analyze()
-
-
 
 # Create network and run simulation
 sim.create(netParams = netParams, simConfig = simConfig)

@@ -11,7 +11,7 @@ cfg = specs.SimConfig()
 #cfg.dt = 0.0125
 #cfg.cvode_active = False
 cfg.cvode_active = False
-cfg.recordStims = False
+cfg.recordStims = True
 cfg.recordStep = 0.25
 
 #toggle cell models to sim
@@ -19,14 +19,17 @@ cfg.simso = True
 cfg.simtj = False
 cfg.simxso = False
 cfg.simxtj = False
+
+cfg.peak = 0.5
+cfg.dur  = 20
 #netParam vars
-cfg.freqs = [1000]
-cfg.npulsess = [1]
-cfg.amps = [0.15]#arr(0.10, 0.50, 0.05)
-cfg.durs = [1000]#arr(5, 20, 2.5)
-cfg.mttxss = [0.5, 1.0]
-cfg.mn1p8s = [0.5, 1.0]
-cfg.mn1p9s = [0.5, 1.0]
+#cfg.freqs = [1000]
+#cfg.npulsess = [1]
+#cfg.amps = [0.15]#arr(0.10, 0.50, 0.05)
+#cfg.durs = [1000]#arr(5, 20, 2.5)
+cfg.mttxss = [1.0]
+cfg.mn1p8s = [1.0]
+cfg.mn1p9s = [1.0]
 
 #in case plotTraces does not get called -- need to specify to record from all cells
 cfg.recordCells = ['all']
@@ -65,7 +68,8 @@ cfg.saveJson = True
 # run simulation
 cfg.hParams = {'celsius': 22, 'v_init': -53.5}
 
-cfg.duration = 1000/min(cfg.freqs) * max(cfg.npulsess) + 300
+cfg.duration = 1000
+#cfg.duration = 1000/min(cfg.freqs) * max(cfg.npulsess) + 300
 
 cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,
                            'showFig': False, 'timeRange': [0, cfg.duration]}
