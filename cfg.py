@@ -11,7 +11,7 @@ cfg = specs.SimConfig()
 #cfg.dt = 0.0125
 #cfg.cvode_active = False
 cfg.cvode_active = False
-cfg.recordStims = True
+cfg.recordStims = False
 cfg.recordStep = 0.25
 
 #toggle cell models to sim
@@ -20,7 +20,7 @@ cfg.simtj = False
 cfg.simxso = False
 cfg.simxtj = False
 
-cfg.peak = 0.5
+cfg.peak = 1.0
 cfg.dur  = 20
 #netParam vars
 #cfg.freqs = [1000]
