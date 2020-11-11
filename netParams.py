@@ -42,6 +42,7 @@ for mttxs, mn1p8, mn1p9 in params:
                                              cellArgs={'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1p9': mn1p9})
         netParams.cellParams[tjlbl] = tjRules
         netParams.popParams[tjlbl] = {'numCells': 1, 'cellType': tjlbl, 'cellModel': tjlbl, 'morpho': 'tj'}
+        netParams.stimTargetParams['ic->'+tjlbl] = {'source': 'iclamp', 'conds': {'cellType': tjlbl}, 'sec': 'peri', 'loc': 0.0}
 
     if simxso:
         xsolbl = 'xsocnrn(wtmn1p7:%.3fx)(mn1p8:%.3fx)(mn1p9:%.3fx)' % (mttxs, mn1p8, mn1p9)
