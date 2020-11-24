@@ -11,8 +11,9 @@ def rmpf(peak, duration, t):
     return peak * t / duration
 
 def plsf(peak, duration, t):
-    i = np.empty(duration)
-    return i.fill(peak)
+    i = np.empty( int(duration / cfg.dt) )
+    i.fill(peak)
+    return i
 
 def stim(peak, duration, delay, f):
     deltv = np.zeros( int(delay / cfg.dt) )
@@ -27,23 +28,29 @@ t = sim.h.Vector( np.arange(0, cfg.duration, cfg.dt) )
 peak = cfg.peak
 dur = cfg.dur
 
-peak = 1.0
-dur  = 20
+peak = 0.5
+dur  = 1000
+
+for
 npstim = stim(peak, dur, 200, rmpf)
 
-npin = np.pad(npstim, len(t) - len(npstim))
-vcin = sim.h.Vector(npstim)
+npin = np.pad(npstim, (0, len(t) - len(npstim)))
+vcin = sim.h.Vector(npin)
+
 for cell in sim.net.cells:
         try:
             vcin.play(cell.stims[0]['hObj']._ref_amp, t, True)
         except:
             pass
 
+
 sim.simulate()
 sim.analyze()
 
 plt.plot(sim.allSimData['t'], sim.allSimData['soma']['cell_0'])
-
+plt.show()
+plt.plot(t, npin)
+plt.show()
 """
 sim.simulate()
 sim.analyze()

@@ -68,7 +68,7 @@ cfg.saveJson = True
 # run simulation
 cfg.hParams = {'celsius': 22, 'v_init': -53.5}
 
-cfg.duration = 1000
+cfg.duration = 300
 #cfg.duration = 1000/min(cfg.freqs) * max(cfg.npulsess) + 300
 
 cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,
