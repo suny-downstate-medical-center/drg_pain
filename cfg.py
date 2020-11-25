@@ -20,8 +20,9 @@ cfg.simtj = False
 cfg.simxso = False
 cfg.simxtj = False
 
-cfg.peak = 1.0
-cfg.dur  = 20
+cfg.peak = [ 0.5, 1.0, 1.5, 2.0 ]
+cfg.dur  = [ 1000 ]
+
 #netParam vars
 #cfg.freqs = [1000]
 #cfg.npulsess = [1]
@@ -68,7 +69,7 @@ cfg.saveJson = True
 # run simulation
 cfg.hParams = {'celsius': 22, 'v_init': -53.5}
 
-cfg.duration = 300
+cfg.duration = 1500
 #cfg.duration = 1000/min(cfg.freqs) * max(cfg.npulsess) + 300
 
 cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,

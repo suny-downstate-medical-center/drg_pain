@@ -26,9 +26,10 @@ for mttxs, mn1p8, mn1p9 in params:
     if simso:
         solbl = 'socnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(mn1p9:%.3fx)' % (mttxs, mn1p8, mn1p9)
         # soma cell model
-        soRules = netParams.importCellParams(label= solbl, conds={'cellType': solbl, 'cellModel': solbl},
-                                             fileName= 'cells.py', cellName= 'npSoma',
-                                             cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1p9': mn1p9})
+        # soRules = netParams.importCellParams(label= solbl, conds={'cellType': solbl, 'cellModel': solbl},
+        #                                      fileName= 'cells.py', cellName= 'npSoma',
+        #                                      cellArgs= {'mulnattxs': mttxs, 'mulnav1p8': mn1p8, 'mulnav1p9': mn1p9})
+        soRules = netParams.importCellParams(label= solbl, conds={'cellType': solbl, 'cellModel': solbl}, fileName='morphology.hoc', cellName='drg')
         print(soRules)
         netParams.cellParams[solbl] = soRules
         netParams.popParams[solbl] = {'numCells': 1, 'cellType': solbl, 'cellModel': solbl, 'morpho': 'so'}

@@ -1,4 +1,5 @@
 from netpyne import sim
+from itertools import product
 import numpy as np
 import matplotlib.pyplot as plt
 cfg, netParams = sim.readCmdLineArgs()
@@ -28,11 +29,10 @@ t = sim.h.Vector( np.arange(0, cfg.duration, cfg.dt) )
 peak = cfg.peak
 dur = cfg.dur
 
-peak = 0.5
+peak = 1.0
 dur  = 1000
 
-for
-npstim = stim(peak, dur, 200, rmpf)
+npstim = stim(peak, dur, 200, plsf)
 
 npin = np.pad(npstim, (0, len(t) - len(npstim)))
 vcin = sim.h.Vector(npin)
