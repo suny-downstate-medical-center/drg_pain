@@ -1,14 +1,33 @@
 from neuron import h
 from genrn import genrn
 
-hGlobals = {'cai0_ca_ion': 0.000136,
+hGlobals = {#'cai0_ca_ion': 0.000136,
             'celsius': 22.0,
-            'cli0_cl_ion': 40.0,
-            'clo0_cl_ion': 145.0,
+            #'cli0_cl_ion': 40.0,
+            #'clo0_cl_ion': 145.0,
             'ki0_k_ion': 140.0,
             'ko0_k_ion': 5.0,
             'nao0_na_ion': 150.0,
             'v_init': -53.5}
+
+# somaCellRule = {
+#  'globals': hGlobals,
+#  'secLists': {},
+#  'secs': {'sec': {'geom': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1},
+#                   'ions': {'h': {'e': -30.0, 'i': 1.0, 'o': 1.0},
+#                            'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
+#                            'na': {'e': 68.83, 'i': 10.0, 'o': 150.0}},
+#                   'mechs': {'hcn': {'gbarfast': 1.352e-05, 'gbarslow': 6.7615e-06},
+#                             'kaslow': {'gbar': 0.00136}, 'kdr': {'gbar': 0.002688},
+#                             'kmtype': {'gbar': 0.0001}, 'knatype': {'gbar': 1e-05},
+#                             'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
+#                             'nattxs': {'gbar': 0.0001},
+#                             'nav1p8': {'gbar': 0.0087177},
+#                             'nav1p9': {'gbar': 1e-05},
+#                             'pas': {'g': 0.0001, 'e': -41.583}},
+#                   'topol': {},
+#                   'vinit': -53.5}}
+# }
 
 somaCellRule = {
  'globals': hGlobals,
@@ -95,6 +114,10 @@ def npSoma( mulnattxs = 1, mulnav1p8 = 1 , mulnav1p9 = 1 ):
     cell.soma.gbar_nattxs *= mulnattxs
     cell.soma.gbar_nav1p8 *= mulnav1p8
     cell.soma.gbar_nav1p9 *= mulnav1p9
+    # inflammatory changes
+    # cell.soma.gbar_nav1p8 = 0.06   # 0.0087177 -> 0.06
+    # cell.soma.gbar_kaslow = 0.0001 # 0.00136   -> 0.0001
+    # cell.soma.gbar_kdr    = 0.001  # 0.002688  -> 0.001
     return cell
 
 def npSomaMut( wtp = 1 ):

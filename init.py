@@ -29,10 +29,10 @@ t = sim.h.Vector( np.arange(0, cfg.duration, cfg.dt) )
 peak = cfg.peak
 dur = cfg.dur
 
-peak = 1.0
-dur  = 1000
+peak = 0.25
+dur  = 600
 
-npstim = stim(peak, dur, 200, plsf)
+npstim = stim(peak, dur, 100 , rmpf)
 
 npin = np.pad(npstim, (0, len(t) - len(npstim)))
 vcin = sim.h.Vector(npin)
@@ -48,8 +48,18 @@ sim.simulate()
 sim.analyze()
 
 plt.plot(sim.allSimData['t'], sim.allSimData['soma']['cell_0'])
+plt.title('Voltage')
 plt.show()
 plt.plot(t, npin)
+plt.show()
+
+fig = plt.figure()
+fig.suptitle('NaV1.7 / NaV1.8 current')
+gs = fig.add_gridspec(2, 1, hspace=0, wspace=0)
+ax0 = fig.add_subplot(gs[0,0])
+ax1 = fig.add_subplot(gs[1,0])
+ax0.plot(sim.allSimData['t'], sim.allSimData['NaV1.7']['cell_0'])
+ax1.plot(sim.allSimData['t'], sim.allSimData['NaV1.8']['cell_0'])
 plt.show()
 """
 sim.simulate()

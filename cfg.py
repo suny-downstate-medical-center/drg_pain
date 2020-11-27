@@ -12,7 +12,7 @@ cfg = specs.SimConfig()
 #cfg.cvode_active = False
 cfg.cvode_active = False
 cfg.recordStims = False
-cfg.recordStep = 0.25
+cfg.recordStep = 0.0125
 
 #toggle cell models to sim
 cfg.simso = True
@@ -21,7 +21,7 @@ cfg.simxso = False
 cfg.simxtj = False
 
 cfg.peak = [ 0.5, 1.0, 1.5, 2.0 ]
-cfg.dur  = [ 1000 ]
+cfg.dur  = [ 800 ]
 
 #netParam vars
 #cfg.freqs = [1000]
@@ -69,7 +69,7 @@ cfg.saveJson = True
 # run simulation
 cfg.hParams = {'celsius': 22, 'v_init': -53.5}
 
-cfg.duration = 1500
+cfg.duration = cfg.dur[-1]
 #cfg.duration = 1000/min(cfg.freqs) * max(cfg.npulsess) + 300
 
 cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,
