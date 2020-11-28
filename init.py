@@ -29,8 +29,8 @@ t = sim.h.Vector( np.arange(0, cfg.duration, cfg.dt) )
 peak = cfg.peak
 dur = cfg.dur
 
-peak = 0.25
-dur  = 600
+peak = 1.5
+dur  = 1000
 
 npstim = stim(peak, dur, 100 , rmpf)
 
