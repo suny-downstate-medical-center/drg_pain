@@ -20,9 +20,11 @@ cfg.simtj = False
 cfg.simxso = False
 cfg.simxtj = False
 
-cfg.peak = [ 0.5, 1.0, 1.5, 2.0 ]
-cfg.dur  = [ 1200 ]
+cfg.base = [ 0.0  ]
+cfg.peak = [ 0.14, 0.16, 0.18, 0.2 ]
+cfg.dur  = [ 1000 ]
 
+cfg.duration = 3000
 #netParam vars
 #cfg.freqs = [1000]
 #cfg.npulsess = [1]

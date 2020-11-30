@@ -29,10 +29,11 @@ t = sim.h.Vector( np.arange(0, cfg.duration, cfg.dt) )
 peak = cfg.peak
 dur = cfg.dur
 
-peak = 1.5
+peak = 0.800
 dur  = 1000
 
-npstim = stim(peak, dur, 100 , rmpf)
+base = 0
+npstim = stim(peak, dur, 100 , plsf)
 
 npin = np.pad(npstim, (0, len(t) - len(npstim)))
 vcin = sim.h.Vector(npin)
