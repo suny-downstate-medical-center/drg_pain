@@ -16,23 +16,27 @@ def plsf(peak, duration, t):
     i.fill(peak)
     return i
 
-def stim(peak, duration, delay, f):
+def stim(delay, duration, peak, f):
     deltv = np.zeros( int(delay / cfg.dt) )
     stmtv = np.arange(0, duration, cfg.dt)
-    return np.concatenate((deltv,f(peak,duration,stmtv)))
+    return di, np.concatenate((deltv,f(peak,duration,stmtv)))
 
 #netParams.stimTargetParams['iclamp->so'] = {'source': 'iclamp', 'conds': {'morpho': 'so'}, 'sec': 'soma', 'loc': 0.5}
 #netParams.stimTargetParams['iclamp->tj'] = {'source': 'iclamp', 'conds': {'morpho': 'tj'}, 'sec': 'peri', 'loc': 0.0}
 
 t = sim.h.Vector( np.arange(0, cfg.duration, cfg.dt) )
-
+base = cfg.base
 peak = cfg.peak
 dur = cfg.dur
 
+base = 0
 peak = 0.800
-dur  = 1000
+dur  = 300
 
 base = 0
+currvc = np.full( cfg.duration/cfg.dt, base) 
+currix = 0
+npstimv = 
 npstim = stim(peak, dur, 100 , plsf)
 
 npin = np.pad(npstim, (0, len(t) - len(npstim)))
