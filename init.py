@@ -36,7 +36,6 @@ dur  = 300
 base = 0
 currvc = np.full( cfg.duration/cfg.dt, base) 
 currix = 0
-npstimv = 
 npstim = stim(peak, dur, 100 , plsf)
 
 npin = np.pad(npstim, (0, len(t) - len(npstim)))
