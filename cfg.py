@@ -24,7 +24,7 @@ cfg.base = [ 0.0  ]
 cfg.peak = [ 0.14, 0.16, 0.18, 0.2 ]
 cfg.dur  = [ 1000 ]
 
-cfg.duration = 3000
+cfg.duration = 10000
 #netParam vars
 #cfg.freqs = [1000]
 #cfg.npulsess = [1]

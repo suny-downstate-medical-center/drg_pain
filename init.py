@@ -17,15 +17,21 @@ peak = cfg.peak
 dur = cfg.dur
 
 base = 0
-peak = 0.800
-dur  = 300
+amps = np.linspace([-0.05, 0.05, 101]
+delta = 0
+dur  = 100
 iclampv = npvec(cfg.duration, cfg.dt, base)
+for amp in amps:
+    iclampv.plsf(delta, 100, amp)
+    delta = delta + dur
 
 icin = sim.h.Vector(iclampv.vector)
 t = sim.h.Vector(iclampv.t)
 
-7238 microns^2
-Nav1.7. Membrane potential was set by constant current injection (−13.74 pA for −70 mV, −7.24 pA for −65 mV, 9.55 pA for −55 mV, and 25.64 pA for −50 mV) 
+# Choi
+# Membrane potential was set by constant current injection
+# (−13.74 pA for −70 mV, −7.24 pA for −65 mV, 9.55 pA for −55 mV, and 25.64 pA for −50 mV)
+
 for cell in sim.net.cells:
         try:
             icin.play(cell.stims[0]['hObj']._ref_amp, t, True)
@@ -50,26 +56,3 @@ ax1 = fig.add_subplot(gs[1,0])
 ax0.plot(sim.allSimData['t'], sim.allSimData['NaV1.7']['cell_0'])
 ax1.plot(sim.allSimData['t'], sim.allSimData['NaV1.8']['cell_0'])
 plt.show()
-"""
-sim.simulate()
-sim.analyze()
-
-# Create network and run simulation
-sim.create(netParams = netParams, simConfig = simConfig)
-...
-netParams.stimSourceParams['iclamp'] = {'type': 'IClamp', 'amp': 0.0, 'dur': 1000, 'delay': 0}
-netParams.stimTargetParams['iclamp->PYR'] = {'source': 'iclamp', 'conds': {'pop': 'S'}, 'sec': 'soma', 'loc': 0.5}
-...
-init_amp = 0.0
-peak_amp = 0.24
-ramp_up = np.linspace(init_amp, peak_amp, simConfig.duration/(simConfig.dt))
-t = h.Vector(np.arange(0,simConfig.duration, simConfig.dt))
-amp = h.Vector(ramp_up)
-for cell in sim.net.cells:
-    try:
-        amp.play(cell.stims[0]['hObj']._ref_amp, t, True)
-    except:
-        pass
-sim.simulate()
-sim.analyze()
-"""
