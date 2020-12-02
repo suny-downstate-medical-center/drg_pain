@@ -17,7 +17,7 @@ peak = cfg.peak
 dur = cfg.dur
 
 base = 0
-amps = np.linspace([-0.05, 0.05, 101]
+amps = np.linspace([-0.05, 0.05, 101])
 delta = 0
 dur  = 100
 iclampv = npvec(cfg.duration, cfg.dt, base)
