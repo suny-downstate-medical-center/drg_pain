@@ -1,30 +1,17 @@
 from netpyne import sim
 from itertools import product
+from npvec import npvec
 import numpy as np
 import matplotlib.pyplot as plt
+
 cfg, netParams = sim.readCmdLineArgs()
 sim.create(simConfig = cfg, netParams = netParams)
-
-def sinf(peak, duration, t):
-    return peak * np.sin( t * np.pi / duration )
-
-def rmpf(peak, duration, t):
-    return peak * t / duration
-
-def plsf(peak, duration, t):
-    i = np.empty( int(duration / cfg.dt) )
-    i.fill(peak)
-    return i
-
-def stim(delay, duration, peak, f):
-    deltv = np.zeros( int(delay / cfg.dt) )
-    stmtv = np.arange(0, duration, cfg.dt)
-    return di, np.concatenate((deltv,f(peak,duration,stmtv)))
 
 #netParams.stimTargetParams['iclamp->so'] = {'source': 'iclamp', 'conds': {'morpho': 'so'}, 'sec': 'soma', 'loc': 0.5}
 #netParams.stimTargetParams['iclamp->tj'] = {'source': 'iclamp', 'conds': {'morpho': 'tj'}, 'sec': 'peri', 'loc': 0.0}
 
-t = sim.h.Vector( np.arange(0, cfg.duration, cfg.dt) )
+iclampv = vec(cfg.duration, cfg.dt, 0)
+
 base = cfg.base
 peak = cfg.peak
 dur = cfg.dur
@@ -32,18 +19,16 @@ dur = cfg.dur
 base = 0
 peak = 0.800
 dur  = 300
+iclampv = npvec(cfg.duration, cfg.dt, base)
 
-base = 0
-currvc = np.full( cfg.duration/cfg.dt, base) 
-currix = 0
-npstim = stim(peak, dur, 100 , plsf)
+icin = sim.h.Vector(iclampv.vector)
+t = sim.h.Vector(iclampv.t)
 
-npin = np.pad(npstim, (0, len(t) - len(npstim)))
-vcin = sim.h.Vector(npin)
-
+7238 microns^2
+Nav1.7. Membrane potential was set by constant current injection (−13.74 pA for −70 mV, −7.24 pA for −65 mV, 9.55 pA for −55 mV, and 25.64 pA for −50 mV) 
 for cell in sim.net.cells:
         try:
-            vcin.play(cell.stims[0]['hObj']._ref_amp, t, True)
+            icin.play(cell.stims[0]['hObj']._ref_amp, t, True)
         except:
             pass
 
