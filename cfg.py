@@ -22,9 +22,9 @@ cfg.simxtj = False
 
 cfg.base = [ 0.0  ]
 cfg.peak = [ 0.14, 0.16, 0.18, 0.2 ]
-cfg.dur  = [ 1000 ]
+cfg.dur  = [ 10500 ]
 
-cfg.duration = 10000
+cfg.duration = 10500
 #netParam vars
 #cfg.freqs = [1000]
 #cfg.npulsess = [1]
@@ -40,12 +40,15 @@ cfg.recordCells = ['all']
 #simple plot traces
 #cfg.recordTraces['stim'] = {'sec': 'peri', 'loc': 0.0, 'var': 'v'}
 #cfg.recordTraces['junction'] = {'sec': 'peri', 'loc': 1.0, 'var': 'v'}
-cfg.recordTraces['soma'] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
+
+for var in [ 'v', 'i', 'ina', 'ik', 'ica', 'icl']:
+    cfg.recordTraces[var] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
+
 #cfg.recordTraces['terminal'] = {'sec': 'cntr', 'loc': 1.0, 'var': 'v'}
 
 #more plot traces
-for label, chan in [ ['NaV1.7', 'nattxs'], ['NaV1.8', 'nav1p8'] ]:
-    cfg.recordTraces[label] = {'sec': 'soma', 'loc': 0.5, 'var': 'ina_%s' %(chan)}
+for label, nav in [ ['NaV1.7', 'nattxs'], ['NaV1.8', 'nav1p8'] ]:
+    cfg.recordTraces[label] = {'sec': 'soma', 'loc': 0.5, 'var': 'ina_%s' %(nav)}
 
 #cfg.recordTraces['SinClamp'] = {'sec': 'soma', 'pointp': 'SinClamp', 'var': 'i'}
 """

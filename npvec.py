@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 class npvec():
     def __init__(self, duration, dt, base):
-        self.vector = np.full( int(t/dt), base).astype('float32')
+        self.vector = np.full( int(duration/dt), base).astype('float32')
         self.base = base
         self.t = np.arange(0, duration, dt)
         self.dt = dt
