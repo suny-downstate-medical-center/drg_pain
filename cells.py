@@ -10,26 +10,27 @@ hGlobals = {#'cai0_ca_ion': 0.000136,
             'nao0_na_ion': 150.0,
             'v_init': -53.5}
 
-# somaCellRule = {
-#  'globals': hGlobals,
-#  'secLists': {},
-#  'secs': {'sec': {'geom': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1},
-#                   'ions': {'h': {'e': -30.0, 'i': 1.0, 'o': 1.0},
-#                            'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
-#                            'na': {'e': 68.83, 'i': 10.0, 'o': 150.0}},
-#                   'mechs': {'hcn': {'gbarfast': 1.352e-05, 'gbarslow': 6.7615e-06},
-#                             'kaslow': {'gbar': 0.00136}, 'kdr': {'gbar': 0.002688},
-#                             'kmtype': {'gbar': 0.0001}, 'knatype': {'gbar': 1e-05},
-#                             'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
-#                             'nattxs': {'gbar': 0.0001},
-#                             'nav1p8': {'gbar': 0.0087177},
-#                             'nav1p9': {'gbar': 1e-05},
-#                             'pas': {'g': 0.0001, 'e': -41.583}},
-#                   'topol': {},
-#                   'vinit': -53.5}}
-# }
+customCellRule = {
+ 'globals': hGlobals,
+ 'secLists': {},
+ 'secs': {'sec': {'geom': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1},
+                  'ions': {'h': {'e': -30.0, 'i': 1.0, 'o': 1.0},
+                           'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
+                           'na': {'e': 68.83, 'i': 10.0, 'o': 150.0}},
+                  'mechs': {'hcn': {'gbarfast': 1.352e-05, 'gbarslow': 6.7615e-06},
+                            'kaslow': {'gbar': 0.00136}, 'kdr': {'gbar': 0.002688},
+                            'kmtype': {'gbar': 0.0001}, 'knatype': {'gbar': 1e-05},
+                            'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
+                            'nattxs': {'gbar': 0.0001},
+                            'nav1p8': {'gbar': 0.0087177},
+                            'nav1p9': {'gbar': 1e-05},
+                            'pas': {'g': 0.0001, 'e': -41.583}},
+                  'topol': {},
+                  'vinit': -53.5}}
+}
 
-somaCellRule = {
+# Mandge and Machanda 2019 model
+bladderCellRule = {
  'globals': hGlobals,
  'secLists': {},
  'secs': {'sec': {'geom': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1},
@@ -76,13 +77,13 @@ somaCellRule = {
                   'vinit': -53.5}}
 }
 
-scr= somaCellRule['secs']['sec']
+bcr = bladderCellRule['secs']['sec']
 
-somaCellArgs= {
+bladderCellArgs = {
     'h'    : h,
-    'secs' : {'soma': scr['geom']},
-    'mechs': scr['mechs'],
-    'ions' : scr['ions'],
+    'secs' : {'soma': bcr['geom']},
+    'mechs': bcr['mechs'],
+    'ions' : bcr['ions'],
     'cons' : ()
 }
 
@@ -92,8 +93,8 @@ tjCellArgs= {
              'stem': { 'nseg': 3  , 'L': 75  , 'diam': 1.4 , 'cm': 1.5481245576786977 },
              'soma': { 'nseg': 1  , 'L': 24.0, 'diam': 24.0, 'cm': 1.5481245576786977 },
              'cntr': { 'nseg': 363, 'L': 5000, 'diam': 0.4 , 'cm': 1.5481245576786977 }},
-    'mechs': scr['mechs'],
-    'ions' : scr['ions'],
+    'mechs': bcr['mechs'],
+    'ions' : bcr['ions'],
     'cons' : (('stem', 'peri'),
               ('soma', 'stem'),
               ('cntr', 'peri'))
@@ -110,7 +111,7 @@ def hInit():
 
 def npSoma( mulnattxs = 1, mulnav1p8 = 1 , mulnav1p9 = 1 ):
     hInit()
-    cell = genrn(**somaCellArgs)
+    cell = genrn(**bladderCellArgs)
     cell.soma.gbar_nattxs *= mulnattxs
     cell.soma.gbar_nav1p8 *= mulnav1p8
     cell.soma.gbar_nav1p9 *= mulnav1p9
@@ -122,7 +123,7 @@ def npSoma( mulnattxs = 1, mulnav1p8 = 1 , mulnav1p9 = 1 ):
 
 def npSomaMut( wtp = 1 ):
     hInit()
-    cell = genrn(**somaCellArgs)
+    cell = genrn(**bladderCellArgs)
     gbar_nattxs = 0.0001 * (wtp)
     gbar_navmut = 0.0001 * (1 - wtp)
     cell.edit_mechs('all', 'nattxs', 'gbar', gbar_nattxs)

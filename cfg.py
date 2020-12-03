@@ -22,9 +22,9 @@ cfg.simxtj = False
 
 cfg.base = [ 0.0  ]
 cfg.peak = [ 0.14, 0.16, 0.18, 0.2 ]
-cfg.dur  = [ 10500 ]
+cfg.dur  = [ 10000 ]
 
-cfg.duration = 10500
+cfg.duration = 10000
 #netParam vars
 #cfg.freqs = [1000]
 #cfg.npulsess = [1]
@@ -41,8 +41,8 @@ cfg.recordCells = ['all']
 #cfg.recordTraces['stim'] = {'sec': 'peri', 'loc': 0.0, 'var': 'v'}
 #cfg.recordTraces['junction'] = {'sec': 'peri', 'loc': 1.0, 'var': 'v'}
 
-for var in [ 'v', 'i', 'ina', 'ik', 'ica', 'icl']:
-    cfg.recordTraces[var] = {'sec': 'soma', 'loc': 0.5, 'var': 'v'}
+for var in [ 'v', 'i_pas', 'ina', 'ik', 'ica', 'icl']:
+    cfg.recordTraces[var] = {'sec': 'soma', 'loc': 0.5, 'var': '%s' %(var)}
 
 #cfg.recordTraces['terminal'] = {'sec': 'cntr', 'loc': 1.0, 'var': 'v'}
 
