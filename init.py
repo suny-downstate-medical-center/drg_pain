@@ -3,34 +3,16 @@ from itertools import product
 from npvec import npvec
 import numpy as np
 import matplotlib.pyplot as plt
-import re
-
-#def str2dict( string, start = '{', delimiters = ':,', end = '}'):
-#    re.
 
 cfg, netParams = sim.readCmdLineArgs()
 sim.create(simConfig = cfg, netParams = netParams)
 
-#netParams.stimTargetParams['iclamp->so'] = {'source': 'iclamp', 'conds': {'morpho': 'so'}, 'sec': 'soma', 'loc': 0.5}
-#netParams.stimTargetParams['iclamp->tj'] = {'source': 'iclamp', 'conds': {'morpho': 'tj'}, 'sec': 'peri', 'loc': 0.0}
+stimd = {}
+for stim in cfg.stims:
+    iclampv = npvec(cfg.duration, cfg.dt, 0)
+    iclampv.plsf(500, 1000, stim)
+    stimd[stim] = sim.h.Vector(iclampv.vector)
 
-iclampv = npvec(cfg.duration, cfg.dt, 0)
-
-base = cfg.base
-peak = cfg.peak
-dur = cfg.dur
-
-base = -0.05
-steps = 5
-amps = np.linspace( 0.005, 0.025, steps)
-dur = cfg.duration / 2 / steps
-delta = dur
-iclampv = npvec(cfg.duration, cfg.dt, base)
-for amp in amps:
-    iclampv.plsf(delta, dur, amp)
-    delta = delta + (dur * 2)
-
-icin = sim.h.Vector(iclampv.vector)
 t = sim.h.Vector(iclampv.t)
 
 # Choi
@@ -39,9 +21,9 @@ t = sim.h.Vector(iclampv.t)
 
 for cell in sim.net.cells:
         try:
-# use tags to determine what function
-            cell.tags['cellType'][]
-            icin.play(cell.stims[0]['hObj']._ref_amp, t, True)
+# use tags to determine what function to play
+            stim = cell.tags['cellType']['stim']
+            stimd[stim].play(cell.stims[0]['hObj']._ref_amp, t, True)
         except:
             pass
 

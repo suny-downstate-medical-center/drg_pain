@@ -1,5 +1,6 @@
 import cells
 import matplotlib.pyplot as plt
+import panda
 import numpy as np
 soma = cells.npSoma()
 ions = ['ca', 'cl', 'h', 'k', 'na']
@@ -44,3 +45,7 @@ plt.plot(rmps, data['e_pas'])
 plt.xlabel("membrane potential (mV)")
 plt.ylabel("e_pas (mV)")
 plt.show()
+
+df_pas = pandas.DataFrame( [data['e_pas']], columns = rmps)
+df_pas.to_csv("e_pas.csv")
+df_pas.to_dict()

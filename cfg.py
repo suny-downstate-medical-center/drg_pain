@@ -2,8 +2,6 @@
 from netpyne import specs
 import numpy as np
 
-def arr(start, end, incr):
-    return np.array([float("%.3f" %(x)) for x in np.arange(start, end+incr/2, incr)])
 
 cfg = specs.SimConfig()  
 
@@ -14,43 +12,18 @@ cfg.cvode_active = False
 cfg.recordStims = False
 cfg.recordStep = 0.0125
 
-#toggle cell models to sim
-cfg.simso = True
-cfg.simtj = False
-cfg.simxso = False
-cfg.simxtj = False
+cfg.v_inits = np.linspace( -80, -40, 21)
+cfg.stims = np.linspace( 0, 0.5, 21)
+cfg.duration = 1500
 
-cfg.base = [ 0.0  ]
-cfg.peak = [ 0.14, 0.16, 0.18, 0.2 ]
-cfg.dur  = [ 10000 ]
-
-cfg.duration = 10000
-#netParam vars
-#cfg.freqs = [1000]
-#cfg.npulsess = [1]
-#cfg.amps = [0.15]#arr(0.10, 0.50, 0.05)
-#cfg.durs = [1000]#arr(5, 20, 2.5)
-cfg.mttxss = [1.0]
-cfg.mn1p8s = [1.0]
-cfg.mn1p9s = [1.0]
-
-#in case plotTraces does not get called -- need to specify to record from all cells
 cfg.recordCells = ['all']
 
-#simple plot traces
-#cfg.recordTraces['stim'] = {'sec': 'peri', 'loc': 0.0, 'var': 'v'}
-#cfg.recordTraces['junction'] = {'sec': 'peri', 'loc': 1.0, 'var': 'v'}
-
-for var in [ 'v', 'i_pas', 'ina', 'ik', 'ica', 'icl']:
+for var in [ 'v', 'i_pas', 'h', 'ina', 'ik', 'ica', 'icl']:
     cfg.recordTraces[var] = {'sec': 'soma', 'loc': 0.5, 'var': '%s' %(var)}
 
-#cfg.recordTraces['terminal'] = {'sec': 'cntr', 'loc': 1.0, 'var': 'v'}
-
-#more plot traces
 for label, nav in [ ['NaV1.7', 'nattxs'], ['NaV1.8', 'nav1p8'] ]:
     cfg.recordTraces[label] = {'sec': 'soma', 'loc': 0.5, 'var': 'ina_%s' %(nav)}
 
-#cfg.recordTraces['SinClamp'] = {'sec': 'soma', 'pointp': 'SinClamp', 'var': 'i'}
 """
 pts = 3
 #generate recordTraces along the fiber and at soma (ordered dictionary so generate them in order)
@@ -72,10 +45,7 @@ cfg.saveJson = True
 # cfg.saveDataInclude = ['netParams', 'netCells', 'simData', 'simConfig', 'plotData']
 
 # run simulation
-cfg.hParams = {'celsius': 22, 'v_init': -53.5}
-
-cfg.duration = cfg.dur[-1]
-#cfg.duration = 1000/min(cfg.freqs) * max(cfg.npulsess) + 300
+cfg.hParams = {'celsius': 22}
 
 cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,
                            'showFig': False, 'timeRange': [0, cfg.duration]}

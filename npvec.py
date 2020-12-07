@@ -28,6 +28,10 @@ class npvec():
         end = start + length
         self.vector[start:end] = np.full( length, self.base + amp)
 
+    def plsf_train(self, deltas, dur, amp):
+        for delta in deltas:
+            self.plsf(delta, dur, amp)
+
     def plot(self):
         plt.plot(self.t, self.vector)
         plt.xlabel('time (ms)')
