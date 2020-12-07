@@ -3,6 +3,10 @@ from itertools import product
 from npvec import npvec
 import numpy as np
 import matplotlib.pyplot as plt
+import re
+
+#def str2dict( string, start = '{', delimiters = ':,', end = '}'):
+#    re.
 
 cfg, netParams = sim.readCmdLineArgs()
 sim.create(simConfig = cfg, netParams = netParams)
@@ -35,6 +39,8 @@ t = sim.h.Vector(iclampv.t)
 
 for cell in sim.net.cells:
         try:
+# use tags to determine what function
+            cell.tags['cellType'][]
             icin.play(cell.stims[0]['hObj']._ref_amp, t, True)
         except:
             pass

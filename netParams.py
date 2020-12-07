@@ -24,16 +24,20 @@ for mttxs, mn1p8, mn1p9 in params:
 
     # create unique tag strings for soma and tjunction
     if simso:
-        solbl = 'socnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(mn1p9:%.3fx)' % (mttxs, mn1p8, mn1p9)
+        cellType = {'1p7': 1.0, '1p8': 1.0, '1p9': 1.0, 'rmp': -53.5}
+#        solbl = 'socnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(mn1p9:%.3fx)' % (mttxs, mn1p8, mn1p9)
+        cellLbl = str(cellType)
         # soma cell model
-        soRules = netParams.importCellParams(label= solbl, conds={'cellType': solbl, 'cellModel': solbl},
+#        soRules = netParams.importCellParams(label= solbl, conds={'cellType': 'foo', 'cellModel': 'bar'},
+        cellRules = netParams.importCellParams(label= cellLbl, conds={'cellType': cellType},
                                              fileName= 'cells.py', cellName= 'npSoma',
                                              cellArgs= {'mulnattxs': 1.5, 'mulnav1p8': mn1p8, 'mulnav1p9': mn1p9})
         # soRules = netParams.importCellParams(label= solbl, conds={'cellType': solbl, 'cellModel': solbl}, fileName='morphology.hoc', cellName='drg')
-        print(soRules)
-        netParams.cellParams[solbl] = soRules
-        netParams.popParams[solbl] = {'numCells': 1, 'cellType': solbl, 'cellModel': solbl, 'morpho': 'so'}
-        netParams.stimTargetParams['ic->'+solbl] = {'source': 'iclamp', 'conds': {'cellType': solbl}, 'sec': 'soma', 'loc': 0.5}
+        print(cellRules)
+        netParams.cellParams[cellLbl] = cellRules
+        netParams.popParams[cellLbl] = {'numCells': 1, 'cellType': cellType}
+#        netParams.popParams[solbl] = {'numCells': 1, 'cellType': 'foo', 'cellModel': 'bar', 'morpho': 'so'}
+        netParams.stimTargetParams['ic->'+cellLbl] = {'source': 'iclamp', 'conds': {'cellType': cellType}, 'sec': 'soma', 'loc': 0.5}
 
     if simtj:
         tjlbl = 'tjcnrn(mn1p7:%.3fx)(mn1p8:%.3fx)(mn1p9:%.3fx)' % (mttxs, mn1p8, mn1p9)
@@ -69,4 +73,4 @@ if __name__ == '__main__':
     # print('---TJ---')
     # pprint(tjRules)
     print('--SOMA--')
-    pprint(soRules)
+    pprint(cellRules)

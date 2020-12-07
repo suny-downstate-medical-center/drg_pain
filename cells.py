@@ -143,6 +143,6 @@ def npTJ( mulnattxs = 1, mulnav1p8 = 1, mulnav1p9 = 1 ):
 
 if __name__=='__main__':
 #    from pprint import pprint
-    soma = npSomaMut()
+    soma = npSoma()
     print(soma)
 #    pprint(soma.get_dict())

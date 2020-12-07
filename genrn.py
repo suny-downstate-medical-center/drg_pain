@@ -291,26 +291,38 @@ class genrn():
             self.secs[sec].set_nernsts()
 
 
-    def init_pas(self, v_init, set_pas = False):
+    def init_v(self, v_init, ions = ['ca', 'cl', 'k', 'na'], set_pas = False):
+        fcdict = {}
         self.h.finitialize(v_init)
         self.h.fcurrent()
         i_net = 0
-        lgg.info("fcurrent() values (%s mV)" %(v_init))
+        print("fcurrent() values (%s mV)" %(v_init))
+        lgg.info("fcurrent() values (%s mV)" % (v_init))
         for sec in self.secs:
+            sec = self.secs[sec]
+            fcdict[sec.name] = {}
             for mech in sec.mechs:
+                fcdict[sec.name][mech] = {}
                 for ion in sec.ions:
                     try:
                         i = getattr(sec.sec, 'i%s_%s' %(ion, mech))
+                        print("(%s)->%s:->%s=%s mA/cm2" %(sec.name, mech, ion, i))
                         lgg.info("(%s)->%s:->%s=%s mA/cm2" %(sec.name, mech, ion, i))
-                        i_net += i
+                        fcdict[sec.name][mech][ion] = i
+                        if ion in ions:
+                            i_net += i
                     except: pass
+            e_pas = sec.sec.v + i_net / sec.sec.g_pas
+            fcdict[sec.name]['i_net'] = i_net
+            fcdict[sec.name]['e_pas'] = e_pas
+            print("(%s)->i_net = %s" %(sec.name, i_net))
+            print(e_pas)
             lgg.info("(%s)->i_net = %s" %(sec.name, i_net))
-            try:
-                e_pas = sec.sec.v + i_net / sec.g_pas
-                lgg.info("(%s)->e_pas calculated at %s mV" %(e_pas))
-                if set_pas:
-                    sec.sec.e_pas = e_pas
-            except: pass
+            lgg.info(e_pas)
+            print("(%s)->e_pas calculated at %s mV" %(e_pas, v_init))
+            if set_pas:
+                sec.sec.e_pas = e_pas
+        return fcdict
 
     def get_dict(self, tag = 'all'):
         rpr = {}
