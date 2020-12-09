@@ -1,7 +1,6 @@
 from neuron import h
 from genrn import genrn
 
-
 somaRule = {
  'globals': [
      'h.load_file("stdrun.hoc")',
@@ -10,24 +9,62 @@ somaRule = {
      'h.ko0_k_ion = 5.0',
      'h.nao0_na_ion = 150.0',
      'h.v_init = -60'],
- 'secLists': {},
- 'secs': {'sec': {'geom': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1},
-                  'ions': {'h': {'e': -30.0, 'i': 1.0, 'o': 1.0},
-                           'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
-                           'na': {'e': 67.12, 'i': 10.0, 'o': 140.0}},
-                  'mechs': {'hcn': {'gbarfast': 1.352e-05, 'gbarslow': 6.7615e-06},
-                            'kaslow': {'gbar': 0.00136}, 'kdr': {'gbar': 0.002688},
-                            'kmtype': {'gbar': 0.0001}, 'knatype': {'gbar': 1e-05},
-                            'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
-                            'nav1p7': {'gbar': 0.0001},
-                            'nav1p8': {'gbar': 0.0087177},
-                            'nav1p9': {'gbar': 1e-05},
-                            'pas': {'g': 0.0001, 'e': -52}},
-                  'topol': {},
-                  'vinit': -60}}
+ 'props': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1},
+ 'ions': {'h': {'e': -30.0, 'i': 1.0, 'o': 1.0},
+          'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
+          'na': {'e': 67.12, 'i': 10.0, 'o': 140.0}},
+ 'mechs': {'hcn': {'gbarfast': 1.352e-05, 'gbarslow': 6.7615e-06},
+           'kaslow': {'gbar': 0.00136}, 'kdr': {'gbar': 0.002688},
+           'kmtype': {'gbar': 0.0001}, 'knatype': {'gbar': 1e-05},
+           'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
+           'nav1p7': {'gbar': 0.0001},
+           'nav1p8': {'gbar': 0.0087177},
+           'nav1p9': {'gbar': 1e-05},
+           'pas': {'g': 0.0001, 'e': -52}},
+ 'vinit': -60}
+'ions': {'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
+         'na': {'e': 67.12, 'i': 10.0, 'o': 140.0}},
+tigerholmCableRule = {
+ 'globals': [
+     'h.load_file("stdrun.hoc")',
+     'h.v_init = -60'],
+ 'props': {'peri': { 'Ra': 35.5, 'cm': 1, 'nseg': 257, 'L': 5000, 'diam': 0.8  },
+           'stem': { 'Ra': 35.5, 'cm': 1, 'nseg': 3  , 'L': 75  , 'diam': 1.4  },
+           'soma': { 'Ra': 35.5, 'cm': 1, 'nseg': 1  , 'L': 24.0, 'diam': 24.0 },
+           'cntr': { 'Ra': 35.5, 'cm': 1, 'nseg': 363, 'L': 5000, 'diam': 0.4  }},
+ 'ions': {'k': {'e': -83.7, 'i': 145.0, 'o': 5.4},
+          'na':{'e': 72.5, 'i': 154.0, 'o': 8.9}}
+ 'mechs': {'ks': {'gbar': 0.0069733},
+           'kf': {'gbar': 0.012756},
+           'h' : {'gbar': 0.0025377},
+           'nattxsT': {'gbar': 0.10664},
+           'nav1p8T': {'gbar': 0.24271},
+           'nav1p9T': {'gbar': 9.4779e-05},
+           'nakpump': {'smalla': -0.0047891},
+           'kdrT': {'gbar': 0.018002},
+           'kna': {'gbar': 0.00042},
+           'naoi': {'theta': 0.029},
+           'koi': {'theta': 0.029},
+           'leak': {},
+           'extrapump': {}
+         },
+ 'cons': (('stem', 'peri'),
+          ('soma', 'stem'),
+          ('cntr', 'peri'))
 }
 
-axonRule = {}
+TJArgs= {
+    'h'   : h,
+    'secs': {'peri': { 'nseg': 257, 'L': 5000, 'diam': 0.8 , 'cm': 1.5481245576786977 },
+             'stem': { 'nseg': 3  , 'L': 75  , 'diam': 1.4 , 'cm': 1.5481245576786977 },
+             'soma': { 'nseg': 1  , 'L': 24.0, 'diam': 24.0, 'cm': 1.5481245576786977 },
+             'cntr': { 'nseg': 363, 'L': 5000, 'diam': 0.4 , 'cm': 1.5481245576786977 }},
+    'mechs': msr['mechs'],
+    'ions' : msr['ions'],
+    'cons' : (('stem', 'peri'),
+              ('soma', 'stem'),
+              ('cntr', 'peri'))
+}
 # Choi
 choiSomaRule = {
  'globals': [
