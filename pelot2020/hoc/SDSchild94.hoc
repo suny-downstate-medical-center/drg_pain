@@ -1,0 +1,116 @@
+// Created by Brandon Thio 7 February 2018
+// create c-fibers based upon literature defined models
+// set these parameters in MATLAB:
+//		tstop, len, D, segdensity, type, initialdel, dura
+load_file("cFiberBuilder.hoc")
+objref fiber, f
+objectvar stim,stim2
+strdef name
+proc stimulate(){
+// Bring the voltages to steady state
+	dtsav = dt						// Store value of dt for later
+	dt = dt_initSS					// Set dt to large dt to speed simulation in initialization phase
+	t = -inittime
+	while (t <= -dt) {		// Advance until t = 0
+		// print(v)
+		fadvance()
+	}
+	dt = dtsav						// Reset dt to simulation dt
+	t = 0							// Set t to 0, but with initialized values
+	fcurrent()						// Sets all currents and other assigned values in accordance with current values of state variables.
+// Run the simulation	
+	first=0
+	past=-100
+	while (t<tstop){		       	   		 // Simulation Loop starts here
+		sec=0
+		forsec fiber.sl{
+			if(sec==(fiber.nsegments-2)){
+				if(v>=-20){
+					fire=1
+				}
+				// print(v)
+
+			}
+			sec=sec+1
+		}
+		fadvance()	      	 	// Advance simulation one time step	    
+	}
+}
+proc run_nrn_script(){
+//////////////////// VARIABLES /////////////////////
+celsius = 37
+dt_initSS = 1
+inittime = 1000
+///////////////// Create Fibers ///////////////////////
+if(type==4){
+	fiber = new cFiberBuilder(D,len,type,celsius,50/6,0,0)
+	// parameters diameter, length, type, temp, segment density, insert97na flag, conductnaces97 flag
+	// flags = 1 if you want them in your fiber
+	// type 1:Sundt 2:Tigerholm 3:Rattay 4:Sundt
+}else{
+	fiber = new cFiberBuilder(D,len,type,celsius)
+	// parameters diameter, length, type, temp
+	// type 1:Sundt 2:Tigerholm 3:Rattay 4:Sundt
+}
+///////////////////////// STIMULATE AXON /////////////////////
+v_init=fiber.v
+t=0	     			    // Set time variable (t) to zero
+dt = 0.001			    // Time step in msec
+low=0
+high=2
+fiber.section[300].sec stim = new IClamp(0.5)		    // Define stim as a current clamp (IClamp) at position 0 on second section
+fiber.section[300].sec{
+	stim.del = initialdel			    // Stimulus delay
+	stim.dur = dura		    	// Duration of the stimulus
+	stim.amp = high			    // Amplitude of the stimulus starts as zero.
+}
+finitialize(v_init)
+fcurrent()
+fire=0
+stimulate()
+while(fire==0){
+high = high + 1
+fiber.section[300].sec stim = new IClamp(0.5)		    // Define stim as a current clamp (IClamp) at position 0 on second section
+fiber.section[300].sec{
+	stim.del = initialdel			    // Stimulus delay
+	stim.dur = dura		    	// Duration of the stimulus
+	stim.amp = high			    // Amplitude of the stimulus starts as zero.
+}
+finitialize(v_init)
+fcurrent()
+fire=0
+stimulate()
+}
+while((high-low)>0.001){
+mid=(high+low)/2
+fiber.section[300].sec stim = new IClamp(0.5)		    // Define stim as a current clamp (IClamp) at position 0 on second section
+fiber.section[300].sec{
+	stim.del = initialdel			    // Stimulus delay
+	stim.dur = dura		    	// Duration of the stimulus
+	stim.amp = mid			    // Amplitude of the stimulus starts as zero.
+}
+finitialize(v_init)
+fcurrent()
+fire=0
+// print("Simulate")
+stimulate()
+if(fire==1){
+	high=mid
+}else{
+	low=mid
+}
+}
+//////////////////// Print Threshold to File //////////////////
+sprint(name,"SD/c_fiber_Thresh_%d_D_%d_Duration_%d_Type_%d_Schild94.dat",D*1000,dura*1000,type,ParticleID)
+// CV=len/(2000*(t2-t1))
+// sprint(name,"CV/c_fiber_CV_%d_D_%d_Type_%d.dat",D*1000,type,ParticleID)
+f=new File()
+f.wopen(name)
+f.printf("%f",high)
+// f.printf("%f",CV)
+f.close()
+}
+
+
+
+

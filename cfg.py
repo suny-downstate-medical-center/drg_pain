@@ -12,8 +12,10 @@ cfg.cvode_active = False
 cfg.recordStims = False
 cfg.recordStep = 0.0125
 
-cfg.v_inits = np.linspace( -80, -40, 21)
-cfg.stims = np.linspace( 0, 0.5, 21)
+#cfg.v_inits = np.linspace( -80, -40, 21)
+#cfg.stims = np.linspace( 0, 0.5, 21)
+cfg.v_inits = [-70, -60, -50]
+cfg.stims = [0.12, 0.25, 0.37]
 cfg.duration = 1500
 
 cfg.recordCells = ['all']

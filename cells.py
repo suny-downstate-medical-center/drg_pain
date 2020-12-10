@@ -1,37 +1,64 @@
 from neuron import h
 from genrn import genrn
 
-hGlobals = {#'cai0_ca_ion': 0.000136,
-            'celsius': 22.0,
-            #'cli0_cl_ion': 40.0,
-            #'clo0_cl_ion': 145.0,
-            'ki0_k_ion': 140.0,
-            'ko0_k_ion': 5.0,
-            'nao0_na_ion': 150.0,
-            'v_init': -53.5}
 
-customCellRule = {
- 'globals': hGlobals,
+somaRule = {
+ 'globals': [
+     'h.load_file("stdrun.hoc")',
+     'h.celsius = 22.0',
+     'h.ki0_k_ion = 140.0',
+     'h.ko0_k_ion = 5.0',
+     'h.nao0_na_ion = 150.0',
+     'h.v_init = -60'],
  'secLists': {},
  'secs': {'sec': {'geom': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1},
                   'ions': {'h': {'e': -30.0, 'i': 1.0, 'o': 1.0},
                            'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
-                           'na': {'e': 68.83, 'i': 10.0, 'o': 150.0}},
+                           'na': {'e': 67.12, 'i': 10.0, 'o': 140.0}},
                   'mechs': {'hcn': {'gbarfast': 1.352e-05, 'gbarslow': 6.7615e-06},
                             'kaslow': {'gbar': 0.00136}, 'kdr': {'gbar': 0.002688},
                             'kmtype': {'gbar': 0.0001}, 'knatype': {'gbar': 1e-05},
                             'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
-                            'nattxs': {'gbar': 0.0001},
+                            'nav1p7': {'gbar': 0.0001},
                             'nav1p8': {'gbar': 0.0087177},
                             'nav1p9': {'gbar': 1e-05},
-                            'pas': {'g': 0.0001, 'e': -41.583}},
+                            'pas': {'g': 0.0001, 'e': -52}},
                   'topol': {},
-                  'vinit': -53.5}}
+                  'vinit': -60}}
 }
 
+axonRule = {}
+# Choi
+choiSomaRule = {
+ 'globals': [
+     'h.load_file("stdrun.hoc")',
+     'h.celsius = 22.0',
+     'h.v_init = -60.0'],
+ 'secLists': {},
+ 'secs': {'sec': {'geom': {'L': 30.0, 'Ra': 123.0, 'cm': 1.5481245576786977, 'diam': 23.0, 'nseg': 1},
+                  'ions': {'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
+                           'na': {'e': 67.12, 'i': 10.0, 'o': 140.0}},
+                  'mechs': {'kaslow': {'gbar': 0.0055}, 'kdr': {'gbar': 0.0035},
+                            'nav1p7': {'gbar': 0.018},
+                            'nav1p8': {'gbar': 0.026},
+                            'nav1p9': {'gbar': 1e-05},
+                            'pas': {'g': 0.0000575, 'e': -58.91}},
+                  'topol': {},
+                  'vinit': -60}}
+}
 # Mandge and Machanda 2019 model
-bladderCellRule = {
- 'globals': hGlobals,
+mandgeSomaRule = {
+ 'globals': [
+     'h.load_file("stdrun.hoc")',
+     'h.load_file("tautables.hoc")',
+     #'cai0_ca_ion': 0.000136,
+     'h.celsius = 22.0',
+     #'cli0_cl_ion': 40.0,
+     #'clo0_cl_ion': 145.0,
+     'h.ki0_k_ion = 140.0',
+     'h.ko0_k_ion = 5.0',
+     'h.nao0_na_ion = 150.0',
+     'h.v_init = -53.5'],
  'secLists': {},
  'secs': {'sec': {'geom': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1},
                   'ions': {'ca': {'e': 132.4579341637009, 'i': 0.000136, 'o': 2.0},
@@ -77,24 +104,42 @@ bladderCellRule = {
                   'vinit': -53.5}}
 }
 
-bcr = bladderCellRule['secs']['sec']
+sr  = somaRule['secs']['sec']
+msr = mandgeSomaRule['secs']['sec']
+csr = choiSomaRule['secs']['sec']
 
-bladderCellArgs = {
+somaRule['cellArgs'] = {
     'h'    : h,
-    'secs' : {'soma': bcr['geom']},
-    'mechs': bcr['mechs'],
-    'ions' : bcr['ions'],
+    'secs' : {'soma': sr['geom']},
+    'mechs': sr['mechs'],
+    'ions' : sr['ions'],
     'cons' : ()
 }
 
-tjCellArgs= {
+choiSomaRule['cellArgs'] = {
+    'h'    : h,
+    'secs' : {'soma': csr['geom']},
+    'mechs': csr['mechs'],
+    'ions' : csr['ions'],
+    'cons' : ()
+}
+
+mandgeSomaRule['cellArgs'] = {
+    'h'    : h,
+    'secs' : {'soma': msr['geom']},
+    'mechs': msr['mechs'],
+    'ions' : msr['ions'],
+    'cons' : ()
+}
+
+TJArgs= {
     'h'   : h,
     'secs': {'peri': { 'nseg': 257, 'L': 5000, 'diam': 0.8 , 'cm': 1.5481245576786977 },
              'stem': { 'nseg': 3  , 'L': 75  , 'diam': 1.4 , 'cm': 1.5481245576786977 },
              'soma': { 'nseg': 1  , 'L': 24.0, 'diam': 24.0, 'cm': 1.5481245576786977 },
              'cntr': { 'nseg': 363, 'L': 5000, 'diam': 0.4 , 'cm': 1.5481245576786977 }},
-    'mechs': bcr['mechs'],
-    'ions' : bcr['ions'],
+    'mechs': msr['mechs'],
+    'ions' : msr['ions'],
     'cons' : (('stem', 'peri'),
               ('soma', 'stem'),
               ('cntr', 'peri'))
@@ -183,14 +228,17 @@ bladder_e_pas = {
     -40.5: 8.6610898868119,
     -40.0: 12.614441212321758}
 
-def hInit():
-    h.load_file('stdrun.hoc')
-    h.load_file('tautables.hoc')
-    for var in hGlobals:
-        execstr = 'h.%s = %s' %(var, hGlobals[var])
+def hInit( execstrs ):
+    for execstr in execstrs:
         print('exec: %s' %(execstr))
         exec(execstr)
 
+def createSoma( cellRule = somaRule):
+    hInit(cellRule['globals'])
+    cell = genrn(**cellRule['cellArgs'])
+    return cell
+
+"""
 def npSoma( mulnattxs = 1, mulnav1p8 = 1 , mulnav1p9 = 1, v_init = -53.5 ):
     hInit()
     cell = genrn(**bladderCellArgs)
@@ -227,9 +275,9 @@ def npTJ( mulnattxs = 1, mulnav1p8 = 1, mulnav1p9 = 1 ):
     cell.edit_mechs('all', 'nav1p8', 'gbar', gbar_nav1p8)
     cell.edit_mechs('all', 'nav1p9', 'gbar', gbar_nav1p9)
     return cell
-
+"""
 if __name__=='__main__':
 #    from pprint import pprint
-    soma = npSoma()
+    soma = createSoma(choiSomaRule)
     print(soma)
 #    pprint(soma.get_dict())

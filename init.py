@@ -8,11 +8,14 @@ cfg, netParams = sim.readCmdLineArgs()
 sim.create(simConfig = cfg, netParams = netParams)
 
 stimd = {}
+iclampvd = {}
 for stim in cfg.stims:
     iclampv = npvec(cfg.duration, cfg.dt, 0)
     iclampv.plsf(500, 1000, stim)
+    iclampvd[stim] = iclampv.vector
     stimd[stim] = sim.h.Vector(iclampv.vector)
 
+# last iclampv t used (all same)
 t = sim.h.Vector(iclampv.t)
 
 # Choi
@@ -37,11 +40,11 @@ plt.xlabel("time (ms)")
 plt.ylabel("voltage (mV)")
 plt.show()
 
-plt.title("Current Stimulus")
-plt.xlabel("time (ms)")
-plt.ylabel("current mA/cm2")
-plt.plot(t, icin)
-plt.show()
+#plt.title("Current Stimulus")
+#plt.xlabel("time (ms)")
+#plt.ylabel("current mA/cm2")
+#plt.plot(t, icin)
+#plt.show()
 
 plt.title("NaV 1.7 / NaV 1.8 Current")
 plt.plot(sim.allSimData['t'], sim.allSimData['NaV1.7']['cell_0'], color='r', label='NaV 1.7')

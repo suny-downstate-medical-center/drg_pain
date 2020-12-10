@@ -13,7 +13,7 @@ UNITS {
 }
 
 NEURON {
-    SUFFIX nav17h
+    SUFFIX nav1p7
     USEION na READ ena WRITE ina
     RANGE gnabar, gna, ina
     RANGE minf, mtau 
