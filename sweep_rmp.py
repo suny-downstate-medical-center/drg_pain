@@ -54,6 +54,7 @@ plt.xlabel("membrane potential (mV)")
 plt.ylabel("e_pas (mV)")
 plt.show()
 
-df_pas = pandas.DataFrame( [data['e_pas']], columns = rmps)
+[data['na'][mech] for mech in ['nattxsT', 'nav1p8T', 'nav1p'] ]
+df_pas = pandas.DataFrame( [data['e_pas'], data['na']['h'], data['na']['nattxsT'], data['na']], columns = rmps)
 df_pas.to_csv("e_pas.csv")
 df_pas.to_dict()

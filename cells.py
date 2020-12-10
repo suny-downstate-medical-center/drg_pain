@@ -135,6 +135,21 @@ def createSoma( cellRule = somaRule):
                   ions = cellRule['ions'], cons = ())
     return cell
 
+def createCable( cellRule = tigerholmCableRule, v_init = -60):
+    hInit(cellRule['globals'])
+    cell = genrn( h = h, v_init = cellRule['v_init'],
+                  secs = {'peri': cellRule['secs']['peri']}, mechs = cellRule['mechs'],
+                  ions = cellRule['ions'], cons = ())
+#     initialize voltages to v_init
+    cell.h.finitialize(v_init)
+    ina = cell('peri')(0.5).ina
+    ena = cell('peri')(0.5).ena
+    ik  = cell('peri')(0.5).ik
+    ek  = cell('peri')(0.5).ek
+    cell('peri').sec.gnaleak_leak = ina / (v_init - ena)
+    cell('peri').sec.gkleak_leak  = ik  / (v_init - ek )
+    return cell
+
 if __name__=='__main__':
 #    from pprint import pprint
     soma = createSoma(choiSomaRule)

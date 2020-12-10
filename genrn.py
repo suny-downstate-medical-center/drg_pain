@@ -116,7 +116,6 @@ class gesec():
             if ion in iions:
                 self.ions[ion]['mechs'].append(mech)
 
-
     def fset_mech(self, mech, param, func):
         for seg in self.sec:
             val = func(seg.x)
