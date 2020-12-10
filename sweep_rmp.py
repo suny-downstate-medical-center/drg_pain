@@ -1,10 +1,18 @@
 import cells
 import matplotlib.pyplot as plt
-import panda
+import pandas
 import numpy as np
-soma = cells.npSoma()
-ions = ['ca', 'cl', 'h', 'k', 'na']
-rmps = np.linspace(-80,-40, 81)
+
+# cells.somaRule
+# cells.tigerholmCableRule
+# cells.choiSomaRule
+# cells.mandgeSomaRule
+
+soma = cells.createSoma(cells.tigerholmCableRule)
+#ions = ['ca', 'cl', 'h', 'k', 'na']
+ions = ['na', 'k']
+
+rmps = np.linspace(-80,-40, 41)
 data = {}
 data_pas = {}
 # note that

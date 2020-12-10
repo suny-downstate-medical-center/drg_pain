@@ -312,16 +312,19 @@ class genrn():
                         if ion in ions:
                             i_net += i
                     except: pass
-            e_pas = sec.sec.v + i_net / sec.sec.g_pas
             fcdict[sec.name]['i_net'] = i_net
-            fcdict[sec.name]['e_pas'] = e_pas
             print("(%s)->i_net = %s" %(sec.name, i_net))
-            print(e_pas)
             lgg.info("(%s)->i_net = %s" %(sec.name, i_net))
-            lgg.info(e_pas)
-            print("(%s)->e_pas calculated at %s mV" %(e_pas, v_init))
-            if set_pas:
-                sec.sec.e_pas = e_pas
+            try:
+                fcdict[sec.name]['e_pas'] = e_pas
+                e_pas = sec.sec.v + i_net / sec.sec.g_pas
+                print(e_pas)
+                print("(%s)->e_pas calculated at %s mV" %(e_pas, v_init))
+                lgg.info(e_pas)
+                if set_pas:
+                    sec.sec.e_pas = e_pas
+            except:
+                fcdict[sec.name]['e_pas'] = [None]
         return fcdict
 
     def get_dict(self, tag = 'all'):
