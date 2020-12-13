@@ -2,6 +2,7 @@ from neuron import h
 from genrn import genrn
 
 somaRule = {
+ 'label': 'soma',
  'globals': [
      'h.load_file("stdrun.hoc")',
      'h.celsius = 22.0',
@@ -9,7 +10,7 @@ somaRule = {
      'h.ko0_k_ion = 5.0',
      'h.nao0_na_ion = 150.0',
      'h.v_init = -60'],
- 'props': {'soma': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1}}  ,
+ 'secs': {'soma': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1}}  ,
  'ions': {'h': {'e': -30.0, 'i': 1.0, 'o': 1.0},
           'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
           'na': {'e': 67.12, 'i': 10.0, 'o': 140.0}},
@@ -24,6 +25,7 @@ somaRule = {
  'v_init': -60}
 
 tigerholmCableRule = {
+ 'label': 'tigerholm',
  'globals': [
      'h.load_file("stdrun.hoc")',
      'h.v_init = -60'],
@@ -54,6 +56,7 @@ tigerholmCableRule = {
 
 # Choi
 choiSomaRule = {
+ 'label': 'choi',
  'globals': [
      'h.load_file("stdrun.hoc")',
      'h.celsius = 22.0',
@@ -62,7 +65,7 @@ choiSomaRule = {
  'ions': {'k': {'e': -84.7, 'i': 140.0, 'o': 5.0},
           'na': {'e': 67.12, 'i': 10.0, 'o': 140.0}},
  'mechs': {'kaslow': {'gbar': 0.0055}, 'kdr': {'gbar': 0.0035},
-           'nav1p7': {'gnabar': 0.018},
+           'nav1p7': {'gbar': 0.018},
            'nav1p8': {'gbar': 0.026},
            'nav1p9': {'gbar': 1e-05},
            'pas': {'g': 0.0000575, 'e': -58.91}},
@@ -70,17 +73,19 @@ choiSomaRule = {
 
 # Mandge and Machanda 2019 model
 mandgeSomaRule = {
+ 'label': 'mandge',
  'globals': [
      'h.load_file("stdrun.hoc")',
      'h.load_file("tautables.hoc")',
-     #'cai0_ca_ion': 0.000136,
+#     'cai0_ca_ion': 0.000136,
      'h.celsius = 22.0',
-     #'cli0_cl_ion': 40.0,
-     #'clo0_cl_ion': 145.0,
+#     'cli0_cl_ion': 40.0,
+#     'clo0_cl_ion': 145.0,
      'h.ki0_k_ion = 140.0',
      'h.ko0_k_ion = 5.0',
      'h.nao0_na_ion = 150.0',
-     'h.v_init = -53.5'],
+#     'h.v_init = -53.5'],
+     'h.v_init = -60'],
  'secs': {'soma': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1}},
  'ions': {'ca': {'e': 132.4579341637009, 'i': 0.000136, 'o': 2.0},
           'caer': {'e': 0.0, 'i': 0.4, 'o': 1.0},
@@ -115,13 +120,15 @@ mandgeSomaRule = {
            'nav1p8': {'gbar': 0.0087177},
            'nav1p9': {'gbar': 1e-05},
            'ncxsoma': {'ImaxNax': 1.1e-05, 'KcNacx': 1.38, 'KnNacx': 87.5},
-           'pas': {'g': 0.0001, 'e': -41.583},
+#           'pas': {'g': 0.0001, 'e': -41.583},
+           'pas': {'g': 0.0001, 'e': -52.37},
            'skca3': {'E50hsk3': 0.00042, 'gbar': 0.0009, 'hcsk3': 5.6,
                      'm': 0.0, 'm_sf': 128.0, 'm_vh': 24.0},
            'soce': {'pmax': 1e-09},
            'trpm8': {'C': 67.0, 'em8': 0.0, 'gbar': 1e-07,
                      'p_ca': 0.01, 'z': 0.65}},
- 'v_init': -53.5}
+ 'v_init': -60.0}
+# 'v_init': -53.5}
 
 def hInit( execstrs ):
     for execstr in execstrs:
@@ -133,6 +140,7 @@ def createSoma( cellRule = somaRule):
     cell = genrn( h = h, v_init = cellRule['v_init'],
                   secs = cellRule['secs'], mechs = cellRule['mechs'],
                   ions = cellRule['ions'], cons = ())
+    cell('soma').sec.e_pas = -52.4
     return cell
 
 def createCable( cellRule = tigerholmCableRule, v_init = -60):
@@ -152,8 +160,11 @@ def createCable( cellRule = tigerholmCableRule, v_init = -60):
 
 if __name__=='__main__':
 #    from pprint import pprint
-    soma = createSoma(choiSomaRule)
-    print(soma)
+    soma = {}
+    soma[0] = createSoma(somaRule)
+    soma[1] = createSoma(choiSomaRule)
+    soma[2] = createSoma(mandgeSomaRule)
+
 #    pprint(soma.get_dict())
 
 """

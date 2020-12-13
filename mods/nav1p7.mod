@@ -15,7 +15,7 @@ UNITS {
 NEURON {
     SUFFIX nav1p7
     USEION na READ ena WRITE ina
-    RANGE gnabar, gna, ina
+    RANGE gbar, g, ina
     RANGE minf, mtau 
     RANGE hinf, htau 
     RANGE sinf, stau 
@@ -27,7 +27,7 @@ NEURON {
 }
 
 PARAMETER{ 
-    gnabar = 0.018 (S/cm2)
+    gbar = 0.018 (S/cm2)
     emut   = 0
     rmut   = 0.0
 :    q10    = 2.5
@@ -40,7 +40,7 @@ ASSIGNED {
     ina (mA/cm2)
     ena (mV)
 
-    gna (S/cm2)
+    g (S/cm2)
 
     malpha (1/ms)
     mbeta (1/ms)
@@ -78,8 +78,8 @@ INITIAL{
 BREAKPOINT{
     SOLVE states METHOD cnexp
     
-    gna = gnabar * m^3 * h * s
-    ina = gna * ((1 - rmut) * (v - ena) + (rmut * (v - emut)))
+    g = gbar * m^3 * h * s
+    ina = g * ((1 - rmut) * (v - ena) + (rmut * (v - emut)))
 }
 
 DERIVATIVE states{

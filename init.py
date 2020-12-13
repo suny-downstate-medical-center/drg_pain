@@ -7,13 +7,25 @@ import matplotlib.pyplot as plt
 cfg, netParams = sim.readCmdLineArgs()
 sim.create(simConfig = cfg, netParams = netParams)
 
-stimd = {}
-iclampvd = {}
-for stim in cfg.stims:
+def cellTags( gid ):
+    string = "cell_%i" %(gid)
+    tags = sim.net.cells[gid].tags['cellType']
+    return [string, tags]
+
+stimd = {
+    'i': {},
+    'v': {}
+}
+
+for istim in cfg.istims:
     iclampv = npvec(cfg.duration, cfg.dt, 0)
-    iclampv.plsf(500, 1000, stim)
-    iclampvd[stim] = iclampv.vector
-    stimd[stim] = sim.h.Vector(iclampv.vector)
+    iclampv.plsf(cfg.dur[0], cfg.dur[1], istim)
+    stimd['i'][istim] = sim.h.Vector(iclampv.vector)
+
+for vstim in cfg.vstims:
+    vclampv = npvec(cfg.duration, cfg.dt, -60)
+    vclampv.plsf(cfg.dur[0], cfg.dur[1], vstim)
+    stimd['v'][vstim] = sim.h.Vector(vclampv.vector)
 
 # last iclampv t used (all same)
 t = sim.h.Vector(iclampv.t)
@@ -23,14 +35,29 @@ t = sim.h.Vector(iclampv.t)
 # (−13.74 pA for −70 mV, −7.24 pA for −65 mV, 9.55 pA for −55 mV, and 25.64 pA for −50 mV)
 
 for cell in sim.net.cells:
-        try:
+    try:
 # use tags to determine what function to play
-            stim = cell.tags['cellType']['stim']
-            stimd[stim].play(cell.stims[0]['hObj']._ref_amp, t, True)
-        except:
-            pass
+        tags = cell.tags['cellType']
+        if tags['stim'] == 'i':
+            stimd['i'][tags['val']].play(cell.stims[0]['hObj']._ref_amp,    t, True)
+        if tags['stim'] == 'v':
+            stimd['v'][tags['val']].play(cell.stims[0]['hObj']._ref_amp[0], t, True)
+    except:
+        pass
+
+sim.simulate() # calls runSim() and gatherData()
+
+if sim.rank == 0:
+# additional plotting for master node
+# plot current from voltage step
+else:
+    quit()
+#sim.analyze()
+
+sim.pc.gid2cell(#)
 
 
+"""
 sim.simulate()
 sim.analyze()
 
@@ -85,3 +112,4 @@ plt.legend()
 plt.xlabel("time (ms)")
 plt.ylabel("current mA/cm2")
 plt.show()
+"""
