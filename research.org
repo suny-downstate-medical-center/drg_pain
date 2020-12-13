@@ -31,5 +31,19 @@ powerpoint is located in research_supplement/meeting_11_30_20.pdf
 
             alphah  = 0.06435/{1 + exp[(υ + 73.26415)/3.71928]}
             betah   = 0.13496/{1 + exp[(υ + 10.27853)/(−9.09334)]}
+* Dec, 13, 2020: gatherData does not gatherData into the master node
+** from multiprocessor sim
+Gathering data...
+  Done; gather time = 0.29 s.
+
+Analyzing...
+  Cells: 126
+  Connections: 0 (0.00 per cell)
+  Spikes: 0 (0.00 Hz)
+  Simulated time: 0.0 s; 4 workers
+  Run time: 0.85 s
+hello from the master node!
+analyzing 32 cells
+** will need to analyze from pkl data most likely, as json files are very bloated.
 
 

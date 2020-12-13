@@ -50,11 +50,13 @@ sim.simulate() # calls runSim() and gatherData()
 if sim.rank == 0:
 # additional plotting for master node
 # plot current from voltage step
+    print("hello from the master node!")
+    print("analyzing %i cells" %(len(sim.net.cells)))
 else:
     quit()
 #sim.analyze()
 
-sim.pc.gid2cell(#)
+#sim.pc.gid2cell(#)
 
 
 """
