@@ -5,6 +5,7 @@ from cfg import cfg
 fptr = "%s/%s.pkl" %(cfg.saveFolder, cfg.simLabel)
 fptr = open("data/sim.pkl", "rb")
 pkld = pkl.load(fptr)
+fptr.close()
 net = pkld['net']
 sim = pkld['simData']
 
@@ -24,9 +25,18 @@ for cell in net['cells']:
             if model in current:
                 current[model].append([ stim, spikes ])
             else:
-                current[model] = [ stim, spikes ]
+                current[model] = [[ stim, spikes ]]
     except:
         pass
+
+plt.title("# spikes")
+for model in current:
+    x, y = zip(*current[model])
+    plt.plot( x, y, label=model)
+plt.legend()
+plt.xlabel("current")
+plt.ylabel("# spikes")
+plt.show()
 
 for cell in net['cells']:
     try:
@@ -35,10 +45,52 @@ for cell in net['cells']:
         if cell['tags']['cellType']['stim'] == 'v':
             trace = np.array( sim['NaV1.7']['cell_%i' %(id)] )
             peak = trace.max()
-            model = cell['tags']['cellType']['model']
+            model = "%s:%s" %( cell['tags']['cellType']['model'], 'NaV1.7' )
             if model in voltage:
                 voltage[model].append([ stim, peak ])
             else:
-                voltage[model] = [ stim, peak ]
+                voltage[model] = [[ stim, peak ]]
     except:
         pass
+
+for cell in net['cells']:
+    try:
+        stim = cell['tags']['cellType']['val']
+        id = cell.gid
+        if cell['tags']['cellType']['stim'] == 'v':
+            trace = np.array( sim['NaV1.8']['cell_%i' %(id)] )
+            peak = trace.max()
+            model = "%s:%s" %( cell['tags']['cellType']['model'], 'NaV1.8' )
+            if model in voltage:
+                voltage[model].append([ stim, peak ])
+            else:
+                voltage[model] = [[ stim, peak ]]
+    except:
+        pass
+
+for cell in net['cells']:
+    try:
+        stim = cell['tags']['cellType']['val']
+        id = cell.gid
+        if cell['tags']['cellType']['stim'] == 'v':
+            trace = np.array( sim['NaV1.8T']['cell_%i' %(id)] )
+            peak = trace.max()
+            model = "%s:%s" %( cell['tags']['cellType']['model'], 'NaV1.8T' )
+            if model in voltage:
+                voltage[model].append([ stim, peak ])
+            else:
+                voltage[model] = [[ stim, peak ]]
+    except:
+        pass
+
+plt.title("NaV peak current")
+for model in voltage:
+    x , y = zip(*voltage[model])
+    plt.plot( x, y, label=model)
+plt.legend()
+plt.xlabel("voltage clamp (mV)")
+plt.ylabel("peak current (mA/cm2)")
+plt.show()
+
+del(net)
+del(sim)
