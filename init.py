@@ -46,7 +46,9 @@ for cell in sim.net.cells:
         pass
 
 sim.simulate() # calls runSim() and gatherData()
+sim.analyze()
 
+"""
 if sim.rank == 0:
 # additional plotting for master node
 # plot current from voltage step
@@ -58,8 +60,6 @@ else:
 
 #sim.pc.gid2cell(#)
 
-
-"""
 sim.simulate()
 sim.analyze()
 

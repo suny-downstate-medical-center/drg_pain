@@ -38,7 +38,8 @@ tigerholmCableRule = {
  'mechs': {'ks': {'gbar': 0.0069733},
            'kf': {'gbar': 0.012756},
            'h' : {'gbar': 0.0025377},
-           'nattxsT': {'gbar': 0.10664},
+           'nav1p7': {'gbar': 0.10664},
+#           'nattxsT': {'gbar': 0.10664},
            'nav1p8T': {'gbar': 0.24271},
            'nav1p9T': {'gbar': 9.4779e-05},
            'nakpump': {'smalla': -0.0047891},
@@ -116,7 +117,8 @@ mandgeSomaRule = {
            'kaslow': {'gbar': 0.00136}, 'kdr': {'gbar': 0.002688},
            'kmtype': {'gbar': 0.0001}, 'knatype': {'gbar': 1e-05},
            'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
-           'nattxs': {'gbar': 0.0001},
+           'nav1p7': {'gbar': 0.0001},
+#           'nattxs': {'gbar': 0.0001},
            'nav1p8': {'gbar': 0.0087177},
            'nav1p9': {'gbar': 1e-05},
            'ncxsoma': {'ImaxNax': 1.1e-05, 'KcNacx': 1.38, 'KnNacx': 87.5},
@@ -132,7 +134,7 @@ mandgeSomaRule = {
 
 def hInit( execstrs ):
     for execstr in execstrs:
-        print('exec: %s' %(execstr))
+#        print('exec: %s' %(execstr))
         exec(execstr)
 
 def createSoma( cellRule = somaRule):
