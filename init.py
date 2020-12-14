@@ -39,7 +39,9 @@ t = sim.h.Vector(iclampv.t)
 # Choi
 # Membrane potential was set by constant current injection
 # (−13.74 pA for −70 mV, −7.24 pA for −65 mV, 9.55 pA for −55 mV, and 25.64 pA for −50 mV)
+icvec.play(sim.net.cells[0].stims[0]['hObj']._ref_amp, t, True)
 
+"""
 for cell in sim.net.cells:
     try:
 # use tags to determine what function to play
@@ -54,7 +56,7 @@ for cell in sim.net.cells:
             print("stim: [%f] is playing" %(tags['val']))
     except:
         pass
-
+"""
 sim.simulate() # calls runSim() and gatherData()
 sim.analyze()
 """
