@@ -17,6 +17,12 @@ stimd = {
     'v': {}
 }
 
+ic = npvec(cfg.duration, cfg.dt, 0)
+ic.plsf(50, 50, 0.5)
+icvec = sim.h.Vector(ic.vector)
+vc = npvec(cfg.duration, cfg.dt, 0)
+vcvec = sim.h.Vector(vc.vector)
+
 for istim in cfg.istims:
     iclampv = npvec(cfg.duration, cfg.dt, 0)
     iclampv.plsf(cfg.dur[0], cfg.dur[1], istim)
@@ -39,30 +45,19 @@ for cell in sim.net.cells:
 # use tags to determine what function to play
         tags = cell.tags['cellType']
         if tags['stim'] == 'i':
-            stimd['i'][tags['val']].play(cell.stims[0]['hObj']._ref_amp,    t, True)
+#            stimd['i'][tags['val']].play(cell.stims[0]['hObj']._ref_amp,    t, True)
+            icvec.play(cell.stims[0]['hObj']._ref_amp, t, True)
+            print("stim: [%f] is playing" %(tags['val']))
         if tags['stim'] == 'v':
-            stimd['v'][tags['val']].play(cell.stims[0]['hObj']._ref_amp[0], t, True)
+#            stimd['v'][tags['val']].play(cell.stims[0]['hObj']._ref_amp[0], t, True)
+            vcvec.play(cell.stims[0]['hObj']._ref_amp[0], t, True)
+            print("stim: [%f] is playing" %(tags['val']))
     except:
         pass
 
 sim.simulate() # calls runSim() and gatherData()
 sim.analyze()
-
 """
-if sim.rank == 0:
-# additional plotting for master node
-# plot current from voltage step
-    print("hello from the master node!")
-    print("analyzing %i cells" %(len(sim.net.cells)))
-else:
-    quit()
-#sim.analyze()
-
-#sim.pc.gid2cell(#)
-
-sim.simulate()
-sim.analyze()
-
 plt.plot(sim.allSimData['t'], sim.allSimData['v']['cell_0'])
 plt.title("Membrane Potential")
 plt.xlabel("time (ms)")

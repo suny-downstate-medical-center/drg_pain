@@ -35,6 +35,6 @@ class npvec():
     def plot(self):
         plt.plot(self.t, self.vector)
         plt.xlabel('time (ms)')
-        plt.ylabel('current (nA)')
-        plt.title('current clamp vector')
+        plt.ylabel('value')
+        plt.title('vector')
         plt.show()

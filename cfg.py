@@ -13,11 +13,12 @@ cfg.recordStims = False
 cfg.recordStep = 0.025
 
 #vars
-cfg.istims = np.linspace(0.00, 0.4, 21)
-cfg.vstims = np.linspace(0, 100, 21)
-
-cfg.dur = [250, 1000]
-cfg.duration = 1250
+#cfg.istims = np.linspace(0.00, 0.4, 21)
+#cfg.vstims = np.linspace(0, 100, 21)
+cfg.istims = np.linspace(0.00, 0.5, 6)
+cfg.vstims = np.linspace(0, 100, 6)
+cfg.dur = [50, 50]
+cfg.duration = 100
 
 cfg.recordCells = ['all']
 
@@ -38,8 +39,8 @@ cfg.savePickle = True
 # run simulation
 cfg.hParams = {'celsius': 22}
 
-# cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,
-#                            'showFig': False, 'timeRange': [0, cfg.duration]}
+cfg.analysis.plotTraces = {'include': ['all'], 'overlay': True, 'oneFigPer': 'trace', 'saveData': True, 'saveFig': True,
+                           'showFig': False, 'timeRange': [0, cfg.duration]}
 
 #use the saveData to plot values
 
