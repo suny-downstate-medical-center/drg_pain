@@ -4,21 +4,15 @@ import numpy as np
 
 cfg = specs.SimConfig()  
 
-#simulation parameters (fixed timestep)
-#cfg.dt = 0.0125
-#cfg.cvode_active = False
 cfg.dt = 0.0125
 cfg.cvode_active = False
 cfg.recordStims = False
 cfg.recordStep = 0.025
 
-#vars
-#cfg.istims = np.linspace(0.00, 0.4, 21)
-#cfg.vstims = np.linspace(0, 100, 21)
-cfg.istims = np.linspace(0.00, 0.5, 6)
-cfg.vstims = np.linspace(0, 100, 6)
-cfg.dur = [50, 50]
-cfg.duration = 100
+cfg.istims = np.linspace(0.00, 0.4, 21)
+cfg.vstims = np.linspace(0, 100, 21)
+cfg.dur = [250, 1000]
+cfg.duration = 1250
 
 cfg.recordCells = ['all']
 
