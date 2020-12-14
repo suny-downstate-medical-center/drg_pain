@@ -10,19 +10,20 @@ cfg = specs.SimConfig()
 cfg.dt = 0.0125
 cfg.cvode_active = False
 cfg.recordStims = False
-cfg.recordStep = 0.5
+cfg.recordStep = 0.025
 
 #vars
 cfg.istims = np.linspace(0.00, 0.4, 21)
-cfg.vstims = np.linspace(-60, 40, 21)
+cfg.vstims = np.linspace(0, 100, 21)
 
-cfg.dur = [5, 5]
-cfg.duration = 15
+cfg.dur = [250, 1000]
+cfg.duration = 1250
 
 cfg.recordCells = ['all']
 
-for var in [ 'v', 'i_pas', 'h', 'ina', 'ik', 'ica', 'icl']:
+for var in [ 'v', 'ina', 'ik', 'ica', 'icl']:
     cfg.recordTraces[var] = {'sec': 'soma', 'loc': 0.5, 'var': '%s' %(var)}
+#for var in [ 'v', 'i_pas', 'h', 'ina', 'ik', 'ica', 'icl']:
 
 for label, nav in [ ['NaV1.7', 'nav1p7'], ['NaV1.8', 'nav1p8'], ['NaV1.8T', 'nav1p8T'] ]:
     cfg.recordTraces[label] = {'sec': 'soma', 'loc': 0.5, 'var': 'ina_%s' %(nav)}
