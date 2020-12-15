@@ -44,7 +44,7 @@ for cell in net['cells']:
         id = cell.gid
         if cell['tags']['cellType']['stim'] == 'v':
             trace = np.array( sim['NaV1.7']['cell_%i' %(id)] )
-            peak = trace.max()
+            peak = trace.min()
             model = "%s:%s" %( cell['tags']['cellType']['model'], 'NaV1.7' )
             if model in voltage:
                 voltage[model].append([ stim, peak ])
@@ -59,7 +59,7 @@ for cell in net['cells']:
         id = cell.gid
         if cell['tags']['cellType']['stim'] == 'v':
             trace = np.array( sim['NaV1.8']['cell_%i' %(id)] )
-            peak = trace.max()
+            peak = trace.min()
             model = "%s:%s" %( cell['tags']['cellType']['model'], 'NaV1.8' )
             if model in voltage:
                 voltage[model].append([ stim, peak ])
@@ -74,7 +74,7 @@ for cell in net['cells']:
         id = cell.gid
         if cell['tags']['cellType']['stim'] == 'v':
             trace = np.array( sim['NaV1.8T']['cell_%i' %(id)] )
-            peak = trace.max()
+            peak = trace.min()
             model = "%s:%s" %( cell['tags']['cellType']['model'], 'NaV1.8T' )
             if model in voltage:
                 voltage[model].append([ stim, peak ])
