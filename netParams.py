@@ -45,7 +45,7 @@ for soma in [somaRule, choiSomaRule, mandgeSomaRule]:
                                                cellArgs= {'cellRule': soma})
         netParams.cellParams[cellLbl] = cellRules[cellLbl]
         netParams.popParams[cellLbl] = {'numCells': 1, 'cellType': cellType}
-        netParams.stimSourceParams[cellLbl] = {'type': 'VClamp', 'dur': [cfg.dur[0], cfg.dur[1], 0], 'amp': [-60, -60+stim , 0], 'gain': 1e5, 'rstim': 1, 'tau1': 0.1, 'tau2': 0}
+        netParams.stimSourceParams[cellLbl] = {'type': 'VClamp', 'dur': [cfg.dur[0], cfg.dur[1], 0], 'amp': [-70, -70+stim , 0], 'gain': 1e5, 'rstim': 1, 'tau1': 0.1, 'tau2': 0}
         netParams.stimTargetParams[cellLbl] = {'source': cellLbl, 'conds': {'cellType': cellType}, 'sec': 'soma', 'loc': 0.5}
 
 """
