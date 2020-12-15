@@ -81,7 +81,7 @@ for cell in net['cells']:
             else:
                 voltage[model] = [[ stim, peak ]]
     except:
-        pass
+        pass 
 
 plt.title("NaV peak current")
 for model in voltage:

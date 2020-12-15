@@ -23,7 +23,7 @@ vstims = cfg.vstims
 isis  = cfg.isis
 
 cellRules = {}
-"""
+
 for soma in [somaRule, choiSomaRule, mandgeSomaRule]:
     for stim in istims:
         cellType = {'model': soma['label'], 'stim': 'i', 'val': stim}
@@ -35,7 +35,7 @@ for soma in [somaRule, choiSomaRule, mandgeSomaRule]:
         netParams.popParams[cellLbl] = {'numCells': 1, 'cellType': cellType}
         netParams.stimSourceParams[cellLbl] = {'type': 'IClamp', 'amp': stim, 'dur': cfg.dur[1], 'delay': cfg.dur[0]}
         netParams.stimTargetParams[cellLbl] = {'source': cellLbl, 'conds': {'cellType': cellType}, 'sec': 'soma', 'loc': 0.5}
-"""
+
 for soma in [somaRule, choiSomaRule, mandgeSomaRule]:
     for stim in vstims:
         cellType = {'model': soma['label'], 'stim': 'v', 'val': stim}
