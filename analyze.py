@@ -40,7 +40,7 @@ plt.show()
 
 for cell in net['cells']:
     try:
-        stim = cell['tags']['cellType']['val']
+        stim = cell['tags']['cellType']['val'] - 60
         id = cell.gid
         if cell['tags']['cellType']['stim'] == 'v':
             trace = np.array( sim['NaV1.7']['cell_%i' %(id)] )
@@ -55,7 +55,7 @@ for cell in net['cells']:
 
 for cell in net['cells']:
     try:
-        stim = cell['tags']['cellType']['val']
+        stim = cell['tags']['cellType']['val'] - 60
         id = cell.gid
         if cell['tags']['cellType']['stim'] == 'v':
             trace = np.array( sim['NaV1.8']['cell_%i' %(id)] )
@@ -70,7 +70,7 @@ for cell in net['cells']:
 
 for cell in net['cells']:
     try:
-        stim = cell['tags']['cellType']['val']
+        stim = cell['tags']['cellType']['val'] - 60
         id = cell.gid
         if cell['tags']['cellType']['stim'] == 'v':
             trace = np.array( sim['NaV1.8T']['cell_%i' %(id)] )
