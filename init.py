@@ -22,7 +22,7 @@ for isi in cfg.isis:
     while delta < cfg.duration:
         deltas.append(delta)
         delta = delta + isi
-    ipulse.plsf(deltas, 5, 0.25)
+    ipulse.plsf_train(deltas, 5, 0.25)
     stimd['pls'][isi] = sim.h.Vector(ipulse.vector)
 # last iclampv t used (all same)
 t = sim.h.Vector(ipulse.t)
