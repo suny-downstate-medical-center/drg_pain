@@ -5,27 +5,34 @@ import matplotlib.pyplot as plt
 
 class npvec():
     def __init__(self, duration, dt, base):
-        self.vector = np.full( int(duration/dt), base).astype('float32')
+        self.end = int(duration / dt)
+        self.vector = np.full( self.end , base).astype('float32')
         self.base = base
         self.t = np.arange(0, duration, dt)
         self.dt = dt
 
     def sinf(self, delta, dur, amp):
         start = int(delta / self.dt)
+        if start > self.end: return
         end = start + int(dur / self.dt)
+        if end > self.end: end = self.end
         t = np.arange(0, dur, self.dt)
         self.vector[start:end] = amp * np.sin( t * np.pi / dur ) + self.base
 
     def rmpf(self, delta, dur, amp):
         start = int(delta / self.dt)
+        if start > self.end: return
         length = int(dur / self.dt)
         end = start + length
+        if end > self.end: end = self.end
         self.vector[start:end] = np.linspace( self.base, self.base + amp, length )
 
     def plsf(self, delta, dur, amp):
         start = int(delta / self.dt)
+        if start > self.end: return
         length = int(dur / self.dt)
         end = start + length
+        if end > self.end: end = self.end
         self.vector[start:end] = np.full( length, self.base + amp)
 
     def plsf_train(self, deltas, dur, amp):

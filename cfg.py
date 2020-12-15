@@ -11,6 +11,7 @@ cfg.recordStep = 0.025
 
 cfg.istims = np.linspace(0.00, 0.4, 21)
 cfg.vstims = np.linspace(0, 100, 21)
+cfg.isis = [100, 125, 167, 250, 333, 500]
 cfg.dur = [250, 1000]
 cfg.duration = 1250
 
