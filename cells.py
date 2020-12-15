@@ -1,8 +1,8 @@
 from neuron import h
 from genrn import genrn
 
-mandgeSomaRule = {
- 'label': 'mandge',
+somaRule = {
+ 'label': 'custom',
  'globals': [
      'h.load_file("stdrun.hoc")',
      'h.load_file("tautables.hoc")',
