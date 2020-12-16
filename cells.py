@@ -42,7 +42,7 @@ somaRule = {
                      'vncx': 6e-05},
            'hcn': {'gbarfast': 1.352e-05, 'gbarslow': 6.7615e-06},
            'ip3dif': {},
-           'kaslow': {'gbar': 0.00136}, 'kdr': {'gbar': 0.002688},
+           'kaslow': {'gbar': 0.0055}, 'kdr': {'gbar': 0.002688},
            'kmtype': {'gbar': 0.0001}, 'knatype': {'gbar': 1e-05},
            'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
            'nav1p7': {'gbar': 0.018},
@@ -63,10 +63,12 @@ tigerholmCableRule = {
  'globals': [
      'h.load_file("stdrun.hoc")',
      'h.v_init = -60'],
- 'secs': {'peri': { 'Ra': 35.5, 'cm': 1, 'nseg': 257, 'L': 5000, 'diam': 0.8  },
-          'stem': { 'Ra': 35.5, 'cm': 1, 'nseg': 3  , 'L': 75  , 'diam': 1.4  },
-          'soma': { 'Ra': 35.5, 'cm': 1, 'nseg': 1  , 'L': 24.0, 'diam': 24.0 },
-          'cntr': { 'Ra': 35.5, 'cm': 1, 'nseg': 363, 'L': 5000, 'diam': 0.4  }},
+ 'secs': {'peri' : { 'Ra': 35.5, 'cm': 1, 'nseg':  19, 'L':  500, 'diam': 0.8  },#
+          'lperi': { 'Ra': 35.5, 'cm': 1, 'nseg': 179, 'L': 5000, 'diam': 0.8  },# nseg calculated with:
+          'stem' : { 'Ra': 35.5, 'cm': 1, 'nseg': 3  , 'L': 75  , 'diam': 1.4  },# d_lambda = 0.1
+          'soma' : { 'Ra': 35.5, 'cm': 1, 'nseg': 1  , 'L': 24.0, 'diam': 24.0 },# with d_lambda .1
+          'cntr' : { 'Ra': 35.5, 'cm': 1, 'nseg':  25, 'L': 5000, 'diam': 0.4  }},#
+          'lcntr': { 'Ra': 35.5, 'cm': 1, 'nseg': 251, 'L': 5000, 'diam': 0.4  },#
  'ions': {'k': {'e': -83.7, 'i': 145.0, 'o': 5.4},
           'na':{'e': 72.5, 'i': 154.0, 'o': 8.9}},
  'mechs': {'ks': {'gbar': 0.0069733},
@@ -194,13 +196,33 @@ def createCable( cellRule = tigerholmCableRule, v_init = -60):
     cell('peri').sec.gkleak_leak  = ik  / (v_init - ek )
     return cell
 
+def createTJ( cableRule = tigerholmCableRule, somaRule = somaRule ):
+    hInit(somaRule['globals'])
+    cell = genrn( h = h, v_init = -60,
+                  secs = {'cblperi': cableRule['secs']['peri'],
+                          'cblstem': cableRule['secs']['stem'],
+                          'drgsoma':  somaRule['secs']['soma'],
+                          'cblcntr': cableRule['secs']['cntr']},
+                  cons = (('cblstem', 'cblperi'),
+                          ('drgsoma', 'cblstem'),
+                          ('cblcntr', 'cblperi')),
+                  ions = somaRule['ions'],
+                  mechs = {} )
+    cell.initialize_mechs('cbl', cableRule['mechs'])
+    cell.initialize_mechs('drg', somaRule['mechs'])
+    cell.initialize_ionprops()
+    return cell
+
 if __name__=='__main__':
 #    from pprint import pprint
     soma = {}
     soma[0] = createSoma(somaRule)
     soma[1] = createSoma(choiSomaRule)
     soma[2] = createSoma(mandgeSomaRule)
-
+    cable = {}
+    cable[0] = createCable(tigerholmCableRule)
+    tj = {}
+    tj[0] = createTJ(tigerholmCableRule, somaRule)
 #    pprint(soma.get_dict())
 
 """
