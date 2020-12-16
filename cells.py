@@ -64,11 +64,12 @@ tigerholmCableRule = {
      'h.load_file("stdrun.hoc")',
      'h.v_init = -60'],
  'secs': {'peri' : { 'Ra': 35.5, 'cm': 1, 'nseg':  19, 'L':  500, 'diam': 0.8  },#
-          'lperi': { 'Ra': 35.5, 'cm': 1, 'nseg': 179, 'L': 5000, 'diam': 0.8  },# nseg calculated with:
-          'stem' : { 'Ra': 35.5, 'cm': 1, 'nseg': 3  , 'L': 75  , 'diam': 1.4  },# d_lambda = 0.1
-          'soma' : { 'Ra': 35.5, 'cm': 1, 'nseg': 1  , 'L': 24.0, 'diam': 24.0 },# with d_lambda .1
-          'cntr' : { 'Ra': 35.5, 'cm': 1, 'nseg':  25, 'L': 5000, 'diam': 0.4  }},#
-          'lcntr': { 'Ra': 35.5, 'cm': 1, 'nseg': 251, 'L': 5000, 'diam': 0.4  },#
+          'stem' : { 'Ra': 35.5, 'cm': 1, 'nseg': 3  , 'L':   75, 'diam': 1.4  },# nseg calculated with:
+          'soma' : { 'Ra': 35.5, 'cm': 1, 'nseg': 1  , 'L':   24, 'diam': 24.0 },# frequency: 100
+          'cntr' : { 'Ra': 35.5, 'cm': 1, 'nseg':  25, 'L':  500, 'diam': 0.4  },# d_lambda : 0.1
+          'lperi': { 'Ra': 35.5, 'cm': 1, 'nseg': 179, 'L': 5000, 'diam': 0.8  },#
+          'lcntr': { 'Ra': 35.5, 'cm': 1, 'nseg': 251, 'L': 5000, 'diam': 0.4  },
+          'cable': { 'Ra': 35.5, 'cm': 1, 'nseg': 251, 'L': 1000, 'diam': 0.4  }},
  'ions': {'k': {'e': -83.7, 'i': 145.0, 'o': 5.4},
           'na':{'e': 72.5, 'i': 154.0, 'o': 8.9}},
  'mechs': {'ks': {'gbar': 0.0069733},
@@ -181,22 +182,22 @@ def createSoma( cellRule = somaRule):
     cell('soma').sec.e_pas = -52.4
     return cell
 
-def createCable( cellRule = tigerholmCableRule, v_init = -60):
-    hInit(cellRule['globals'])
-    cell = genrn( h = h, v_init = cellRule['v_init'],
-                  secs = {'peri': cellRule['secs']['peri']}, mechs = cellRule['mechs'],
-                  ions = cellRule['ions'], cons = ())
+def createCable( cableRule = tigerholmCableRule, v_init = -60):
+    hInit(cableRule['globals'])
+    cable = genrn( h = h, v_init = cableRule['v_init'],
+                  secs = {'peri': cableRule['secs']['cable']}, mechs = cableRule['mechs'],
+                  ions = cableRule['ions'], cons = ())
 #     initialize voltages to v_init
-    cell.h.finitialize(v_init)
-    ina = cell('peri')(0.5).ina
-    ena = cell('peri')(0.5).ena
-    ik  = cell('peri')(0.5).ik
-    ek  = cell('peri')(0.5).ek
-    cell('peri').sec.gnaleak_leak = ina / (v_init - ena)
-    cell('peri').sec.gkleak_leak  = ik  / (v_init - ek )
-    return cell
+    cable.h.finitialize(v_init)
+    ina = cable('peri')(0.5).ina
+    ena = cable('peri')(0.5).ena
+    ik  = cable('peri')(0.5).ik
+    ek  = cable('peri')(0.5).ek
+    cable('peri').sec.gnaleak_leak = ina / (v_init - ena)
+    cable('peri').sec.gkleak_leak  = ik  / (v_init - ek )
+    return cable
 
-def createTJ( cableRule = tigerholmCableRule, somaRule = somaRule ):
+def createTJ( cableRule = tigerholmCableRule, somaRule = somaRule, v_init = -60 ):
     hInit(somaRule['globals'])
     cell = genrn( h = h, v_init = -60,
                   secs = {'cblperi': cableRule['secs']['peri'],
@@ -211,6 +212,15 @@ def createTJ( cableRule = tigerholmCableRule, somaRule = somaRule ):
     cell.initialize_mechs('cbl', cableRule['mechs'])
     cell.initialize_mechs('drg', somaRule['mechs'])
     cell.initialize_ionprops()
+
+    cell.h.finitialize(v_init)
+    for sec in ['cblperi', 'cblstem', 'cblcntr']:
+        ina = cell(sec)(0.5).ina
+        ena = cell(sec)(0.5).ena
+        ik  = cell(sec)(0.5).ik
+        ek  = cell(sec)(0.5).ek
+        cell(sec).sec.gnaleak_leak = ina / (v_init - ena)
+        cell(sec).sec.gkleak_leak  = ik  / (v_init - ek )
     return cell
 
 if __name__=='__main__':
