@@ -69,7 +69,7 @@ tigerholmCableRule = {
           'cntr' : { 'Ra': 35.5, 'cm': 1, 'nseg':  25, 'L':  500, 'diam': 0.4  },# d_lambda : 0.1
           'lperi': { 'Ra': 35.5, 'cm': 1, 'nseg': 179, 'L': 5000, 'diam': 0.8  },#
           'lcntr': { 'Ra': 35.5, 'cm': 1, 'nseg': 251, 'L': 5000, 'diam': 0.4  },
-          'cable': { 'Ra': 35.5, 'cm': 1, 'nseg': 251, 'L': 1000, 'diam': 0.4  }},
+          'cable': { 'Ra': 35.5, 'cm': 1, 'nseg':  37, 'L': 1000, 'diam': 0.8  }},
  'ions': {'k': {'e': -83.7, 'i': 145.0, 'o': 5.4},
           'na':{'e': 72.5, 'i': 154.0, 'o': 8.9}},
  'mechs': {'ks': {'gbar': 0.0069733},
@@ -185,16 +185,16 @@ def createSoma( cellRule = somaRule):
 def createCable( cableRule = tigerholmCableRule, v_init = -60):
     hInit(cableRule['globals'])
     cable = genrn( h = h, v_init = cableRule['v_init'],
-                  secs = {'peri': cableRule['secs']['cable']}, mechs = cableRule['mechs'],
+                  secs = {'cable': cableRule['secs']['cable']}, mechs = cableRule['mechs'],
                   ions = cableRule['ions'], cons = ())
 #     initialize voltages to v_init
     cable.h.finitialize(v_init)
-    ina = cable('peri')(0.5).ina
-    ena = cable('peri')(0.5).ena
-    ik  = cable('peri')(0.5).ik
-    ek  = cable('peri')(0.5).ek
-    cable('peri').sec.gnaleak_leak = ina / (v_init - ena)
-    cable('peri').sec.gkleak_leak  = ik  / (v_init - ek )
+    ina = cable('cable')(0.5).ina
+    ena = cable('cable')(0.5).ena
+    ik  = cable('cable')(0.5).ik
+    ek  = cable('cable')(0.5).ek
+    cable('cable').sec.gnaleak_leak = ina / (v_init - ena)
+    cable('cable').sec.gkleak_leak  = ik  / (v_init - ek )
     return cable
 
 def createTJ( cableRule = tigerholmCableRule, somaRule = somaRule, v_init = -60 ):

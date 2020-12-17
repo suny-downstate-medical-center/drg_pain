@@ -1,6 +1,7 @@
 """ cfg.py """
 from netpyne import specs
 import numpy as np
+from itertools import product
 
 cfg = specs.SimConfig()  
 
@@ -17,13 +18,23 @@ cfg.dur = [250, 1000]
 cfg.duration = 1250
 
 cfg.recordCells = ['all']
-
+"""
 for var in [ 'v', 'ina', 'ik', 'ica', 'icl']:
     cfg.recordTraces[var] = {'sec': 'soma', 'loc': 0.5, 'var': '%s' %(var)}
 #for var in [ 'v', 'i_pas', 'h', 'ina', 'ik', 'ica', 'icl']:
 
 for label, nav in [ ['NaV1.7', 'nav1p7'], ['NaV1.8', 'nav1p8'], ['NaV1.8T', 'nav1p8T'] ]:
     cfg.recordTraces[label] = {'sec': 'soma', 'loc': 0.5, 'var': 'ina_%s' %(nav)}
+"""
+for var in [ 'v' ]:
+    for sec, loc in [ ['cblperi', 0], ['cblperi', 0.5], ['cblperi', 1.0], ['drgsoma', 0.5], ['cblcntr', 0.5], ['cblcntr', 1.0]]:
+        label = "%s(%s).%s" %(sec, loc, var)
+        cfg.recordTraces[label] = {'sec': sec, 'loc': loc, 'var': '%s' %(var)}
+
+for var in [ 'v' ]:
+    for sec, loc in [ ['cable', 0], ['cable', 0.25], ['cable', 0.5], ['cable', 0.75], ['cable', 1.00] ]:
+        label = "%s(%s).%s" % (sec, loc, var)
+        cfg.recordTraces[label] = {'sec': sec, 'loc': loc, 'var': '%s' %(var)}
 
 # Saving
 cfg.simLabel = 'sim'

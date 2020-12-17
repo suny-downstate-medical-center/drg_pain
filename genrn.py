@@ -5,7 +5,7 @@ calling from python calls genrn with t-junction electrophysiology and morphology
 peripheral fiber, drg with soma, central fiber
 properties taken from Waxman
 '''
-from neuron import h as h_
+from neuron import h as h
 import logging as lgg
 #import re
 
@@ -26,7 +26,7 @@ def loose_get(object, attribute):
 
 class gesec():
 
-    def __init__(self, h=h_, name='sec', ions={'na': 58, 'k': -92, 'ca': -129, 'cl': -89}):
+    def __init__(self, h=h, name='sec', ions={'na': 58, 'k': -92, 'ca': -129, 'cl': -89}):
         self.h=h
         self.name  = name
         self.sec   = self.h.Section(name=name)
@@ -161,13 +161,13 @@ class gesec():
 
 class genrn():
 
-    def __init__(self, h=h_, x=0, y=0, z=0,ID=0,v_init=None,
+    def __init__(self, h=h, x=0, y=0, z=0,ID=0,v_init=None,
                  secs  = {'genrn': {}},
                  mechs = {},
                  ions  = {},
                  cons  = ()):
         """
-        __init__(self, h=h_, x=0, y=0, z=0,ID=0,v_init=None,
+        __init__(self, h=h, x=0, y=0, z=0,ID=0,v_init=None,
                  secs  = {'genrn': {}},
                  mechs = {},
                  ions  = {},
@@ -196,13 +196,13 @@ class genrn():
         self.v_init = v_init
 
     def return_sec(self, sec):
-        if isinstance(sec, type(h_.Section())): return sec
+        if isinstance(sec, type(h.Section())): return sec
         elif isinstance(sec, str): return self.secs[sec].sec
         elif isinstance(sec, type(gesec())): return sec.sec
         raise TypeError
 
     def return_gesec(self, sec):
-        if isinstance(self, type(h_.Section())): return self.secs[sec.name]
+        if isinstance(self, type(h.Section())): return self.secs[sec.name]
         elif isinstance(sec, str): return self.secs[sec]
         elif isinstance(sec, type(gesec())): return sec
         raise TypeError
@@ -378,12 +378,12 @@ class genrn():
 def cal_nseg( sec, freq, d_lambda ):
 # neuron+python of https://www.neuron.yale.edu/neuron/static/docs/d_lambda/d_lambda.html
     nseq = lambda fc_: int((sec.L / (d_lambda * fc_) + 0.9) / 2) * 2 + 1
-    fpfrc = 4 * h_.PI * freq * sec.Ra * sec.cm
-    h_.define_shape()
+    fpfrc = 4 * h.PI * freq * sec.Ra * sec.cm
+    h.define_shape()
     fc = 0
     n3d = sec.n3d()
     if n3d < 2:
-        fc = 1e5 * h_.sqrt(sec.diam / (fpfrc))
+        fc = 1e5 * h.sqrt(sec.diam / (fpfrc))
         return nseq(fc)
 
     x1 = sec.arc3d(0)
@@ -392,75 +392,9 @@ def cal_nseg( sec, freq, d_lambda ):
     for i in range(n3d):
         x2 = sec.arc3d(i)
         d2 = sec.diam3d(i)
-        fc += (x2 - x1) / h_.sqrt(d1 + d2)
+        fc += (x2 - x1) / h.sqrt(d1 + d2)
         x2 = x1
         d2 = d1
 
-    fc *= h_.sqrt(2) * 1e-5 * h_.sqrt(fpfrc)
+    fc *= h.sqrt(2) * 1e-5 * h.sqrt(fpfrc)
     return nseq(sec.L/fc)
-
-# for debugging
-if __name__ == '__main__':
-    # section morphologies
-    #        sec         dimensions
-    # from tjunction paper
-    # secs = {'axnperi': {'nseg':100, 'L':5000, 'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
-    #         'drgperi': {'nseg':100, 'L':100,  'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
-    #         'drgstem': {'nseg':100, 'L':75,   'diam': 1.4, 'cm': 1.2, 'Ra': 123 },
-    #         'drgsoma': {'nseg':1,   'L':25,   'diam': 25 , 'cm': 1.2, 'Ra': 123 },
-    #         'drgcntr': {'nseg':100, 'L':100,  'diam': 0.4, 'cm': 1.2, 'Ra': 123 },
-    #         'axncntr': {'nseg':100, 'L':5000, 'diam': 0.4, 'cm': 1.2, 'Ra': 123 }}
-
-    # our values:
-    # nseg with frequency<50, d_lambda 0.1
-    # use cal_nseg(sec, 50, 0.1) for values
-    # props for the sections
-    secs = {'drgperi': {'nseg':257, 'L':5000,  'diam': 0.8, 'cm': 1.2, 'Ra': 123 },
-            'drgstem': {'nseg':3  , 'L':75  ,  'diam': 1.4, 'cm': 1.2, 'Ra': 123 },
-            'drgsoma': {'nseg':1  , 'L':30  ,  'diam': 23 , 'cm': 1.2, 'Ra': 123 },
-            'drgcntr': {'nseg':363, 'L':5000,  'diam': 0.4, 'cm': 1.2, 'Ra': 123 }}
-
-    # section mechanisms
-    mechs = {'nav17m' : {'gnabar': 0.018 },
-             'nav18m' : {'gnabar': 0.026 },
-             'kdr'    : {'gkbar' : 0.0035},
-             'ka'     : {'gkbar' : 0.0055},
-             'pas'    : {'g': 5.75e-5, 'e': -58.91}}
-
-    # ion reversal potentials
-    ions  = {'na':  67.1,
-             'k' : -84.7 }
-
-    # connection list
-
-    #------------------------------------------------------------#
-    #                                                            #
-    #           What the morphology looks like (paper)           #
-    #                            [1]                             #
-    #                          drgsoma                           #
-    #                            [0]                             #
-    #                            [1]                             #
-    #                          drgstem                           #
-    #                            [0]                             #
-    # [0]anxperi[1]-[0]drgperi[1]-^-[0]drgscntr[1]-[0]axncntr[1] #
-    #                                                            #
-    #              ^                              ^              #
-    #              |     axon initial segment     |              #
-    #                                                            #
-    #------------------------------------------------------------#
-    #            0    ->    1
-
-    # cons = (('drgperi', 'axnperi'),
-    #         ('axncntr', 'drgcntr'),
-    #         ('drgstem', 'drgperi'),
-    #         ('drgsoma', 'drgstem'),
-    #         ('drgcntr', 'drgperi'))
-
-    # simplified connection list
-    cons = (('drgstem', 'drgperi'),
-            ('drgsoma', 'drgstem'),
-            ('drgcntr', 'drgperi'))
-
-    args = {'secs': secs, 'mechs': mechs, 'ions': ions, 'cons': cons}
-    test = genrn(**args)
-    print(test.get_dict())
