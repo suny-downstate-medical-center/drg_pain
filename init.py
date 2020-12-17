@@ -30,10 +30,11 @@ t = sim.h.Vector(ipulse.t)
 # Choi
 # Membrane potential was set by constant current injection
 # (−13.74 pA for −70 mV, −7.24 pA for −65 mV, 9.55 pA for −55 mV, and 25.64 pA for −50 mV)
+"""
 for cell in sim.net.cells:
     tags = cell.tags['cellType']
     if tags['stim'] == 'pls':
         stimd['pls'][tags['val']].play(cell.stims[0]['hObj']._ref_amp, t, True)
-
+"""
 sim.simulate() # calls runSim() and gatherData()
 sim.analyze()

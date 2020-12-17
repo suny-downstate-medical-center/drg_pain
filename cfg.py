@@ -14,6 +14,7 @@ cfg.recordStep = 0.5
 cfg.istims = np.linspace(0.00, 0.4, 21)
 cfg.vstims = np.linspace(0, 100, 21)
 cfg.isis = [100, 125, 167, 250, 333, 500]
+cfg.isis = [100]
 cfg.dur = [250, 1000]
 cfg.duration = 1250
 
@@ -31,9 +32,19 @@ for var in [ 'v' ]:
         label = "%s(%s).%s" %(sec, loc, var)
         cfg.recordTraces[label] = {'sec': sec, 'loc': loc, 'var': '%s' %(var)}
 
+for var in [ 'ina', 'ik', 'i_pas' ]:
+    for sec, loc in [ ['cblperi', 0], ['cblperi', 0.5], ['cblperi', 1.0], ['drgsoma', 0.5], ['cblcntr', 0.5], ['cblcntr', 1.0]]:
+        label = "%s(%s).%s" %(sec, loc, var)
+        cfg.recordTraces[label] = {'sec': sec, 'loc': loc, 'var': '%s' %(var)}
+
 for var in [ 'v' ]:
     for sec, loc in [ ['cable', 0], ['cable', 0.25], ['cable', 0.5], ['cable', 0.75], ['cable', 1.00] ]:
         label = "%s(%s).%s" % (sec, loc, var)
+        cfg.recordTraces[label] = {'sec': sec, 'loc': loc, 'var': '%s' %(var)}
+
+for var in [ 'ina', 'ik', 'i_pas' ]:
+    for sec, loc in [ ['cable', 0], ['cable', 0.25], ['cable', 0.5], ['cable', 0.75], ['cable', 1.00] ]:
+        label = "%s(%s).%s" %(sec, loc, var)
         cfg.recordTraces[label] = {'sec': sec, 'loc': loc, 'var': '%s' %(var)}
 
 # Saving
