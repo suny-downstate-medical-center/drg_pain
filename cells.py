@@ -215,6 +215,7 @@ def createTJ( cableRule = tigerholmCableRule, somaRule = somaRule, v_init = -60 
 
     cell.h.finitialize(v_init)
     for sec in ['cblperi', 'cblstem', 'cblcntr']:
+        cell(sec)(0.5).ena = 50
         ina = cell(sec)(0.5).ina
         ena = cell(sec)(0.5).ena
         ik  = cell(sec)(0.5).ik
