@@ -9,7 +9,6 @@ cfg.dt = 0.0125
 cfg.cvode_active = False
 cfg.recordStims = False
 cfg.recordStep = 0.5
-# cfg.recordStep = 0.025
 
 cfg.istims = np.linspace(0.00, 0.4, 21)
 cfg.vstims = np.linspace(0, 100, 21)

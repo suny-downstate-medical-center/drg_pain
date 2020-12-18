@@ -1,15 +1,13 @@
 from neuron import h
 from genrn import genrn
 
+# custom model
 somaRule = {
  'label': 'custom',
  'globals': [
      'h.load_file("stdrun.hoc")',
      'h.load_file("tautables.hoc")',
-#     'cai0_ca_ion': 0.000136,
      'h.celsius = 22.0',
-#     'cli0_cl_ion': 40.0,
-#     'clo0_cl_ion': 145.0,
      'h.ki0_k_ion = 140.0',
      'h.ko0_k_ion = 5.0',
      'h.nao0_na_ion = 150.0',
@@ -49,7 +47,6 @@ somaRule = {
            'nav1p8': {'gbar': 0.026},
            'nav1p9': {'gbar': 1e-05},
            'ncxsoma': {'ImaxNax': 1.1e-05, 'KcNacx': 1.38, 'KnNacx': 87.5},
-#           'pas': {'g': 0.0001, 'e': -41.583},
            'pas': {'g': 0.0001, 'e': -52.37},
            'skca3': {'E50hsk3': 0.00042, 'gbar': 0.0009, 'hcsk3': 5.6,
                      'm': 0.0, 'm_sf': 128.0, 'm_vh': 24.0},
@@ -58,6 +55,7 @@ somaRule = {
                      'p_ca': 0.01, 'z': 0.65}},
  'v_init': -60.0}
 
+# Tigerholm
 tigerholmCableRule = {
  'label': 'tigerholm',
  'globals': [
@@ -79,11 +77,11 @@ tigerholmCableRule = {
 #           'nattxsT': {'gbar': 0.10664},
            'nav1p8T': {'gbar': 0.24271},
            'nav1p9T': {'gbar': 9.4779e-05},
-           'nakpump': {'smalla': -0.0047891},
+           'nakpumpT': {'smalla': -0.0047891},
            'kdrT': {'gbar': 0.018002},
            'kna': {'gbar': 0.00042},
-           'naoi': {'theta': 0.029},
-           'koi': {'theta': 0.029},
+           'naoi': {'theta': 0.029}, # doesn't work as is, theta is not a RANGE
+           'koi': {'theta': 0.029},  # doesn't work as is, theta is not a RANGE
            'leak': {},
            'extrapump': {}},
  'v_init': -60.0,
@@ -109,20 +107,16 @@ choiSomaRule = {
            'pas': {'g': 0.0000575, 'e': -58.91}},
  'v_init': -60}
 
-# Mandge and Machanda 2019 model
+# Mandge
 mandgeSomaRule = {
  'label': 'mandge',
  'globals': [
      'h.load_file("stdrun.hoc")',
      'h.load_file("tautables.hoc")',
-#     'cai0_ca_ion': 0.000136,
      'h.celsius = 22.0',
-#     'cli0_cl_ion': 40.0,
-#     'clo0_cl_ion': 145.0,
      'h.ki0_k_ion = 140.0',
      'h.ko0_k_ion = 5.0',
      'h.nao0_na_ion = 150.0',
-#     'h.v_init = -53.5'],
      'h.v_init = -60'],
  'secs': {'soma': {'L': 24.0, 'Ra': 100.0, 'cm': 1.5481245576786977, 'diam': 24.0, 'nseg': 1}},
  'ions': {'ca': {'e': 132.4579341637009, 'i': 0.000136, 'o': 2.0},
@@ -171,7 +165,6 @@ mandgeSomaRule = {
 
 def hInit( execstrs ):
     for execstr in execstrs:
-#        print('exec: %s' %(execstr))
         exec(execstr)
 
 def createSoma( cellRule = somaRule):
@@ -194,7 +187,7 @@ def createCable( cableRule = tigerholmCableRule, v_init = -60):
     ik  = cable('cable')(0.5).ik
     ek  = cable('cable')(0.5).ek
     cable('cable').sec.gnaleak_leak = ina / (v_init - ena)
-    cable('cable').sec.gkleak_leak  = ik  / (v_init - ek )
+    cable('cable').sec.gkleak_leak  = -ik / (v_init - ek )
     return cable
 
 def createTJ( cableRule = tigerholmCableRule, somaRule = somaRule, v_init = -60 ):
@@ -221,11 +214,10 @@ def createTJ( cableRule = tigerholmCableRule, somaRule = somaRule, v_init = -60 
         ik  = cell(sec)(0.5).ik
         ek  = cell(sec)(0.5).ek
         cell(sec).sec.gnaleak_leak = ina / (v_init - ena)
-        cell(sec).sec.gkleak_leak  = ik  / (v_init - ek )
+        cell(sec).sec.gkleak_leak  = -ik / (v_init - ek )
     return cell
 
 if __name__=='__main__':
-#    from pprint import pprint
     soma = {}
     soma[0] = createSoma(somaRule)
     soma[1] = createSoma(choiSomaRule)
@@ -234,126 +226,3 @@ if __name__=='__main__':
     cable[0] = createCable(tigerholmCableRule)
     tj = {}
     tj[0] = createTJ(tigerholmCableRule, somaRule)
-#    pprint(soma.get_dict())
-
-"""
-
-bladder_e_pas = {
-    -80.0: -82.58602364872561,
-    -79.5: -81.84335640030233,
-    -79.0: -81.09958631509333,
-    -78.5: -80.3554625915654,
-    -78.0: -79.61054212701941,
-    -77.5: -78.86475327198326,
-    -77.0: -78.1185901413151,
-    -76.5: -77.37095449636755,
-    -76.0: -76.62349459036982,
-    -75.5: -75.87387344502237,
-    -75.0: -75.12511455625227,
-    -74.5: -74.37342456827207,
-    -74.0: -73.62342589675681,
-    -73.5: -72.86964681577395,
-    -73.0: -72.11853311788032,
-    -72.5: -71.36270990866063,
-    -72.0: -70.61066944826644,
-    -71.5: -69.85290817816734,
-    -71.0: -69.10018393296744,
-    -70.5: -68.34064101113115,
-    -70.0: -67.5875148229774,
-    -69.5: -66.82637932447555,
-    -69.0: -66.0731488279455,
-    -68.5: -65.31061769034552,
-    -68.0: -64.55756589610853,
-    -67.5: -63.793811736997114,
-    -67.0: -63.041169087318536,
-    -66.5: -62.27630026321314,
-    -66.0: -61.52419882326035,
-    -65.5: -60.75821113971865,
-    -65.0: -60.00663034953325,
-    -64.5: -59.23934954795288,
-    -64.0: -58.48805264712351,
-    -63.5: -57.71906644675432,
-    -63.0: -56.96752631001005,
-    -62.5: -56.196104386448894,
-    -62.0: -55.44341708768021,
-    -61.5: -54.668416933537564,
-    -61.0: -53.91320090135804,
-    -60.5: -53.132957051361856,
-    -60.0: -52.37323520244399,
-    -59.5: -51.58542882588469,
-    -59.0: -50.8184905752899,
-    -58.5: -50.019995970089816,
-    -58.0: -49.24223554880246,
-    -57.5: -48.42893969198688,
-    -57.0: -47.63566683507946,
-    -56.5: -46.80225806854398,
-    -56.0: -45.987477105010825,
-    -55.5: -45.127199779850855,
-    -55.0: -44.2833540171946,
-    -54.5: -43.38772856713264,
-    -54.0: -42.505409792747805,
-    -53.5: -41.56392415436852,
-    -53.0: -40.631554119618386,
-    -52.5: -39.63134507941917,
-    -52.0: -38.634849576726026,
-    -51.5: -37.560412257396266,
-    -51.0: -36.48292957476617,
-    -50.5: -35.31591319101153,
-    -50.0: -34.13759990671626,
-    -49.5: -32.85674643965517,
-    -49.0: -31.55474097865085,
-    -48.5: -30.135968260666502,
-    -48.0: -28.6845114348951,
-    -47.5: -27.101029465282174,
-    -47.0: -25.471618053695543,
-    -46.5: -23.693878377027193,
-    -46.0: -21.85523230129037,
-    -45.5: -19.850578683062025,
-    -45.0: -17.76828002718218,
-    -44.5: -15.500403893386643,
-    -44.0: -13.136324508045245,
-    -43.5: -10.564827149983856,
-    -43.0: -7.876676191409267,
-    -42.5: -4.95701215249742,
-    -42.0: -1.898300018337622,
-    -41.5: 1.41781380967479,
-    -41.0: 4.897309598462009,
-    -40.5: 8.6610898868119,
-    -40.0: 12.614441212321758}
-def npSoma( mulnattxs = 1, mulnav1p8 = 1 , mulnav1p9 = 1, v_init = -53.5 ):
-    hInit()
-    cell = genrn(**bladderCellArgs)
-    cell.soma.gbar_nattxs *= mulnattxs
-    cell.soma.gbar_nav1p8 *= mulnav1p8
-    cell.soma.gbar_nav1p9 *= mulnav1p9
-    cell.soma.e_pas = bladder_e_pas[v_init]
-    cell.h.finitialize(v_init)
-    cell.h.fcurrent()
-    print("initialize cell at %s mV" %(v_init))
-    print("e_pas at %s mV" %(cell.soma.e_pas))
-    # inflammatory changes
-    # cell.soma.gbar_nav1p8 = 0.06   # 0.0087177 -> 0.06
-    # cell.soma.gbar_kaslow = 0.0001 # 0.00136   -> 0.0001
-    # cell.soma.gbar_kdr    = 0.001  # 0.002688  -> 0.001
-    return cell
-
-def npSomaMut( wtp = 1 ):
-    hInit()
-    cell = genrn(**bladderCellArgs)
-    gbar_nattxs = 0.0001 * (wtp)
-    gbar_navmut = 0.0001 * (1 - wtp)
-    cell.edit_mechs('all', 'nattxs', 'gbar', gbar_nattxs)
-    cell.insert_mech(sec='soma', mech='navmut', ions={'nak': {'e': -15.87}}, params={'gbar': gbar_navmut})
-    return cell
-
-def npTJ( mulnattxs = 1, mulnav1p8 = 1, mulnav1p9 = 1 ):
-    hInit()
-    cell = genrn(**tjCellArgs)
-    gbar_nattxs = 0.0001 * mulnattxs
-    gbar_nav1p8 = 0.0087177 * mulnav1p8
-    gbar_nav1p9 = 1e-5 * mulnav1p9
-    cell.edit_mechs('all', 'nattxs', 'gbar', gbar_nattxs)
-    cell.edit_mechs('all', 'nav1p8', 'gbar', gbar_nav1p8)
-    cell.edit_mechs('all', 'nav1p9', 'gbar', gbar_nav1p9)
-    return cell
-"""
