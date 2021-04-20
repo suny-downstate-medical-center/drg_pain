@@ -14,14 +14,14 @@ def loose_set(object, attribute, value):
         setattr(object, attribute, value)
         return True
     except: 
-        print("%s.%s does not exist" %(object, attribute))
+        lgg.info("%s.%s does not exist" %(object, attribute))
         return False
 
 def loose_get(object, attribute):
     try: 
         return getattr(object, attribute)
     except: 
-        print("%s.%s does not exist" %(object, attribute))
+        lgg.info("%s.%s does not exist" %(object, attribute))
         return False
 
 class gesec():
@@ -252,6 +252,10 @@ class genrn():
         sec = self.return_gesec(sec)
         sec.insert_mech(mech, ions, params)
 
+    def tag_insert_mech(self, tag, mech, ions={}, params={}):
+        for sec in self.tags[tag]:
+            sec.insert_mech(mech, ions, params)
+
     def initialize_mechs(self, tag, mechs, ions = {}):
         for sec in self.tags[tag]:
             for mech in mechs:
@@ -290,7 +294,7 @@ class genrn():
             self.secs[sec].set_nernsts()
 
 
-    def init_v(self, v_init, ions = ['ca', 'cl', 'k', 'na'], set_pas = False):
+    def init_pas(self, v_init, ions = ['ca', 'cl', 'k', 'na'], set_pas = False):
         fcdict = {}
         self.h.finitialize(v_init)
         self.h.fcurrent()
@@ -305,7 +309,7 @@ class genrn():
                 for ion in sec.ions:
                     try:
                         i = getattr(sec.sec, 'i%s_%s' %(ion, mech))
-                        print("(%s)->%s:->%s=%s mA/cm2" %(sec.name, mech, ion, i))
+                        print("(%s)-> %s:->%s=%s mA/cm2" %(sec.name, mech, ion, i))
                         lgg.info("(%s)->%s:->%s=%s mA/cm2" %(sec.name, mech, ion, i))
                         fcdict[sec.name][mech][ion] = i
                         if ion in ions:

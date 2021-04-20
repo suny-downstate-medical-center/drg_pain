@@ -13,6 +13,7 @@ NEURON {
 	USEION ca READ cai
 	RANGE g, ik
 	RANGE gbar, ninf, ntau, vhalf, sf1, pCa
+	RANGE tadj, q10
 }
 
 UNITS {
@@ -26,9 +27,13 @@ UNITS {
 PARAMETER {
         gbar	= 0.0009 (S/cm2)
 		ek 				 (mV)
+		q10 = 2.5
 }
 
 ASSIGNED {
+		tadj    (1)
+		celsius (degC)
+
         v       (mV)
         ik		(mA/cm2)
 		g		(mho/cm2)
@@ -52,13 +57,14 @@ BREAKPOINT {
  
  
 INITIAL {
+		tadj = q10 ^ ((celsius - 22) / 10)
 		rates(v)
 		n = ninf
 }
 
 DERIVATIVE states {  
         rates(v)
-        n' = (ninf-n)/ntau
+        n' = (ninf-n)/ntau * tadj
 }
  
 

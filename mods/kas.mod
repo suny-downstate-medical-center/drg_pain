@@ -20,33 +20,32 @@ UNITS {
 NEURON {
     SUFFIX kas
     USEION k READ ek WRITE ik
-    RANGE gkbar, gk, ik
+    RANGE gbar, g, ik
     RANGE ninf, ntau, hinf, htau
-
-:    RANGE q10
+	RANGE n, h
+	RANGE tadj, q10
 }
 
 PARAMETER{ 
-    gkbar  = 0.0055 (S/cm2)
-:    q10    = 2.5
+    gbar  = 0.0055 (S/cm2)
+    q10    = 2.5 (1)
 }
 
 ASSIGNED {
 	celsius (degC)
+	tadj (1)
+
 	v (mV)
     ik (mA/cm2)
     ek (mV)
 
-    gk (S/cm2)
+    g (S/cm2)
 
     ninf (1)
     ntau (1/ms)
 
     hinf (1)
     htau (1/ms)
-
-:    tadj (1)
-
 }
 
 STATE{
@@ -57,8 +56,8 @@ STATE{
 UNITSOFF
 
 INITIAL{
+    tadj = q10^((celsius - 22) / 10)
     settables(v)
-:    tadj = q10^((celsius - 22) / 10)
     n = ninf
     h = hinf
 }
@@ -66,25 +65,23 @@ INITIAL{
 BREAKPOINT{
     SOLVE states METHOD cnexp
     
-    gk = gkbar * n * h 
-    ik = gk * (v - ek)
+    g = gbar * n * h
+    ik = g * (v - ek)
 }
 
 DERIVATIVE states{
     settables(v)
-    n' = (ninf - n) / ntau
-    h' = (hinf - h) / htau
+    n' = (ninf - n) / ntau * tadj
+    h' = (hinf - h) / htau * tadj
 }
 
 
 PROCEDURE settables(v (mV)){
     TABLE ninf, ntau, hinf, htau
-:    DEPEND celsius
     FROM -100 TO 100 WITH 200
 
     ninf   = 1 / (1 + exp(-(v + 5.4) / 16.4))^4
     ntau   = 0.25 + 10.04 * exp(-(v + 24.67)^2 / 2422.08)
-:    ntau   = (0.25 + 10.04 * exp(-(v + 24.67)^2 / 2422.08)) / tadj
 
     hinf   = 1 / (1 + exp((v + 49.9) / 4.6 ))
     htau   = 20 + 50 * exp(-(v + 40)^2 / 3200)
@@ -92,9 +89,6 @@ PROCEDURE settables(v (mV)){
     if (htau < 5) {
         htau = 5
     }
-:    htau   = (20 + 50 * exp(-((v + 40)^2)/(2 * 40^2))) / tadj
-
-:    ntau   = 1 / (nalpha + nbeta) / tadj
 
 }
 

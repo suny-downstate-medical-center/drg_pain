@@ -1,51 +1,29 @@
 from neuron import h
+import numpy as np
+import matplotlib.pyplot as plt
 
-###
-: sine pulse driven by event.
+h.load_file("stdrun.hoc")
+h.load_file("tautables.hoc")
+h.celsius = 22
 
-NEURON {
-	POINT_PROCESS SinClamp
-	RANGE dur, i, amp, t0
-	ELECTRODE_CURRENT i
-}
+vs = []
+test = h.Section(name='test')
+test.insert('nav1p7')
+test.ashft_nav1p7 = 40
+test_minfs = []
 
-UNITS {
-	(nA) = (nanoamp)
-  PI = (pi) (1)
-}
+ctrl = h.Section(name='ctrl')
+ctrl.insert('nav1p7')
+ctrl.ashft_nav1p7 = 0
+ctrl_minfs = []
 
-PARAMETER {
-	dur = 1 (ms)	
-	amp = 0.1 (nA)
-}
 
-ASSIGNED {
-	i (nA)
-	toff (ms)
-  t0 (ms)
-}
+for v in np.linspace(-50, 50, 100):
+    vs.append(v)
+    h.finitialize(v)
+    test_minfs.append(test.minf_nav1p7)
+    ctrl_minfs.append(-ctrl.minf_nav1p7)
 
-INITIAL {
-	i = 0
-  toff = -1
-}
-
-NET_RECEIVE(weight (uS)) {
-  t0 = t
-	toff = t + dur
-}
-
-BREAKPOINT {
-  at_time(t0)
-  at_time(toff)
-  i = 0
-  if (t0 < t && t < toff) {
-    i = amp * sin(PI * ((t - t0) / dur))
-  }
-}
-###
-sec = h.Section(name=sec)
-sine = h.SinClamp(sec(0.5))
-
-sine.dur = 1
-sine.amp = 0.1
+plt.plot(vs , test_minfs)
+plt.plot(vs , ctrl_minfs)
+plt.show()

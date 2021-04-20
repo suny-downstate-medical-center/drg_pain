@@ -10,6 +10,8 @@ NEURON {
 	USEION na READ ena WRITE ina
 	RANGE gbar, ena, ina
 	RANGE mtau, htau, minf, hinf
+	RANGE m, h
+	RANGE tadj, q10
 }
 
 UNITS {
@@ -19,6 +21,8 @@ UNITS {
 }
 
 PARAMETER {
+	q10 = 2.5 (1)
+
 	gbar = 1e-5 (S/cm2)
 
 	A_am9 = 1.548 (/ms) : A for alpha m(9 etc ...)
@@ -39,9 +43,13 @@ PARAMETER {
 }
 
 ASSIGNED {
+	celsius (degC)
+	tadj (1)
+
 	v	(mV) 
 	ina	(mA/cm2)
 	ena	(mV)
+
 	g	(S/cm2)
 	htau	(ms)
 	mtau	(ms)
@@ -58,6 +66,7 @@ BREAKPOINT {
 }
 
 INITIAL {
+	tadj = q10 ^ ((celsius - 22) / 10)
 	rates(v)
 	: assume that equilibrium has been reached
 	m = minf
@@ -66,8 +75,8 @@ INITIAL {
 
 DERIVATIVE states {
 	rates(v)
-	m' = (minf - m)/mtau
-	h' = (hinf - h)/htau
+	m' = (minf - m)/mtau * tadj
+	h' = (hinf - h)/htau * tadj
 }
 
 PROCEDURE rates(v(mV)) (/ms) {

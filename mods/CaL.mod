@@ -13,6 +13,7 @@ NEURON {
 	USEION ca READ cai,cao WRITE ica
 	RANGE minf, mtau, hinf, htau, ica
 	RANGE pmax, hca
+	RANGE tadj, q10
 }
 
 UNITS {
@@ -24,6 +25,7 @@ UNITS {
 }
 
 PARAMETER {
+	q10 = 2.5
     v		(mV)
     celsius	(degC)
     cao		(mM)
@@ -40,6 +42,7 @@ STATE {
 }
 
 ASSIGNED {
+	tadj        (1)
 	ica			(mA/cm2)
 	cai			(mM)
     mtau		(ms)
@@ -57,11 +60,12 @@ BREAKPOINT {
 
 DERIVATIVE state {
 	rates(v)
-	m'= (minf-m) / mtau
-	h'= (hinf-h) / htau
+	m'= (minf-m) / mtau * tadj
+	h'= (hinf-h) / htau * tadj
 }
 
 INITIAL {
+	tadj = q10 ^ ((celsius - 22) / 10)
 	rates(v)
 	m = minf
 	h = hinf

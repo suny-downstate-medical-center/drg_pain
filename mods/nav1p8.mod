@@ -17,12 +17,15 @@ NEURON {
         SUFFIX nav1p8
         USEION na READ ena WRITE ina
         RANGE gbar, g, ina
-        RANGE minf, mtau, hinf, htau 
+        RANGE minf, mtau, hinf, htau
+		RANGE m, h
+        RANGE tadj, q10
 		THREADSAFE
 }
  
 PARAMETER {
         gbar = 0.0087177 (S/cm2)
+        q10 = 2.5 (1)
 }
  
 STATE {
@@ -30,12 +33,14 @@ STATE {
 }
  
 ASSIGNED {
-		v		(mV)
 		celsius (degC)
+        tadj    (1)
+
+		v		(mV)
+		ina		(mA/cm2)
 		ena		(mV)
 
 		g		(S/cm2)
-		ina		(mA/cm2)
 
 		minf
 		mtau	(ms)
@@ -52,6 +57,7 @@ BREAKPOINT {
  
 
 INITIAL {
+	tadj = q10 ^ ((celsius - 22) / 10)
 	rates(v)
 	
 	m = minf
@@ -61,8 +67,8 @@ INITIAL {
 DERIVATIVE states {  
         rates(v)
     
-        m' = (minf-m)/mtau
-		h' = (hinf-h)/htau 
+        m' = (minf-m)/mtau * tadj
+		h' = (hinf-h)/htau * tadj
 }
 
 PROCEDURE rates(v(mV)) {

@@ -17,6 +17,7 @@ NEURON {
 		USEION h READ eh WRITE ih VALENCE 1
         RANGE gbarfast, gbarslow, g, ih
         RANGE mtauf, mtausl, minf
+		RANGE tadj, q10
 		THREADSAFE
 }
  
@@ -24,6 +25,7 @@ PARAMETER {
 	   gbarfast = 1.352e-5 (S/cm2)
 	   gbarslow = 6.7615e-5(S/cm2)
        eh = -30 (mV)
+       q10 = 2.5 (1)
 }
  
 STATE {
@@ -31,6 +33,9 @@ STATE {
 }
  
 ASSIGNED {
+	celsius (degC)
+	tadj (1)
+
 	v (mV)
 	
 	g (S/cm2)
@@ -50,6 +55,7 @@ BREAKPOINT {
  
 
 INITIAL {
+	tadj = q10 ^ ((celsius - 22) / 10)
 	rates(v)
 	mf = minf
 	msl = minf
@@ -59,13 +65,11 @@ INITIAL {
 
 DERIVATIVE states {  
         rates(v)
-        mf'  =  (minf-mf)/mtauf
-		msl' =  (minf-msl)/mtausl
+        mf'  =  (minf-mf)/mtauf * tadj
+		msl' =  (minf-msl)/mtausl * tadj
 }
 
 PROCEDURE rates(v(mV)) {
-:unused var, not sure why declared
-:		LOCAL q10
 UNITSOFF
     TABLE minf, mtauf, mtausl
     FROM -100 TO 100 WITH 200

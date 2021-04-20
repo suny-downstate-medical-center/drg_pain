@@ -10,11 +10,6 @@ sim.create(simConfig = cfg, netParams = netParams)
 # store stims in dictionary
 stimd = { 'ic': {},'vc': {},'pls': {} }
 
-# for vstim in cfg.vstims:
-#     vclampv = npvec(cfg.duration, cfg.dt, -60)
-#     vclampv.plsf(cfg.dur[0], cfg.dur[1], vstim)
-#     stimd['v'][vstim] = sim.h.Vector(vclampv.vector)
-
 for isi in cfg.isis:
     ipulse = npvec(cfg.duration, cfg.dt, 0)
     deltas = []
@@ -37,4 +32,4 @@ for cell in sim.net.cells:
         stimd['pls'][tags['val']].play(cell.stims[0]['hObj']._ref_amp, t, True)
 
 sim.simulate() # calls runSim() and gatherData()
-sim.analyze()
+#sim.analyze()

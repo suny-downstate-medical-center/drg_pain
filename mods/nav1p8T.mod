@@ -1,6 +1,6 @@
 : The m and h are form sheets  2007
-:s and u are form Delmas
-: run NaV18_delmas.m to plot the model
+: s and u are from Delmas
+
 
 NEURON {
 	SUFFIX nav1p8T
@@ -54,8 +54,6 @@ INITIAL {
         h=hinf
         s=sinf
         u=uinf
-    	
-
 }
 
 DERIVATIVE states {
@@ -105,6 +103,3 @@ FUNCTION betas(Vm (mV)) (/ms) {
 FUNCTION betau(Vm (mV)) (/ms) {
 	betau= 0.0002(/ms)*1.9952/(1 + exp(-(Vm + 30.963)/14.792(mV)))
 }
-
-
-

@@ -8,14 +8,14 @@ cfg = specs.SimConfig()
 cfg.dt = 0.0125
 cfg.cvode_active = False
 cfg.recordStims = False
-cfg.recordStep = 0.5
+cfg.recordStep = 0.025
 
 cfg.istims = np.linspace(0.00, 0.4, 21)
 cfg.vstims = np.linspace(0, 100, 21)
-cfg.isis = [100, 125, 167, 250, 333, 500]
-cfg.isis = [100]
+#           20,   18,   16    14     12   10    8      6    4    2
+cfg.isis = [50, 55.5, 62.5, 71.5, 83.25, 100, 125, 166.75, 250, 500]
 cfg.dur = [250, 1000]
-cfg.duration = 1250
+cfg.duration = 400
 
 cfg.recordCells = ['all']
 """

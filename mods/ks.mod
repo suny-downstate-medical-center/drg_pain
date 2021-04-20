@@ -1,4 +1,4 @@
-: This is mainly the 7.3 channel.
+: This is mainly the 7.3 channel. -> kcnq / m-type
 : It is an inactivation potassium current
 : The inactivation long time constant is based on the article Passmore 2003. 
 : The steady state inactivation and short time constant is from Maingret 2008 (which is based on Passmore 2003)

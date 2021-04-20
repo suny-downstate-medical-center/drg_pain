@@ -121,7 +121,7 @@ for cell in net['cells']:
         if stim in [ 0.2 , 0.24, 0.28, 0.32, 0.36 ]:
             if cell['tags']['cellType']['stim'] == 'i':
                 model = cell['tags']['cellType']['model']
-                if model == 'custom':
+                if model == 'customSoma':
                     trace = np.array( sim['v']['cell_%i' %(id)] )
                     custom.plot(sim['t'], trace, label = 'custom:%f mA/cm2' %(stim) )
                 if model == 'mandge':

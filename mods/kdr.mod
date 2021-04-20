@@ -18,12 +18,15 @@ NEURON {
         SUFFIX kdr
         USEION k READ ek WRITE ik
         RANGE gbar, g, ik
-        GLOBAL ninf, ntau
+        RANGE ninf, ntau
+		RANGE n
+		RANGE tadj, q10
 		THREADSAFE
 }
  
 PARAMETER {
-         gbar = 0.002688 (S/cm2)
+		gbar = 0.002688 (S/cm2)
+		q10 = 2.5 (1)
 }
  
 STATE {
@@ -31,6 +34,9 @@ STATE {
 }
  
 ASSIGNED {
+		celsius (degC)
+		tadj (1)
+
         v (mV)
         ek (mV)
 
@@ -50,6 +56,7 @@ BREAKPOINT {
  
  
 INITIAL {
+	tadj = q10 ^ ((celsius - 22) / 10)
 	rates(v)
 	n = ninf
 }
@@ -57,7 +64,7 @@ INITIAL {
 
 DERIVATIVE states {  
         rates(v)
-        n' = (ninf-n)/ntau
+        n' = (ninf-n)/ntau * tadj
 }
  
 

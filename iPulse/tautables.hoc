@@ -1,0 +1,56 @@
+//CaN
+objref vecv2_CaN, vecmtau_CaN, vechtau_CaN
+vecv2_CaN = new Vector()
+vecv2_CaN.indgen(-30, 20, 10)
+
+vechtau_CaN = new Vector()
+vechtau_CaN.append(60.00, 50.00, 44.91, 21.14, 22.26, 26.9)
+table_tabhtau_CaN(&vechtau_CaN.x[0], vecv2_CaN.size, &vecv2_CaN.x[0])
+
+//CaR
+objref vecv_CaR, vechtau_CaR, vechtau2_CaR, vecmtau_CaR
+vecv_CaR = new Vector()
+vecv_CaR.indgen(-20, 20, 10) // vsrcdest.indgen(start,stop,stepsize)
+
+vechtau_CaR = new Vector()
+vechtau_CaR.append(828.96717,662.18,430.74661,513.46502,473.16638)  // 5. Hilliare+Dichot_17012016
+table_tabhtau_CaR(&vechtau_CaR.x[0], vecv_CaR.size, &vecv_CaR.x[0])
+
+vechtau2_CaR = new Vector()
+vechtau2_CaR.append(20.85107,17.19,12.63647,17.82774,16.75605)  // 6. Hilliare+Dichot_17012016
+table_tabhtau2_CaR(&vechtau2_CaR.x[0], vecv_CaR.size, &vecv_CaR.x[0])
+
+vecmtau_CaR = new Vector()
+vecmtau_CaR.append(0.745,2.087864,1.044556,1.5,0.796224)  // 5. Hilliare+Dichot_17012016
+table_tabmtau_CaR(&vecmtau_CaR.x[0], vecv_CaR.size, &vecv_CaR.x[0])
+
+//skca3
+objref veccai_skca3, vecsf_skca3, vecvh_skca3
+veccai_skca3 = new Vector()
+veccai_skca3.append(0.2e-3, 0.3e-3, 0.5e-3, 10e-3)
+
+vecvh_skca3 = new Vector()
+vecvh_skca3.append(24, 35.30399, 60.49381, 59.13068)
+table_tabvh_skca3(&vecvh_skca3.x[0], veccai_skca3.size, &veccai_skca3.x[0])
+
+vecsf_skca3 = new Vector()
+vecsf_skca3.append(128, 38.80141,48.77538,44.82705)
+table_tabsf_skca3(&vecsf_skca3.x[0], veccai_skca3.size, &veccai_skca3.x[0])
+
+
+//CaT 
+objref vecv_CaT, vecmtau_CaT, vecvh_CaT, vechtau_CaT
+vecv_CaT = new Vector()
+vecv_CaT.indgen(-65, 10, 5)
+
+vecmtau_CaT = new Vector()
+vecmtau_CaT.append(6.73,6.73,4.37,2.9,2.27,1.87,1.47,1.27,1.2,1.1,1.2,1.2,1.1,1.1,1.1,1.1)
+table_tabmtau_CaT(&vecmtau_CaT.x[0], vecv_CaT.size, &vecv_CaT.x[0])
+
+vechtau_CaT = new Vector()
+vecvh_CaT 	= new Vector()
+
+vecvh_CaT.append(-70.18405 ,-60 ,-49.93865 ,-40 ,-29.93865 ,-19.8773 ,-9.81595 ,0.1227 ,10.18405 ,20.2454 ,30.18405 ,40.2454)
+vechtau_CaT.append(167.54378 ,61.65778 ,44.39809 ,31.05863 ,25.83774 ,21.80703 ,17.62502 ,14.5562 ,15.25575 ,12.60002 ,12.92211 ,13.54313)
+
+table_tabhtau_CaT(&vechtau_CaT.x[0], vecvh_CaT.size, &vecvh_CaT.x[0])
