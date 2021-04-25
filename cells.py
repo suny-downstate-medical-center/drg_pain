@@ -89,9 +89,9 @@ somaRuleTD = {
            'nav1p7': {'gbar': 0.018 * 1.2 },  # NaV 1.7
            'nav1p8': {'gbar': 0.026 * 1.2 },  # NaV 1.8
            'nav1p9': {'gbar': 1e-05},  # NaV 1.9
-           'kdr': {'gbar': 0.00576},  # KDR
+           'kdr': {'gbar': 0.00576},  # KDR (delayed rectifier calcium channel - "KCNJ"?)
            'kas': {'gbar': 0.009},    # KA
-           'kmtype': {'gbar': 0.0001}, # KM
+           'kmtype': {'gbar': 0.0001}, # KM (M type calcium channel - "KM/KCNQ")
            'knatype': {'gbar': 1e-05}, # KNA
            'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
            'CaL': {'pmax': 2.75e-05, 'hca': 0.0},
@@ -132,10 +132,10 @@ cableRule = {
               'CaL': {'pmax': 2.75e-05, 'hca': 0.0},
               'CaN': {'pmax': 2.8e-05, 'a': 0.7326, 'hca': 0.0},
               'nakpump': {'gbar': 0.001, 'capm': 1.5481245576786977},
-              'pas': {'g': 0.0001}},
+              'pas': {'g': 0.0001},
               'bkca': {'gbar': 0.0009},
               'skca3': {'E50hsk3': 0.00042, 'gbar': 0.0009, 'hcsk3': 5.6,
-                        'm': 0.0, 'm_sf': 128.0, 'm_vh': 24.0},
+                        'm': 0.0, 'm_sf': 128.0, 'm_vh': 24.0}},
     'v_init': -60.0,
     'cons': (('stem', 'peri'),
              ('soma', 'stem'),
@@ -297,7 +297,9 @@ def createCable( cableRule = cableRule, v_init = -60):
         mInit(sec, v_init)
     return cable
 
-def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60, mnav = 1.0, m1p7 = 1.0, m1p8 = 1.0, m1p9 = 1.0, mut = 0.0, ashft = 0.0, ishft = 0.0):
+def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60,
+              mnav = 1.0, m1p7 = 1.0, m1p8 = 1.0, m1p9 = 1.0, mut = 0.0, ashft = 0.0, ishft = 0.0,
+              mk = 1.0, mkca = 1.0, mkm = 1.0):
     print("creating TJ model: %s-%s" %(cableRule['label'], somaRule['label']))
     hInit(somaRule['globals'])
     cell = genrn( h = h, v_init = -60,
@@ -314,6 +316,7 @@ def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60, mnav = 1
     cell.initialize_mechs('drg', somaRule['mechs'])
     cell.initialize_ionprops()
     h.finitialize(v_init)
+    print(cell)
     for sec_ in cell.secs:
         sec = cell(sec_).sec
         mInit(sec, v_init)
@@ -325,6 +328,14 @@ def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60, mnav = 1
         sec.ishft_nav1p7mut = ishft
         sec.gbar_nav1p8     = sec.gbar_nav1p8    * mnav * m1p8
         sec.gbar_nav1p9     = sec.gbar_nav1p9    * mnav * m1p9
+    for sec_ in cell.tags['cbl']:
+        sec = sec_.sec
+        sec.gbar_bkca       = sec.gbar_bkca      * mk * mkca
+        sec.gbar_kmtype     = sec.gbar_kmtype    * mk * mkm
+    for sec_ in cell.tags['drg']:
+        sec = sec_.sec
+        sec.gbar_bkca       = sec.gbar_bkca      * mk * mkca
+        sec.gbar_kmtype     = sec.gbar_kmtype    * mk * mkm
 
     return cell
 

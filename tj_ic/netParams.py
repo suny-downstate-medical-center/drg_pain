@@ -34,7 +34,9 @@ for tj in tjs:
         # param = copy.deepcopy(params[tjLbl])
         param = netParams.importCellParams(label=tjLbl, conds={'cellType': tjLbl},
                                            fileName='cells.py', cellName='createTJ',
-                                           cellArgs={'cableRule': tj[0], 'somaRule': tj[1], 'm1p7': mul, 'mut': mut}).todict()
+                                           cellArgs={'cableRule': tj[0], 'somaRule': tj[1],
+                                                     'm1p7': mul, 'mut': mut,
+                                                     'mk': 2, 'mkca': 1.0, 'mkm': 1.0}).todict()
         param['conds']['cellType'] = cellType
         netParams.cellParams[cellLbl] = param
         netParams.popParams[cellLbl] = {'numCells': 1, 'cellType': cellType}
