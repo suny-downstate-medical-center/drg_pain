@@ -27,7 +27,7 @@ params = {}
 delay = cfg.delay
 
 for tj in tjs:
-    for isi, amp, mul, mut in product(cfg.isis, cfg.amps, cfg.muls, cfg.muts):
+    for isi, amp, mul, mut, ashft, ishft in product(cfg.isis, cfg.amps, cfg.muls, cfg.muts, cfg.ashfts, cfg.ishfts):
         tjLbl = str((tj[0]['label'], tj[1]['label']))
         cellType = {'model': "%s" % (tjLbl), 'isi': isi, 'amp': amp, 'mul': mul, 'mut': mut}
         cellLbl = str(cellType)
@@ -36,6 +36,7 @@ for tj in tjs:
                                            fileName='cells.py', cellName='createTJ',
                                            cellArgs={'cableRule': tj[0], 'somaRule': tj[1],
                                                      'm1p7': mul, 'mut': mut,
+                                                     'ashft': ashft, 'ishft': ishft,
                                                      'mk': 2, 'mkca': 1.0, 'mkm': 1.0}).todict()
         param['conds']['cellType'] = cellType
         netParams.cellParams[cellLbl] = param

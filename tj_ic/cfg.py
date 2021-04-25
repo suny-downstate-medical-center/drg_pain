@@ -18,8 +18,8 @@ cfg.isis = [1000 / 50]
 cfg.amps = np.linspace(0.1, 0.2, 20) #[ 0.20, 0.21, 0.22, 0.23, 0.24, 0.25 ]
 cfg.muts = [0.0] #[ 0.5,  0.6,  0.7,  0.8,  0.9,  1.0  ]
 #muts default to 0, muls default to x
-cfg.ashft = np.linspace(0, 2.0, 5)
-cfg.ishft = [0.0]
+cfg.ashfts = [0.0]
+cfg.ishfts = [0.0]
 cfg.muls = [1.0]
 cfg.width = 1
 cfg.duration = 3100
