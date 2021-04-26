@@ -16,11 +16,11 @@ cfg.delay = 100
 cfg.isis = (1000 / np.array([ 5, 10, 15, 20 ])).round(1)
 cfg.isis = [1000 / 50]
 cfg.amps = np.linspace(0.1, 0.2, 20) #[ 0.20, 0.21, 0.22, 0.23, 0.24, 0.25 ]
-cfg.muts = [0.0] #[ 0.5,  0.6,  0.7,  0.8,  0.9,  1.0  ]
-#muts default to 0, muls default to x
-cfg.ashfts = [0.0]
-cfg.ishfts = [0.0]
+#muts default to 0, muls default to 1
 cfg.muls = [1.0]
+cfg.muts = [0.0] #[ 0.5,  0.6,  0.7,  0.8,  0.9,  1.0  ]
+cfg.ashfts = [0.0] # positive sign shifts curve to left ( activates at lower voltages)
+cfg.ishfts = [0.0]
 cfg.width = 1
 cfg.duration = 3100
 
