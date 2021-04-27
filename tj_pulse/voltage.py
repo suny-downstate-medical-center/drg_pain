@@ -31,7 +31,7 @@ traces = [ traces[0], traces[3], traces[6], traces[9], traces[-1], traces[12] ]
 print(traces)
 
 for index in range(len(cfg.amps)):
-    fig, axs = plt.subplots(6, 5, figsize=(20,14))
+    fig, axs = plt.subplots(5, 5, figsize=(20,10))
     plt.subplots_adjust(wspace=0, hspace=0)
 
     for cell in net['cells']:
@@ -42,10 +42,7 @@ for index in range(len(cfg.amps)):
                 y = 4 - int(np.round( cell['tags']['cellType'][xvar] / 0.25))
                 print('(%i, %i)' %(x,y))
                 print(cell['tags']['cellType'])
-                if x == 4:
-                    axs[x,y].plot(t, v, 'g')
-                else:
-                    axs[x,y].plot(t, v)
+                axs[x,y].plot(t, v)
                 axs[x,y].set_ylim( -90, 90)
                 axs[x,y].grid()
 

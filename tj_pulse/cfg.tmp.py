@@ -16,11 +16,11 @@ cfg.delay = 100
 cfg.isis = (1000 / np.array([ 5, 10, 15, 20 ])).round(1)
 cfg.isis = [1000 / 50]
 cfg.amps = np.linspace(0.1, 0.2, 20) #[ 0.20, 0.21, 0.22, 0.23, 0.24, 0.25 ]
-#muts default to 0, muls default to 1
-cfg.muls = np.linspace(0, 1, 5)
-cfg.muts = [0.0] #[ 0.5,  0.6,  0.7,  0.8,  0.9,  1.0  ]
-cfg.ashfts = [0.0] # positive sign shifts curve to left ( activates at lower voltages)
-cfg.ishfts = [0.0]
+cfg.muts = np.linspace(0.0, 2.0, 5) #[ 0.5,  0.6,  0.7,  0.8,  0.9,  1.0  ]
+#muts default to 0, muls default to x
+cfg.ashft = np.linspace(0, 3.0, 7)
+cfg.ishft = 0
+cfg.muls = [2.0]
 cfg.width = 1
 cfg.duration = 3100
 
@@ -37,7 +37,6 @@ cfg.recordTraces["tj v(0.0)"] = {'sec': 'cblperi', 'loc': 1.0, 'var': 'v'}
 for var, loc in product(['v'], np.linspace(0.1, 0.5, 5) ):
     cfg.recordTraces["cntr %s(%s)" %(var, loc)] = {'sec': 'cblcntr', 'loc': loc, 'var': '%s' %(var)}
 
-cfg.recordTraces["soma v(0.5)"] = {'sec': 'drgsoma', 'loc': 0.5, 'var': 'v'}
 # cfg.recordTraces["n1p7_ina_peri"] = {'sec': 'cblperi', 'loc': 0.5, 'var': 'ina_nav1p7'}
 # cfg.recordTraces["n1p7_ina_tj"  ] = {'sec': 'cblperi', 'loc': 1.0, 'var': 'ina_nav1p7'}
 # cfg.recordTraces["n1p7_ina_cntr"] = {'sec': 'cblcntr', 'loc': 0.5, 'var': 'ina_nav1p7'}
