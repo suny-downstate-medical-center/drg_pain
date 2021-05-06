@@ -24,48 +24,6 @@ cables = [cableRule]
 tjs    = [ [cableRule, somaRuleTD] ]
 
 params = {}
-# for cable in cables:
-# # need todict() for deepcopy()
-#     params[cable['label']] = netParams.importCellParams(label= cable['label'], conds={'cellType': cable['label']},
-#                                                         fileName= 'cells.py', cellName= 'createCable',
-#                                                         cellArgs= {'cableRule': cable }).todict()
-#
-# for soma in somas:
-# # need todict() for deepcopy()
-#     params[soma['label']] = netParams.importCellParams(label= soma['label'], conds={'cellType': soma['label']},
-#                                                         fileName= 'cells.py', cellName= 'createSoma',
-#                                                         cellArgs= {'somaRule': soma }).todict()
-#
-# for tj in tjs:
-# # need todict() for deepcopy()
-#     tjLbl = str((tj[0]['label'], tj[1]['label']))
-#     params[tjLbl] = netParams.importCellParams(label= tjLbl, conds={'cellType': tjLbl},
-#                                                fileName= 'cells.py', cellName= 'createTJ',
-#                                                cellArgs= {'cableRule': tj[0], 'somaRule': tj[1] }).todict()
-#     del(params[tjLbl]['secs']['soma'])
-#     pprint(params[tjLbl])
-
-# for cable in cables:
-#     for isi in isis:
-#         cellType = {'model': "%s" %(cable['label']), 'isi': isi}
-#         cellLbl = str(cellType)
-#         param = copy.deepcopy(params[cable['label']])
-#         param['conds']['cellType'] = cellType
-#         netParams.cellParams[cellLbl] = param
-#         netParams.popParams[cellLbl] = {'numCells': 1, 'cellType': cellType}
-#         netParams.stimSourceParams[cellLbl] = {'type': 'IClamp', 'amp': 0, 'delay': 0, 'dur': cfg.duration}
-#         netParams.stimTargetParams[cellLbl] = {'source': cellLbl, 'conds': {'cellType': cellType}, 'sec': 'cable', 'loc': 0.25}
-#
-# for soma in somas:
-#     for isi in isis:
-#         cellType = {'model': "%s" % (soma['label']), 'isi': isi}
-#         cellLbl = str(cellType)
-#         param = copy.deepcopy(params[soma['label']])
-#         param['conds']['cellType'] = cellType
-#         netParams.cellParams[cellLbl] = param
-#         netParams.popParams[cellLbl] = {'numCells': 1, 'cellType': cellType}
-#         netParams.stimSourceParams[cellLbl] = {'type': 'IClamp', 'amp': 0, 'delay': 0, 'dur': cfg.duration}
-#         netParams.stimTargetParams[cellLbl] = {'source': cellLbl, 'conds': {'cellType': cellType}, 'sec': 'soma', 'loc': 0.5}
 
 for tj in tjs:
     for isi, amp, mul, mut in product(cfg.isis, cfg.amps, cfg.muls, cfg.muts):
