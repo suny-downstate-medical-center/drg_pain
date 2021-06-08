@@ -12,14 +12,13 @@ cfg.cvode_active = False
 cfg.recordStims = False
 cfg.recordStep = 0.5
 
-cfg.delay = 25
-cfg.isis = (1000 / np.array([ 5, 10, 15, 20 ])).round(1)
-cfg.isis = [1000 / 50]
+cfg.delay = 100
+cfg.isis = (1000 / np.array([ 10, 20, 30, 40, 50 ])).round(1)
 cfg.amps = np.linspace(0.2, 0.4 , 15)  #[ 0.20, 0.21, 0.22, 0.23, 0.24, 0.25 ]
-cfg.muts = np.linspace(0.0, 1.0 , 15)  #[ 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 ]
+cfg.muts = [1.0]
 cfg.muls = [1.0]
 cfg.width = 1
-cfg.duration = 150
+cfg.duration = 3000
 
 
 cfg.recordCells = ['all']

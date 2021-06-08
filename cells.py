@@ -297,10 +297,46 @@ def createCable( cableRule = cableRule, v_init = -60):
         mInit(sec, v_init)
     return cable
 
+def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60, gms = {}, avs = {} ):
+    print("creating TJ model: %s-%s" %(cableRule['label'], somaRule['label']))
+    hInit(somaRule['globals'])
+    cell = genrn( h = h, v_init = -60,
+                  secs = {'cblperi': cableRule['secs']['peri'],
+                          'drgstem': cableRule['secs']['stem'],
+                          'drgsoma':  somaRule['secs']['soma'],
+                          'cblcntr': cableRule['secs']['cntr']},
+                  cons = (('drgstem', 'cblperi'),
+                          ('drgsoma', 'drgstem'),
+                          ('cblcntr', 'cblperi')),
+                  ions = somaRule['ions'],
+                  mechs = {} )
+    cell.initialize_mechs('cbl', cableRule['mechs'])
+    cell.initialize_mechs('drg', somaRule['mechs'])
+    cell.initialize_ionprops()
+    h.finitialize(v_init)
+    for gm in gms:
+        for sec_ in cell.secs:
+            sec = cell(sec_).sec
+            attr = 'gbar_%s' %(gm)
+            try:
+                iv = getattr(sec, attr)
+                setattr(sec, attr, iv * gms[gm])
+            except:
+                print('failed to modify attribute %s.%s' %(sec, attr))
+    for av in avs:
+        for sec_ in cell.secs:
+            sec = cell(sec_).sec
+            try:
+                setattr(sec, av, avs[av])
+            except:
+                print('failed to modify attribute %s.%s' &(sec, av))
+    print(cell)
+    return cell
+
 def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60,
               mnav = 1.0, m1p7 = 1.0, m1p8 = 1.0, m1p9 = 1.0, mut = 0.0, ashft = 0.0, ishft = 0.0,
               mk = 1.0, mkca = 1.0, mkm = 1.0):
-    print("creating TJ model: %s-%s" %(cableRule['label'], somaRule['label']))
+
     hInit(somaRule['globals'])
     cell = genrn( h = h, v_init = -60,
                   secs = {'cblperi': cableRule['secs']['peri'],
@@ -336,7 +372,6 @@ def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60,
         sec = sec_.sec
         sec.gbar_bkca       = sec.gbar_bkca      * mk * mkca
         sec.gbar_kmtype     = sec.gbar_kmtype    * mk * mkm
-
     return cell
 
 if __name__=='__main__':

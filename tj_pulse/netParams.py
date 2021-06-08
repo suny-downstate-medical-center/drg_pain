@@ -15,30 +15,23 @@ from pprint import pprint
 # NetParams object to store network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
-# playing parameters in init
-# netParams.stimSourceParams['iclamp'] = {'type': 'IClamp', 'amp': 0.0, 'dur': 0, 'delay': 0}
-# netParams.stimSourceParams['vclamp'] = {'type': 'VClamp', 'dur': [0, 0, 0], 'amp': [0, 0, 0], 'gain': 1e5, 'rstim': 1, 'tau1': 0.1, 'tau2': 0}
+model = [cableRule, somaRuleTD]
 
-somas  = [somaRuleTD ]
-cables = [cableRule]
-tjs    = [ [cableRule, somaRuleTD] ]
+lbl = str((model[0]['label'], model[1]['label']))
 
 params = {}
 
-for tj in tjs:
-    for isi, amp, mul, mut in product(cfg.isis, cfg.amps, cfg.muls, cfg.muts):
-        tjLbl = str((tj[0]['label'], tj[1]['label']))
-        cellType = {'model': "%s" % (tjLbl), 'isi': isi, 'amp': amp, 'mul': mul, 'mut': mut}
-        cellLbl = str(cellType)
-        # param = copy.deepcopy(params[tjLbl])
-        param = netParams.importCellParams(label=tjLbl, conds={'cellType': tjLbl},
-                                           fileName='cells.py', cellName='createTJ',
-                                           cellArgs={'cableRule': tj[0], 'somaRule': tj[1], 'm1p7': mul, 'mut': mut}).todict()
-        param['conds']['cellType'] = cellType
-        netParams.cellParams[cellLbl] = param
-        netParams.popParams[cellLbl] = {'numCells': 1, 'cellType': cellType}
-        netParams.stimSourceParams[cellLbl] = {'type': 'IClamp', 'amp': 0, 'delay': 0, 'dur': cfg.duration}
-        netParams.stimTargetParams[cellLbl] = {'source': cellLbl, 'conds': {'cellType': cellType}, 'sec': 'cblperi', 'loc': 0.1}
+#stim params
+for isi, amp in product(cfg.isis, cfg.amps):
+    cellType = {'model': "%s" % (lbl), 'isi': isi, 'amp': amp}
+    cellLbl = str(cellType)
+    param = netParams.importCellParams(label=lbl, conds={'cellType': cellType},
+                                       fileName='cells.py', cellName='createTJ',
+                                       cellArgs={'cableRule': model[0], 'somaRule': model[1]}).todict()
+    netParams.cellParams[cellLbl] = param
+    netParams.stimTargetParams[cellLbl] = {'source': cellLbl, 'conds': {'cellType': cellType}, 'sec': 'cblperi', 'loc': 0.1}
+    netParams.popParams[cellLbl] = {'numCells': 1, 'cellType': cellType}
+    netParams.stimSourceParams[cellLbl] = {'type': 'IClamp', 'amp': 0, 'delay': 0, 'dur': cfg.duration}
 
 if __name__ == '__main__':
     from pprint import pprint
