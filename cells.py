@@ -297,7 +297,7 @@ def createCable( cableRule = cableRule, v_init = -60):
         mInit(sec, v_init)
     return cable
 
-def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60, gms = {}, avs = {} ):
+def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60, ags = {}, avs = {} ):
     print("creating TJ model: %s-%s" %(cableRule['label'], somaRule['label']))
     hInit(somaRule['globals'])
     cell = genrn( h = h, v_init = -60,
@@ -314,7 +314,7 @@ def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60, gms = {}
     cell.initialize_mechs('drg', somaRule['mechs'])
     cell.initialize_ionprops()
     h.finitialize(v_init)
-    for gm in gms:
+    for ag in ags:
         for sec_ in cell.secs:
             sec = cell(sec_).sec
             attr = 'gbar_%s' %(gm)
@@ -333,46 +333,46 @@ def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60, gms = {}
     print(cell)
     return cell
 
-def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60,
-              mnav = 1.0, m1p7 = 1.0, m1p8 = 1.0, m1p9 = 1.0, mut = 0.0, ashft = 0.0, ishft = 0.0,
-              mk = 1.0, mkca = 1.0, mkm = 1.0):
-
-    hInit(somaRule['globals'])
-    cell = genrn( h = h, v_init = -60,
-                  secs = {'cblperi': cableRule['secs']['peri'],
-                          'drgstem': cableRule['secs']['stem'],
-                          'drgsoma':  somaRule['secs']['soma'],
-                          'cblcntr': cableRule['secs']['cntr']},
-                  cons = (('drgstem', 'cblperi'),
-                          ('drgsoma', 'drgstem'),
-                          ('cblcntr', 'cblperi')),
-                  ions = somaRule['ions'],
-                  mechs = {} )
-    cell.initialize_mechs('cbl', cableRule['mechs'])
-    cell.initialize_mechs('drg', somaRule['mechs'])
-    cell.initialize_ionprops()
-    h.finitialize(v_init)
-    print(cell)
-    for sec_ in cell.secs:
-        sec = cell(sec_).sec
-        mInit(sec, v_init)
-        sec.gbar_nav1p7     = sec.gbar_nav1p7    * mnav * m1p7 * (1-mut)
-        sec.ashft_nav1p7    = ashft
-        sec.ishft_nav1p7    = ishft
-        sec.gbar_nav1p7mut  = sec.gbar_nav1p7mut * mnav * m1p7 * mut
-        sec.ashft_nav1p7mut = ashft
-        sec.ishft_nav1p7mut = ishft
-        sec.gbar_nav1p8     = sec.gbar_nav1p8    * mnav * m1p8
-        sec.gbar_nav1p9     = sec.gbar_nav1p9    * mnav * m1p9
-    for sec_ in cell.tags['cbl']:
-        sec = sec_.sec
-        sec.gbar_bkca       = sec.gbar_bkca      * mk * mkca
-        sec.gbar_kmtype     = sec.gbar_kmtype    * mk * mkm
-    for sec_ in cell.tags['drg']:
-        sec = sec_.sec
-        sec.gbar_bkca       = sec.gbar_bkca      * mk * mkca
-        sec.gbar_kmtype     = sec.gbar_kmtype    * mk * mkm
-    return cell
+# def createTJ( cableRule = cableRule, somaRule = somaRule, v_init = -60,
+#               mnav = 1.0, m1p7 = 1.0, m1p8 = 1.0, m1p9 = 1.0, mut = 0.0, ashft = 0.0, ishft = 0.0,
+#               mk = 1.0, mkca = 1.0, mkm = 1.0):
+#
+#     hInit(somaRule['globals'])
+#     cell = genrn( h = h, v_init = -60,
+#                   secs = {'cblperi': cableRule['secs']['peri'],
+#                           'drgstem': cableRule['secs']['stem'],
+#                           'drgsoma':  somaRule['secs']['soma'],
+#                           'cblcntr': cableRule['secs']['cntr']},
+#                   cons = (('drgstem', 'cblperi'),
+#                           ('drgsoma', 'drgstem'),
+#                           ('cblcntr', 'cblperi')),
+#                   ions = somaRule['ions'],
+#                   mechs = {} )
+#     cell.initialize_mechs('cbl', cableRule['mechs'])
+#     cell.initialize_mechs('drg', somaRule['mechs'])
+#     cell.initialize_ionprops()
+#     h.finitialize(v_init)
+#     print(cell)
+#     for sec_ in cell.secs:
+#         sec = cell(sec_).sec
+#         mInit(sec, v_init)
+#         sec.gbar_nav1p7     = sec.gbar_nav1p7    * mnav * m1p7 * (1-mut)
+#         sec.ashft_nav1p7    = ashft
+#         sec.ishft_nav1p7    = ishft
+#         sec.gbar_nav1p7mut  = sec.gbar_nav1p7mut * mnav * m1p7 * mut
+#         sec.ashft_nav1p7mut = ashft
+#         sec.ishft_nav1p7mut = ishft
+#         sec.gbar_nav1p8     = sec.gbar_nav1p8    * mnav * m1p8
+#         sec.gbar_nav1p9     = sec.gbar_nav1p9    * mnav * m1p9
+#     for sec_ in cell.tags['cbl']:
+#         sec = sec_.sec
+#         sec.gbar_bkca       = sec.gbar_bkca      * mk * mkca
+#         sec.gbar_kmtype     = sec.gbar_kmtype    * mk * mkm
+#     for sec_ in cell.tags['drg']:
+#         sec = sec_.sec
+#         sec.gbar_bkca       = sec.gbar_bkca      * mk * mkca
+#         sec.gbar_kmtype     = sec.gbar_kmtype    * mk * mkm
+#     return cell
 
 if __name__=='__main__':
     from netpyne import specs
